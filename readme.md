@@ -1,5 +1,3 @@
-# Crawler Visualization
-
 ## Installation and Environment settings
 
 **Check this [blog](https://www.valentinog.com/blog/drf/) for basic Django & React installation guidance**
@@ -127,6 +125,14 @@ The official document can be reached by [link](https://react-bootstrap.github.io
 2.  To enable webpack dealing with css, do:
     1.  `npm install --save-dev css-loader`; see this post [link](https://webpack.js.org/loaders/css-loader/) for further guidance of code modification
     2.  `npm install style-loader --save`
+
+#### Material-UI
+
+Follow the [official document](https://material-ui.com/getting-started/installation/) for installation.
+
+1. Go into the frontend folder
+2. Run `npm install @material-ui/core`
+3. Run `npm install @material-ui/icons`
 
 ### Start the project
 
