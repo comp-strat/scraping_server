@@ -37,8 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'temp.apps.TempConfig', # Activate the new application
-    'rest_framework'
+    'backend.apps.BackendConfig', # Activate the backend
+    'rest_framework',
+    'frontend' # Enable the frontend
 ]
 
 MIDDLEWARE = [

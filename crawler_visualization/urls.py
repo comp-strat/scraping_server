@@ -14,8 +14,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 
 urlpatterns = [
-    path('', include('temp.urls')), # Enable the framework being aware of the application api
+    # path('', include('backend.urls')), # Enable the framework being aware of the application api; we don't have a backend yet
+    path('', include('frontend.urls')) # Enable the framework for being able to access to the frontend
 ]
