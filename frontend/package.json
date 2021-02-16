@@ -22,6 +22,8 @@
     "webpack-cli": "^4.5.0"
   },
   "dependencies": {
+    "@material-ui/core": "^4.11.3",
+    "@material-ui/icons": "^4.11.2",
     "@popperjs/core": "^2.6.0",
     "bootstrap": "^5.0.0-beta2",
     "react-bootstrap": "^1.4.3",
