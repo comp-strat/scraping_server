@@ -11,10 +11,10 @@ Prepare and install the following first:
 ### Setting up Django (our backend)
 1. Set up an virtual Python environment through `anaconda` or `venv` for the project
 2. Activate your environment
-3. Inside your environment, `pip install django djangorestframework`
+3. Inside your environment, run `pip install django djangorestframework`
 4. `django-admin startproject crawler_visualization.`; after this your will see a new folder named `crawler_visualization` created, with a bunch of python files initialized inside it
-5. `django-admin startapp <app_name>`; this step automatically initializes a starter-packet for you to build up one application; usually one application should only have one goal (i.e., serve as a frontend)
-   1. To initializa a frontend, do `django-admin startapp frontend`
+5. `django-admin startapp <app_name>`; this step automatically initializes a starter-packet for you to build up one application; usually one application should only have one goal (i.e., serves as a frontend)
+   1. To initialize a frontend, do `django-admin startapp frontend`
    2. For backend, do `django-admin startapp backend`
 6. Update the `crawler_visualization/settings.py` by adding `'<app_name>.apps.<app_name>Config'` to the `INSTALLED_APPS`; this is usually the case except for React frontend; for React frontend you can directly add `'frontend'` to `INSTALLED_APPS` in `crawler_visualization/settings.py`
 7. Create your model in `<app_name>/models.py`; this is a common data model; details about *data model* can be easily found here: [wikipedia](https://en.wikipedia.org/wiki/Data_model) 
@@ -58,7 +58,7 @@ Prepare and install the following first:
         ]
     }
 ```
-9.  Create `webpack.config.js` and paste the following to it:
+9.  Create `webpack.config.js` in the root folder and paste the following to it:
 ```
     module.exports = {
         module: {
@@ -141,3 +141,14 @@ Follow the [official document](https://material-ui.com/getting-started/installat
     1.  go to the frontend folder;
     2.  run `npm run dev`
 3. Access the local website: `http://127.0.0.1:8000/`
+
+## Web page presentation
+
+### Front page
+
+
+<p align="center">
+    <br>
+    <img src="figures/frontpage.jpg" width="800"/>
+    <br>
+<p>
