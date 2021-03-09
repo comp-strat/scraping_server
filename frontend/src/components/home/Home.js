@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import { Grid, Typography } from '@material-ui/core';
 import render from "react-dom";
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
+import {TopBar, schoolExamples} from './Components.js'
 import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
@@ -10,13 +9,17 @@ import InputBase from '@material-ui/core/InputBase';
 import Button from '@material-ui/core/Button';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 const instructionGridStyle = {
   width: "80%",
+};
+
+const bottomInstructionGridStyle = {
+  width: "40%",
 };
 
 const paperStyle = {
@@ -40,6 +43,14 @@ const exampleCardImageStyle = {
   height: 240,
 };
 
+const handleSearchClick = (props, keyword) => {
+  const searchPath = '/results';
+  props.history.push({
+    pathname: searchPath,
+    search: '?k=' + keyword,
+  });
+}
+
 function Search(props) {
   return (
     <Grid 
@@ -53,27 +64,31 @@ function Search(props) {
         elevation={4}
         style={paperStyle}
       >
-        <InputBase
-          placeholder="Input URL here"
-          fullWidth={true}
+        <Autocomplete
+          id="search"
+          options={schoolExamples}
+          getOptionLabel={(option) => option.url}
+          style={{ width: 600 }}
+          renderInput={(params) =>
+            <InputBase
+              ref={params.InputProps.ref}
+              inputProps={params.inputProps}
+              autoFocus
+              label="input"
+              placeholder="Input URL here"
+              fullWidth={true}
+            />
+          }
         />
-        <IconButton type="submit" aria-label="search" color="primary">
+        <IconButton
+          aria-label="search"
+          color="primary"
+          onClick={() => handleSearchClick(props, search.value)}
+        >
           <SearchIcon />
         </IconButton>
       </Paper>
     </Grid>
-  );
-}
-
-function TopBar(props) {
-  return (
-    <AppBar position="static">
-      <Toolbar variant="regular">
-        <Typography variant="h6" color="inherit">
-          Universal Web Crawler
-        </Typography>
-      </Toolbar>
-    </AppBar>
   );
 }
 
@@ -100,6 +115,38 @@ function CenterInstruction(props) {
         <Typography variant="h5" component="p" color="textPrimary">
           Type single url or multiple urls separated 
           by comma. The input could also be a uploaded csv file.
+        </Typography>
+      </Grid>
+    </Grid>
+  );
+}
+
+function ButtomInstruction(props) {
+  return (
+    <Grid container justify="center" style={{padding: 50}}>
+      <Grid
+        container
+        style={bottomInstructionGridStyle}
+        direction="column"
+        justify="center"
+        alignItems="flex-start"
+      >
+        <Typography variant="h3" component="p" color="textPrimary">
+          Instruction:
+        </Typography>
+        <Typography variant="h5" component="p" color="textPrimary" style={{marginTop: 20}}>
+          Input a URL to start your crawling
+        </Typography>
+        <Typography variant="subtitle1" component="p" color="textPrimary" style={{marginTop: 10}}>
+          Enter a valid chapter school URL to start your crawling. You can also select URLs from the drawdown menu.
+        </Typography>
+        <Typography variant="h5" component="p" color="textPrimary" style={{marginTop: 20}}>
+          Crawling at scale
+        </Typography>
+        <Typography variant="subtitle1" component="p" color="textPrimary" style={{marginTop: 10}}>
+          Not only can you crawl the results for one school, but you can also deal with a dozen of them at the same time. 
+          Simply upload a CSV file that contains all the URLs that you want to deal with. 
+          Remember that in the CSV file, each URL should b separated by a comma.
         </Typography>
       </Grid>
     </Grid>
@@ -140,10 +187,6 @@ function UploadButton(props) {
 }
 
 function Examples(props) {
-  const examples = [
-    {title: 'Charlotte', img: '/static/imgs/Charlotte.jpg'},
-    {title: 'socratesacademy', img: '/static/imgs/socratesacademy.jpg'}
-  ];
   return (
     <Grid container justify='center' spacing={6}>
       <Grid item>
@@ -177,7 +220,7 @@ function Examples(props) {
           />
           <CardContent>
             <Typography gutterBottom variant="h5" component="h2">
-              Charlotte
+              Socratesacademy
             </Typography>
             <Typography variant="body2" color="textSecondary" component="p">
             http://www.socratesacademy.us/ 
@@ -203,10 +246,11 @@ function GridContainer(props) {
       <Grid container style={{padding: 50}}>
         <Headline />
         <CenterInstruction />
-        <Search />
+        <Search history={props.history} />
         <UploadButton />
         <ExampleInstruction />
         <Examples />
+        <ButtomInstruction />
       </Grid>
     </Grid>
   )
@@ -220,7 +264,7 @@ class Home extends Component {
   render() {
     return (
       <React.Fragment>
-        <main><GridContainer/></main>
+        <main><GridContainer history={this.props.history}/></main>
       </React.Fragment>
     )
   }

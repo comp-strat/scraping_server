@@ -133,6 +133,7 @@ Follow the [official document](https://material-ui.com/getting-started/installat
 1. Go into the frontend folder
 2. Run `npm install @material-ui/core`
 3. Run `npm install @material-ui/icons`
+4. Run `npm install @material-ui/lab`
 
 ### Start the project
 
