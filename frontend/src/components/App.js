@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import { render } from "react-dom";
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import Home from './home/Home.js'
-import Results from './home/Results.js'
+import Jobs from './interface/Jobs.js'
+import Datasets from './interface/Datasets.js'
+import Dashboard from './interface/Dashboard.js'
 
 class App extends Component {
   constructor(props) {
@@ -19,8 +20,9 @@ class App extends Component {
       <Router>
         <div className="container">
           <Switch>
-            <Route exact path="/" component={Home} />
-            <Route exact path="/results" component={Results} />
+            <Route exact path="/" component={Jobs} />
+            <Route exact path="/datasets" component={Datasets} />
+            <Route exact path="/dashboard" component={Dashboard} />
           </Switch>
         </div>
       </Router>
