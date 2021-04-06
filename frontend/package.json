@@ -30,6 +30,7 @@
     "react-bootstrap": "^1.4.3",
     "react-router-dom": "^5.2.0",
     "react-window": "^1.8.6",
+    "recharts": "^2.0.9",
     "style-loader": "^2.0.0"
   }
 }

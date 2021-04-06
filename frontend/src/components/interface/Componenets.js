@@ -3,6 +3,7 @@ import Drawer from '@material-ui/core/Drawer';
 import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import ListSubheader from '@material-ui/core/ListSubheader';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
@@ -16,6 +17,7 @@ import AssignmentRoundedIcon from '@material-ui/icons/AssignmentRounded';
 import ErrorIcon from '@material-ui/icons/Error';
 import SettingsIcon from '@material-ui/icons/Settings';
 import NotificationsIcon from '@material-ui/icons/Notifications';
+import Link from '@material-ui/core/Link';
 
 const drawerWidth = 250;
 
@@ -39,6 +41,19 @@ const useStyles = makeStyles({
     width: drawerWidth,
   },
 });
+
+export function Copyright(props) {
+  return (
+    <Typography variant="body2" color="textSecondary" align="center">
+      {'Copyright © '}
+      <Link color="inherit" href="https://github.com/URAP-charter">
+        The Chapter School Team
+      </Link>{' '}
+      {new Date().getFullYear()}
+      {'.'}
+    </Typography>
+  );
+}
 
 export function User(props) {
   const classes = useStyles();
@@ -151,7 +166,8 @@ export function LeftDrawer(props) {
       </List>
       <Divider />
       <List>
-      <ListItem button>
+      <ListSubheader inset>Settings</ListSubheader>
+        <ListItem button>
           <ListItemIcon>
             <SettingsIcon />
           </ListItemIcon>

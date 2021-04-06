@@ -22,39 +22,72 @@ export const largerSchoolExamples = [
 ]
 
 export const tableHeader = [
-	{id: 'ticket', label: "Ticket Details", minWidth: 250, align: 'left'},
-	{id: 'creator', label: "CREATOR", minWidth: 120, align: 'right'},
+	{id: 'ticket', label: "Ticket Details", minWidth: 200, align: 'left'},
+	{id: 'creator', label: "Creator", minWidth: 120, align: 'right'},
 	{id: 'date', label: "Date", minWidth: 120, align: 'right'},
-	{id: 'priority', label: "Priority", minWidth: 120, align: 'right'},
+	{id: 'priority', label: "Priority", minWidth: 100, align: 'right'},
+	{id: 'more', label: " ", minWidth: 40, align: 'left'}
 ];
 
-function createData(id, ticket, creator, date, priority) {
-	return { id, ticket, creator, date, priority };
+function createJobData(id, ticket, creator, date, priority) {
+	var rank;
+	if (priority == 'HIGH') {
+		rank = 3;
+	} else if (priority == 'NORMAL') {
+		rank = 2;
+	} else if (priority == 'LOW') {
+		rank = 1;
+	}
+	return { id, ticket, creator, date, priority, rank };
 }
 
 export const pesudoJobs = [
-	createData(1, "Chapter School Dataset", "Pranav Bhasin", "Feb 28, 2020", "HIGH"),
-	createData(2, "Chapter School Dataset", "Pranav Bhasin", "Feb 28, 2020", "HIGH"),
-	createData(3, "Chapter School Dataset", "Pranav Bhasin", "Feb 28, 2020", "HIGH"),
-	createData(4, "Chapter School Dataset", "Pranav Bhasin", "Feb 28, 2020", "HIGH"),
-	createData(5, "Chapter School Dataset", "Pranav Bhasin", "Feb 28, 2020", "HIGH"),
-	createData(6, "Chapter School Dataset", "Pranav Bhasin", "Feb 28, 2020", "HIGH"),
-	createData(7, "Chapter School Dataset", "Pranav Bhasin", "Feb 28, 2020", "HIGH"),
-	createData(8, "Chapter School Dataset", "Pranav Bhasin", "Feb 28, 2020", "HIGH"),
-	createData(9, "Chapter School Dataset", "Pranav Bhasin", "Feb 28, 2020", "HIGH"),
-	createData(10, "Chapter School Dataset", "Pranav Bhasin", "Feb 28, 2020", "HIGH"),
-	createData(11, "Chapter School Dataset", "Pranav Bhasin", "Feb 28, 2020", "HIGH"),
-	createData(12, "Chapter School Dataset", "Pranav Bhasin", "Feb 28, 2020", "HIGH"),
-	createData(13, "Chapter School Dataset", "Pranav Bhasin", "Feb 28, 2020", "HIGH"),
-	createData(14, "Chapter School Dataset", "Pranav Bhasin", "Feb 28, 2020", "HIGH"),
-	createData(15, "Chapter School Dataset", "Pranav Bhasin", "Feb 28, 2020", "HIGH"),
-	createData(16, "Chapter School Dataset", "Pranav Bhasin", "Feb 28, 2020", "HIGH"),
-	createData(17, "Chapter School Dataset", "Pranav Bhasin", "Feb 28, 2020", "HIGH"),
-	createData(18, "Chapter School Dataset", "Pranav Bhasin", "Feb 28, 2020", "HIGH"),
-	createData(19, "Chapter School Dataset", "Pranav Bhasin", "Feb 28, 2020", "HIGH"),
-	createData(20, "Chapter School Dataset", "Pranav Bhasin", "Feb 28, 2020", "HIGH"),
-	createData(21, "Chapter School Dataset", "Pranav Bhasin", "Feb 28, 2020", "HIGH"),
-	createData(22, "Chapter School Dataset", "Pranav Bhasin", "Feb 28, 2020", "HIGH"),
-	createData(23, "Chapter School Dataset", "Pranav Bhasin", "Feb 28, 2020", "HIGH"),
-	createData(24, "Chapter School Dataset", "Pranav Bhasin", "Feb 28, 2020", "HIGH"),
+	createJobData(1, "Chapter School Dataset", "Pranav Bhasin", "Feb 28, 2020", "HIGH"),
+	createJobData(2, "Chapter School Dataset", "Pranav Bhasin", "Feb 24, 2020", "NORMAL"),
+	createJobData(3, "Chapter School Dataset", "Pranav Bhasin", "Feb 25, 2020", "LOW"),
+	createJobData(4, "Chapter School Dataset", "Pranav Bhasin", "Feb 28, 2020", "HIGH"),
+	createJobData(5, "Chapter School Dataset", "Pranav Bhasin", "Feb 28, 2020", "HIGH"),
+	createJobData(6, "Chapter School Dataset", "Pranav Bhasin", "Feb 25, 2020", "LOW"),
+	createJobData(7, "Chapter School Dataset", "Pranav Bhasin", "Feb 26, 2020", "HIGH"),
+	createJobData(8, "Chapter School Dataset", "Pranav Bhasin", "Feb 27, 2020", "LOW"),
+	createJobData(9, "Chapter School Dataset", "Pranav Bhasin", "Feb 28, 2020", "HIGH"),
+	createJobData(10, "Chapter School Dataset", "Pranav Bhasin", "Feb 27, 2020", "HIGH"),
+	createJobData(11, "Chapter School Dataset", "Pranav Bhasin", "Feb 26, 2020", "LOW"),
+	createJobData(12, "Chapter School Dataset", "Pranav Bhasin", "Feb 28, 2020", "NORMAL"),
+	createJobData(13, "Chapter School Dataset", "Pranav Bhasin", "Feb 27, 2020", "LOW"),
+	createJobData(14, "Chapter School Dataset", "Pranav Bhasin", "Feb 28, 2020", "NORMAL"),
+	createJobData(15, "Chapter School Dataset", "Pranav Bhasin", "Feb 28, 2020", "HIGH"),
+	createJobData(16, "Chapter School Dataset", "Pranav Bhasin", "Feb 27, 2020", "LOW"),
+	createJobData(17, "Chapter School Dataset", "Pranav Bhasin", "Feb 24, 2020", "HIGH"),
+	createJobData(18, "Chapter School Dataset", "Pranav Bhasin", "Feb 28, 2020", "LOW"),
+	createJobData(19, "Chapter School Dataset", "Pranav Bhasin", "Feb 26, 2020", "HIGH"),
+	createJobData(20, "Chapter School Dataset", "Pranav Bhasin", "Feb 28, 2020", "NORMAL"),
+	createJobData(21, "Chapter School Dataset", "Pranav Bhasin", "Feb 24, 2020", "NORMAL"),
+	createJobData(22, "Chapter School Dataset", "Pranav Bhasin", "Feb 25, 2020", "HIGH"),
+	createJobData(23, "Chapter School Dataset", "Pranav Bhasin", "Feb 26, 2020", "LOW"),
+	createJobData(24, "Chapter School Dataset", "Pranav Bhasin", "Feb 28, 2020", "NORMAL"),
+]
+
+function createUrlData(time, amount) {
+	return { time, amount };
+}
+
+export const urlAmount = [
+	createUrlData('03/23', 700),
+	createUrlData('03/30', 900),
+	createUrlData('04/06', 600),
+	createUrlData('04/13', 1500),
+	createUrlData('04/20', 1200),
+	createUrlData('04/27', 2000),
+	createUrlData('05/04', 400),
+	createUrlData('05/11', 750),
+	createUrlData('05/18', 1000),
+];
+
+export const progressData = [
+	{
+		status: 'Progress',
+		Completed: "300",
+		Incompleted: "900",
+	},
 ]

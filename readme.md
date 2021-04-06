@@ -147,9 +147,13 @@ Follow the [official document](https://material-ui.com/getting-started/installat
 
 ### Front page
 
-
 <p align="center">
     <br>
     <img src="figures/frontpage.jpg" width="800"/>
     <br>
 <p>
+
+### TODO
+
+1. [React Chart](https://devexpress.github.io/devextreme-reactive/react/chart/)
+2. [Good Tutorial](https://www.youtube.com/watch?v=m_u6P5k0vP0&t=2675s)
