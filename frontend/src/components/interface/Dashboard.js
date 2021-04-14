@@ -386,7 +386,7 @@ function DashboardPage(props) {
   const classes = useStyles();
   return (
     <div className={classes.root}>
-      <LeftDrawer />
+      <LeftDrawer history={props.history}/>
       <main className={classes.main}>
         <BoardBody />
         <Box pt={4}>
@@ -404,7 +404,7 @@ class Dashboard extends Component {
 
   render() {
     return (
-      <DashboardPage />
+      <DashboardPage history={this.props.history}/>
     )
   }
 }

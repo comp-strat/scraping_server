@@ -98,7 +98,7 @@ export function DatasetPage(props) {
   const classes = useStyles();
   return (
     <div className={classes.root}>
-      <LeftDrawer />
+      <LeftDrawer history={props.history}/>
       <main className={classes.main}>
         <Samples />
         <Box pt={4}>
@@ -116,7 +116,7 @@ class Datasets extends Component {
 
   render() {
     return (
-      <DatasetPage />
+      <DatasetPage history={this.props.history}/>
     )
   }
 }

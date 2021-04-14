@@ -21,6 +21,9 @@ import SortIcon from '@material-ui/icons/Sort';
 import IconButton from '@material-ui/core/IconButton';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import TableSortLabel from "@material-ui/core/TableSortLabel";
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import Fade from '@material-ui/core/Fade';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -65,6 +68,11 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(4),
   }
 }));
+
+const options = [
+  'VIEW',
+  'EDIT'
+];
 
 function descendingComparator(a, b, orderBy) {
   if (orderBy == "priority") {
@@ -230,6 +238,17 @@ function JobTable(props) {
     setOrderBy(property);
   };
 
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, pesudoJobs.length - page * rowsPerPage);
 
   return (
@@ -260,9 +279,33 @@ function JobTable(props) {
                       );
                     })}
                     <TableCell>
-                      <IconButton>
+                      <IconButton
+                        aria-controls="job-menu"
+                        aria-haspopup="true"
+                        onClick={handleClick}
+                      >
                         <MoreVertIcon />
                       </IconButton>
+                      <Menu
+                        id="job-menu"
+                        anchorEl={anchorEl}
+                        keepMounted
+                        open={open}
+                        onClose={handleClose}
+                        PaperProps={{
+                          style: {
+                            maxHeight: 96,
+                            width: '20ch',
+                          },
+                        }}
+                        TransitionComponent={Fade}
+                      >
+                        {options.map((option) => (
+                          <MenuItem key={option} onClick={handleClose}>
+                            {option}
+                          </MenuItem>
+                        ))}
+                      </Menu>
                     </TableCell>
                   </TableRow>
                 );
@@ -293,7 +336,7 @@ export function JobPage(props) {
   const classes = useStyles();
   return (
     <div className={classes.root}>
-      <LeftDrawer />
+      <LeftDrawer history={props.history}/>
       <main className={classes.main}>
         <Grid
           container
@@ -318,7 +361,7 @@ class Jobs extends Component {
   }
   render() {
     return (
-      <JobPage />
+      <JobPage history={this.props.history}/>
     )
   }
 }

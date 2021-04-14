@@ -42,12 +42,29 @@ const useStyles = makeStyles({
   },
 });
 
+const handleDrawerClick = (props, suffix) => {
+  const JobsPath = '/jobs';
+  const DashboardPath = '/dashboard'
+  const DatasetPath = '/datasets'
+  var path;
+  if (suffix == 'jobs') {
+		path = JobsPath;
+	} else if (suffix == 'dashboard') {
+		path = DashboardPath;
+	} else if (suffix == 'datasets') {
+		path = DatasetPath;
+	}
+  props.history.push({
+    pathname: path,
+  });
+}
+
 export function Copyright(props) {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
       <Link color="inherit" href="https://github.com/URAP-charter">
-        The Chapter School Team
+        The Universial Web Crawling Team
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -103,7 +120,7 @@ export function LeftDrawer(props) {
       <User name="Pranav Bhasin"/>
       <Divider />
       <List>
-        <ListItem button>
+        <ListItem button onClick={() => handleDrawerClick(props, "dashboard")}>
           <ListItemIcon>
             <DashboardRoundedIcon />
           </ListItemIcon>
@@ -118,7 +135,7 @@ export function LeftDrawer(props) {
             }
           />
         </ListItem>
-        <ListItem button>
+        <ListItem button onClick={() => handleDrawerClick(props, "jobs")}>
           <ListItemIcon>
             <AssignmentTurnedInRoundedIcon />
           </ListItemIcon>
@@ -133,7 +150,7 @@ export function LeftDrawer(props) {
             }
           />
         </ListItem>
-        <ListItem button>
+        <ListItem button onClick={() => handleDrawerClick(props, "datasets")}>
           <ListItemIcon>
             <AssignmentRoundedIcon />
           </ListItemIcon>
