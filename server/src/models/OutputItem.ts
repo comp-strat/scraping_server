@@ -29,6 +29,6 @@ const outputItemSchema = new mongoose.Schema({
 });
 
 
-const OutputItem = mongoose.model('outputItem', outputItemSchema, 'outputItems');
+const OutputItem = mongoose.model('OutputItem', outputItemSchema, 'outputItems');
 
 export default OutputItem;
