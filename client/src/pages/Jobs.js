@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import Grid from '@material-ui/core/Grid';
-import {LeftDrawer, Copyright} from '../components/Components.js'
+import {LeftDrawer, Copyright, NewJobPath} from '../components/Components.js'
 import {pesudoJobs, tableHeader} from '../data/pesudoData.js'
-import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -16,14 +15,13 @@ import {makeStyles} from "@material-ui/core";
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import Tooltip from '@material-ui/core/Tooltip';
-import SortIcon from '@material-ui/icons/Sort';
 import IconButton from '@material-ui/core/IconButton';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import TableSortLabel from "@material-ui/core/TableSortLabel";
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Fade from '@material-ui/core/Fade';
+import Fab from '@material-ui/core/Fab';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -87,13 +85,19 @@ function descendingComparator(a, b, orderBy) {
   return 0;
 }
 
-function getComparator(order, orderBy) {
+const handleNewJobClick = (props) => {
+  props.history.push({
+    pathname: NewJobPath,
+  });
+}
+
+export function getComparator(order, orderBy) {
   return order === "desc"
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-function stableSort(array, comparator) {
+export function stableSort(array, comparator) {
   const stabilizedThis = array.map((el, index) => [el, index]);
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
@@ -111,27 +115,29 @@ function TopButtons(props) {
       justify="flex-start"
       alignItems="center"
     >
-      <Button
-        variant="contained"
+      <Fab
+        variant="extended"
         color="primary"
-        startIcon={<AddIcon />}
         className={classes.topButtonStyle}
+        onClick={() => handleNewJobClick(props)}
       >
+        <AddIcon />
         NEW JOB
-      </Button>
-      <Button
-        variant="contained"
+      </Fab>
+
+      <Fab
+        variant="extended"
         color="primary"
-        startIcon={<AddIcon />}
         className={classes.topButtonStyle}
-      >
+      > 
+        <AddIcon />
         SEARCH
-      </Button>
+      </Fab>
     </Grid>
   )
 }
 
-function JobTableToolBar(props) {
+export function TableToolBar(props) {
   const classes = useStyles();
   return (
     <Toolbar>
@@ -142,37 +148,14 @@ function JobTableToolBar(props) {
         component="div"
       >
         <Box fontWeight="fontWeightBold" m={0}>
-          Jobs
+          {props.name}
         </Box>
       </Typography>
-      <Tooltip title="Filter list">
-        <IconButton aria-label="sort list">
-          <SortIcon />
-        </IconButton>
-      </Tooltip>
     </Toolbar>
   );
 }
 
-function NormalJobTableHead(props) {
-  return (
-    <TableHead>
-      <TableRow>
-        {tableHeader.map((column) => (
-          <TableCell
-            key={column.id}
-            align={column.align}
-            style={{minWidth: column.minWidth}}
-          >
-            {column.label}
-          </TableCell>
-        ))}
-      </TableRow>
-    </TableHead>
-  );
-};
-
-function EnhancedJobTableHead(props) {
+export function EnhancedJobTableHead(props) {
   const { classes, order, orderBy, onRequestSort } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
@@ -254,7 +237,7 @@ function JobTable(props) {
   return (
     <Grid container item direction="column">
       <Paper className={classes.tablePaper} variant="outlined">
-        <JobTableToolBar />
+        <TableToolBar name="Jobs"/>
         <TableContainer className={classes.tableContainer}>
           <Table stickyHeader>
             <EnhancedJobTableHead
@@ -344,7 +327,7 @@ export function JobPage(props) {
           justify="center"
           alignItems="flex-end"
         >
-          <TopButtons />
+          <TopButtons history={props.history}/>
           <JobTable />
         </Grid>
         <Box pt={4}>

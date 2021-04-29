@@ -11,10 +11,10 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import { makeStyles } from "@material-ui/core";
-
 import Avatar from '@material-ui/core/Avatar';
 import pranav from '../static/img/pranav.png';
 import charlotte from '../static/img/Charlotte.jpg'
+import {DatasetDetailPath} from '../components/Components.js'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -47,6 +47,13 @@ function Title(props) {
       {props.children}
     </Typography>
   );
+}
+
+const handleDatasetCardClick = (props, id) => {
+  props.history.push({
+    pathname: DatasetDetailPath,
+    search: '?id=' + id,
+  });
 }
 
 function Samples(props) {
@@ -85,8 +92,13 @@ function Samples(props) {
                   </Typography>
                 </CardContent>
                 <CardActions>
-                  <Button variant="outlined" color="primary">VIEW</Button>
-                  <Button variant="outlined" color="primary">EDIT</Button>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => handleDatasetCardClick(props, job.id)}
+                  >
+                    VIEW
+                  </Button>
                 </CardActions>
               </Card>
             </Grid>
@@ -103,7 +115,7 @@ export function DatasetPage(props) {
     <div className={classes.root}>
       <LeftDrawer history={props.history}/>
       <main className={classes.main}>
-        <Samples />
+        <Samples history={props.history}/>
         <Box pt={4}>
           <Copyright />
         </Box>

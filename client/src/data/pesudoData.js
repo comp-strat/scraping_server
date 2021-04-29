@@ -29,6 +29,14 @@ export const tableHeader = [
 	{id: 'more', label: " ", minWidth: 40, align: 'left'}
 ];
 
+export const DatasetDetailHeader = [
+	{id: 'text', label: "Text", minWidth: 200, align: 'left'},
+	{id: 'school_id', label: "School ID", minWidth: 120, align: 'right'},
+	{id: 'url', label: "URL", minWidth: 120, align: 'right'},
+	{id: 'depth', label: "Depth", minWidth: 100, align: 'right'},
+	{id: 'more', label: " ", minWidth: 40, align: 'left'}
+];
+
 function createJobData(id, ticket, creator, date, priority) {
 	var rank;
 	if (priority == 'HIGH') {
@@ -66,6 +74,54 @@ export const pesudoJobs = [
 	createJobData(22, "Chapter School Dataset", "Pranav Bhasin", "Feb 25, 2020", "HIGH"),
 	createJobData(23, "Chapter School Dataset", "Pranav Bhasin", "Feb 26, 2020", "LOW"),
 	createJobData(24, "Chapter School Dataset", "Pranav Bhasin", "Feb 28, 2020", "NORMAL"),
+]
+
+export const pesudoDatasetDetails = [
+	{
+		id: 1,
+		spyder_num: 4,
+		images_found: 233,
+		datasets: [
+			{
+				school_id: 130123003896,
+				text: "ABLE Charter Schools at Humphreys University",
+				url: "http://099.clayton.k12.ga.us/",
+				depth: 4,
+			},
+			{
+				school_id: 130123003687,
+				text: "ABLE Charter Schools at Humphreys University",
+				url: "http://198.clayton.k12.ga.us/",
+				depth: 4,
+			},
+			{
+				school_id: 350006000811,
+				text: "ABLE Charter Schools at Humphreys University",
+				url: "http://21stcenturypa.com/wp/",
+				depth: 4,
+			},
+		],
+	},
+
+	{
+		id: 2,
+		spyder_num: 9,
+		images_found: 8817,
+		datasets: [
+			{
+				school_id: 220019300944,
+				text: "ABLE Charter Schools at Humphreys University",
+				url: "http://42charterschool.org/",
+				depth: 4,
+			},
+			{
+				school_id: 411167001641,
+				text: "ABLE Charter Schools at Humphreys University",
+				url: "http://a3school.org/",
+				depth: 4,
+			},
+		],
+	},
 ]
 
 function createUrlData(time, amount) {

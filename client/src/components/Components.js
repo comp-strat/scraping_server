@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import Drawer from '@material-ui/core/Drawer';
 import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
@@ -22,6 +22,12 @@ import pranav from '../static/img/pranav.png';
 
 const drawerWidth = 250;
 
+export const JobsPath = "/jobs"
+export const DatasetsPath = "/datasets"
+export const DashboardPath = "/dashboard"
+export const DatasetDetailPath = "/datasets/details"
+export const NewJobPath = "/newjob"
+
 const useStyles = makeStyles({
 
   user: {
@@ -44,16 +50,13 @@ const useStyles = makeStyles({
 });
 
 const handleDrawerClick = (props, suffix) => {
-  const JobsPath = '/jobs';
-  const DashboardPath = '/dashboard'
-  const DatasetPath = '/datasets'
   var path;
   if (suffix == 'jobs') {
 		path = JobsPath;
 	} else if (suffix == 'dashboard') {
 		path = DashboardPath;
 	} else if (suffix == 'datasets') {
-		path = DatasetPath;
+		path = DatasetsPath;
 	}
   props.history.push({
     pathname: path,

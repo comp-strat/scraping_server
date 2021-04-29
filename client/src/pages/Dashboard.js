@@ -28,11 +28,6 @@ import {
   ResponsiveContainer
 } from 'recharts';
 import Paper from '@material-ui/core/Paper';
-import pranav from '../static/img/pranav.png'
-
-
-
-
 
 const useStyles = makeStyles((theme) =>({
   root: {
