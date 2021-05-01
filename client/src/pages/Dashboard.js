@@ -1,7 +1,18 @@
 import React, { Component } from "react";
+
+
+//data
+import {urlAmount, progressData} from '../data/pesudoData'
+
+
+//Components
+import {LeftDrawer} from "../components/LeftDrawer";
+import {Copyright} from "../components/Copyright";
+
+
+
+//Material UI
 import { Grid, Typography } from '@material-ui/core';
-import {LeftDrawer, Copyright} from '../components/Components.js'
-import { makeStyles } from "@material-ui/core";
 import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
@@ -13,7 +24,10 @@ import ErrorIcon from '@material-ui/icons/Error';
 import DoneIcon from '@material-ui/icons/Done';
 import AutorenewIcon from '@material-ui/icons/Autorenew';
 import Box from '@material-ui/core/Box';
-import {urlAmount, progressData} from '../data/pesudoData.js'
+import Paper from '@material-ui/core/Paper';
+
+
+// recharts
 import {
   LineChart,
   BarChart,
@@ -27,55 +41,12 @@ import {
   Tooltip,
   ResponsiveContainer
 } from 'recharts';
-import Paper from '@material-ui/core/Paper';
-import pranav from '../static/img/pranav.png'
 
 
+//Styles
+import {dashboardStyles} from "../styles/dashboardStyles";
 
 
-
-const useStyles = makeStyles((theme) =>({
-  root: {
-    display: 'flex',
-  },
-
-  statCard: {
-    maxWidth: 300,
-    maxHeight: 300
-  },
-
-  cardContent: {
-    display:'flex',
-    justifyContent:'center'
-  },
-
-  largeButton: {
-    padding: 15
-  },
-
-  largeIcon: {
-    fontSize: "3em"
-  },
-
-  chartPaper: {
-    padding: theme.spacing(2),
-    display: 'flex',
-    overflow: 'auto',
-    flexDirection: 'column',
-    height: 360,
-  },
-
-  rightContainer: {
-    paddingTop: theme.spacing(2),
-    paddingRight: theme.spacing(8),
-    paddingLeft: theme.spacing(8),
-  },
-
-  main: {
-    flexGrow: 1,
-  }
-
-}));
 
 function Title(props) {
   return (
@@ -138,7 +109,8 @@ function ProgressTracker(props) {
 }
 
 function ClientNumber(props) {
-  const classes = useStyles();
+  const classes = dashboardStyles();
+
   return (
     <Card className={classes.statCard} variant="outlined">
       <CardMedia className={classes.cardContent}>
@@ -167,7 +139,8 @@ function ClientNumber(props) {
 }
 
 function OverallCompletedNumber(props) {
-  const classes = useStyles();
+  const classes = dashboardStyles();
+
   return (
     <Card className={classes.statCard} variant="outlined">
       <CardMedia className={classes.cardContent}>
@@ -196,7 +169,8 @@ function OverallCompletedNumber(props) {
 }
 
 function JobNumber(props) {
-  const classes = useStyles();
+  const classes = dashboardStyles();
+
   return (
     <Card className={classes.statCard} variant="outlined">
       <CardMedia className={classes.cardContent}>
@@ -225,7 +199,8 @@ function JobNumber(props) {
 }
 
 function InProgressNumber(props) {
-  const classes = useStyles();
+  const classes = dashboardStyles();
+
   return (
     <Card className={classes.statCard} variant="outlined">
       <CardMedia className={classes.cardContent}>
@@ -254,7 +229,8 @@ function InProgressNumber(props) {
 }
 
 function NotificationNumber(props) {
-  const classes = useStyles();
+  const classes = dashboardStyles();
+
   return (
     <Card className={classes.statCard} variant="outlined">
       <CardMedia className={classes.cardContent}>
@@ -283,7 +259,8 @@ function NotificationNumber(props) {
 }
 
 function ErrorNumber(props) {
-  const classes = useStyles();
+  const classes = dashboardStyles();
+
   return (
     <Card className={classes.statCard} variant="outlined">
       <CardMedia className={classes.cardContent}>
@@ -312,7 +289,8 @@ function ErrorNumber(props) {
 }
 
 function BoardBody(props) {
-	const classes = useStyles();
+	const classes = dashboardStyles();
+
 	return (
     <Grid
       container
@@ -388,7 +366,8 @@ function BoardBody(props) {
 }
 
 function DashboardPage(props) {
-  const classes = useStyles();
+  const classes = dashboardStyles();
+
   return (
     <div className={classes.root}>
       <LeftDrawer history={props.history}/>

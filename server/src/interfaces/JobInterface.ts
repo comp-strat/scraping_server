@@ -1,7 +1,6 @@
 export interface JobInterface {
-    id: number,
-    name: string,
+    URLs: Array<string>,
     status: string,
     createdDate: Date,
-    completedDate: Date
+    completedDate: Date | null
 }

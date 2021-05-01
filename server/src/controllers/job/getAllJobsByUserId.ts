@@ -5,15 +5,13 @@ import { JobInterface} from "../../interfaces/JobInterface";
 
 export const getAllJobsByUserId = async (req: Request, res: Response) => {
 
-    const userId = req.params.user_id;
+    // const userId = req.params.user_id;
 
-    const job = await Job.findOne({
-        'id':  userId
-    });
+    const jobs = await Job.find();
 
-    if (!job) {
+    if (!jobs) {
         res.send('The requested job does not exist')
     } else {
-        res.send(job);
+        res.send(jobs);
     }
 };

@@ -9,7 +9,7 @@ import {postCreateJob} from "../controllers/job/postCreateJob";
 const router = express.Router();
 
 router.get('/job/:id', getJobDetails);
-router.get('/job/:user_id', getAllJobsByUserId);
+router.get('/jobs', getAllJobsByUserId); // TODO Mongo update for specific user
 router.post('/job/:id', postUpdateJob);
 router.post('/job', postCreateJob);
 

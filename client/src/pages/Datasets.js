@@ -1,7 +1,21 @@
 import React, { Component } from "react";
+
+import axios from "axios";
+
+//Components
+import {LeftDrawer} from "../components/LeftDrawer";
+import {Copyright} from "../components/Copyright";
+
+//Actions
+import {handleRoutes} from "../util/handleRoutes";
+
+// data
+import {pesudoJobs} from '../data/pesudoData'
+
+
+//Material UI
 import { Box, Grid, Typography } from '@material-ui/core';
-import {Copyright, LeftDrawer} from '../components/Components.js'
-import {pesudoJobs} from '../data/pesudoData.js'
+
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import ShareIcon from '@material-ui/icons/Share';
@@ -10,36 +24,18 @@ import CardHeader from '@material-ui/core/CardHeader';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
-import { makeStyles } from "@material-ui/core";
 
+
+//images
 import Avatar from '@material-ui/core/Avatar';
 import pranav from '../static/img/pranav.png';
 import charlotte from '../static/img/Charlotte.jpg'
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-  },
+// Styles
+import { datasetsStyles } from "../styles/datasetsStyles";
+import {Link} from "react-router-dom";
 
-  exampleCardStyle: {
-    maxWidth: 300,
-  },
 
-  exampleCardImageStyle: {
-    height: 150,
-  },
-
-  main: {
-    flexGrow: 1,
-  },
-
-  datasets: {
-    paddingTop: theme.spacing(2),
-    paddingRight: theme.spacing(8),
-    paddingLeft: theme.spacing(8),
-  },
-
-}));
 
 function Title(props) {
   return (
@@ -50,7 +46,8 @@ function Title(props) {
 }
 
 function Samples(props) {
-  const classes = useStyles();
+  const classes = datasetsStyles();
+
   return (
     <React.Fragment>
       <Title  children="Datasets" />
@@ -85,8 +82,8 @@ function Samples(props) {
                   </Typography>
                 </CardContent>
                 <CardActions>
-                  <Button variant="outlined" color="primary">VIEW</Button>
-                  <Button variant="outlined" color="primary">EDIT</Button>
+                  <Button component={Link} to={'/viewDataset'} variant="outlined" color="primary">VIEW</Button>
+                  <Button variant="outlined" color="primary">DOWNLOAD</Button>
                 </CardActions>
               </Card>
             </Grid>
@@ -97,8 +94,9 @@ function Samples(props) {
   )
 }
 
-export function DatasetPage(props) {
-  const classes = useStyles();
+export function DatasetsPage(props) {
+  const classes = datasetsStyles();
+
   return (
     <div className={classes.root}>
       <LeftDrawer history={props.history}/>
@@ -117,9 +115,9 @@ class Datasets extends Component {
     super(props);
   }
 
-  render() {
+    render() {
     return (
-      <DatasetPage history={this.props.history}/>
+      <DatasetsPage history={this.props.history}/>
     )
   }
 }

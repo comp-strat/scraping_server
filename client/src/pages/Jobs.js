@@ -1,7 +1,18 @@
 import React, { Component } from "react";
-import Grid from '@material-ui/core/Grid';
-import {LeftDrawer, Copyright} from '../components/Components.js'
+import {Link} from "react-router-dom";
+
+// Components
+import {Copyright} from "../components/Copyright";
+import {LeftDrawer} from "../components/LeftDrawer";
+
+// Data
 import {pesudoJobs, tableHeader} from '../data/pesudoData.js'
+
+//helpers
+import {descendingComparator, getComparator, stableSort} from "../util/jobSortingHelpers";
+
+//Material UI
+import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 import Paper from '@material-ui/core/Paper';
@@ -25,86 +36,24 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Fade from '@material-ui/core/Fade';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-  },
+//Styles
+import { jobsStyles } from "../styles/jobsStyles";
+import axios from "axios";
 
-  topButtonStyle: {
-    padding: '8px 4px',
-    alignItems: 'center',
-    margin: '15px',
-    width: 120,
-  },
 
-  JobTableToolBarTitle: {
-    flex: '1 1 100%',
-  },
+let jobs_array = [];
 
-  tablePaper: {
-    width: "100%",
-  },
-
-  tableContainer: {
-    maxHeight: 1000,
-  },
-
-  visuallyHidden: {
-    border: 0,
-    clip: "rect(0 0 0 0)",
-    height: 1,
-    margin: -1,
-    overflow: "hidden",
-    padding: 0,
-    position: "absolute",
-    top: 20,
-    width: 1
-  },
-
-  main: {
-    flexGrow: 1,
-    paddingTop: theme.spacing(2),
-    paddingRight: theme.spacing(4),
-    paddingLeft: theme.spacing(4),
-  }
-}));
+let i = 0;
 
 const options = [
   'VIEW',
-  'EDIT'
+  'DOWNLOAD'
 ];
 
-function descendingComparator(a, b, orderBy) {
-  if (orderBy == "priority") {
-    orderBy = "rank";
-  }
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function getComparator(order, orderBy) {
-  return order === "desc"
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-function stableSort(array, comparator) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map((el) => el[0]);
-}
 
 function TopButtons(props) {
-  const classes = useStyles();
+  const classes = jobsStyles();
+
   return (
     <Grid container item
       direction="row"
@@ -116,9 +65,11 @@ function TopButtons(props) {
         color="primary"
         startIcon={<AddIcon />}
         className={classes.topButtonStyle}
+        component={Link} to={'/new-job'}
       >
         NEW JOB
       </Button>
+
       <Button
         variant="contained"
         color="primary"
@@ -132,7 +83,8 @@ function TopButtons(props) {
 }
 
 function JobTableToolBar(props) {
-  const classes = useStyles();
+  const classes = jobsStyles();
+
   return (
     <Toolbar>
       <Typography
@@ -217,7 +169,8 @@ function EnhancedJobTableHead(props) {
 }
 
 function JobTable(props) {
-  const classes = useStyles();
+  const classes = jobsStyles();
+
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [order, setOrder] = React.useState("asc");
@@ -249,7 +202,7 @@ function JobTable(props) {
     setAnchorEl(null);
   };
 
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, pesudoJobs.length - page * rowsPerPage);
+  const emptyRows = rowsPerPage - Math.min(rowsPerPage, jobs_array.length - page * rowsPerPage);
 
   return (
     <Grid container item direction="column">
@@ -262,10 +215,10 @@ function JobTable(props) {
               order={order}
               orderBy={orderBy}
               onRequestSort={handleRequestSort}
-              rowCount={pesudoJobs.length}
+              rowCount={jobs_array.length}
             />
             <TableBody>
-              {stableSort(pesudoJobs, getComparator(order, orderBy))
+              {stableSort(jobs_array, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => {
                 return (
@@ -321,7 +274,7 @@ function JobTable(props) {
         <TablePagination
           rowsPerPageOptions={[5, 10, 20, 100]}
           component="div"
-          count={pesudoJobs.length}
+          count={jobs_array.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onChangePage={handleChangePage}
@@ -333,7 +286,8 @@ function JobTable(props) {
 }
 
 export function JobPage(props) {
-  const classes = useStyles();
+  const classes = jobsStyles();
+
   return (
     <div className={classes.root}>
       <LeftDrawer history={props.history}/>
@@ -355,11 +309,54 @@ export function JobPage(props) {
   )
 }
 
+function createJobData(id, ticket, creator, date, priority) {
+  var rank;
+  if (priority === 'HIGH') {
+    rank = 3;
+  } else if (priority == 'NORMAL') {
+    rank = 2;
+  } else if (priority == 'LOW') {
+    rank = 1;
+  }
+  return { id, ticket, creator, date, priority, rank };
+}
+
 class Jobs extends Component {
+  state = {
+    jobs: pesudoJobs
+  }
   constructor(props) {
     super(props);
   }
+
+  componentDidMount() {
+    axios
+        .get('http://localhost:8000/jobs', )
+        .then(res => {
+
+          jobs_array = []
+
+
+          res.data.forEach(d => {
+            console.log(d)
+
+            i += 1;
+
+            jobs_array.push(createJobData(i, d.URLs, d.created_by, d.createdDate, d.status[0]));
+            console.log(jobs_array);
+          })
+
+          this.setState({
+            jobs: jobs_array
+          });
+
+
+        })
+        .catch(err => console.log(err));
+  }
+
   render() {
+
     return (
       <JobPage history={this.props.history}/>
     )

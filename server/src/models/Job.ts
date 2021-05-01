@@ -2,17 +2,20 @@ import mongoose, {Schema} from 'mongoose';
 
 
 const jobSchema = new mongoose.Schema({
-    id: Number,
+    // id: Number,
 
     created_by: String,
 
-    name: String,
+    URLs: [{ type: String}],
 
     status: ["Scheduled", "In Progress", "Completed"],
 
     createdDate: Date,
 
-    completedDate: Date
+    completedDate: {
+        type: Date,
+        required: false
+    }
 });
 
 
