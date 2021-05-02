@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 
 import axios from "axios";
 
@@ -10,11 +10,10 @@ import {Copyright} from "../components/Copyright";
 import {handleRoutes} from "../util/handleRoutes";
 
 // data
-import {pesudoJobs} from '../data/pesudoData'
 
 
 //Material UI
-import { Box, Grid, Typography } from '@material-ui/core';
+import {Box, Grid, Typography} from '@material-ui/core';
 
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
@@ -32,94 +31,148 @@ import pranav from '../static/img/pranav.png';
 import charlotte from '../static/img/Charlotte.jpg'
 
 // Styles
-import { datasetsStyles } from "../styles/datasetsStyles";
-import {Link} from "react-router-dom";
-
+import {datasetsStyles} from "../styles/datasetsStyles";
 
 
 function Title(props) {
-  return (
-    <Typography component="h2" variant="h4" color="primary" gutterBottom>
-      {props.children}
-    </Typography>
-  );
+    return (
+        <Typography component="h2" variant="h4" color="primary" gutterBottom>
+            {props.children}
+        </Typography>
+    );
+}
+
+const handleDatasetCardViewClick = (props, id) => {
+    props.history.push({
+        pathname: '/viewDataset',
+        search: '?id=' + id,
+    });
+}
+
+const handleDatasetCardDownloadClick = (props, id) => {
+    //...
 }
 
 function Samples(props) {
-  const classes = datasetsStyles();
+    const classes = datasetsStyles();
 
-  return (
-    <React.Fragment>
-      <Title  children="Datasets" />
-      <Grid
-        container
-        justify="space-evenly"
-        spacing={3}
-        className={classes.datasets}
-      >
-        {pesudoJobs.map((job) => {
-          return (
-            <Grid item xs={2} md={3} sm={6} key={job.id}>
-              <Card className={classes.exampleCardStyle}>
-              <CardHeader
-                avatar={<Avatar src={pranav} />}
-                action={
-                  <IconButton>
-                    <ShareIcon />
-                  </IconButton>
-                }
-                title={job.creator}
-                subheader={job.date}
-              />
-                <CardMedia
-                  className={classes.exampleCardImageStyle}
-                  image={charlotte}
-                  title={job.ticket}
-                />
-                <CardContent>
-                  <Typography variant="h6" component="h2">
-                    {job.ticket}
-                  </Typography>
-                </CardContent>
-                <CardActions>
-                  <Button component={Link} to={'/viewDataset'} variant="outlined" color="primary">VIEW</Button>
-                  <Button variant="outlined" color="primary">DOWNLOAD</Button>
-                </CardActions>
-              </Card>
+    console.log(props.data)
+    return (
+        <React.Fragment>
+            <Title children="Datasets"/>
+            <Grid
+                container
+                justify="space-evenly"
+                spacing={3}
+                className={classes.datasets}
+            >
+                {props.data.map((job) => {
+                    return (
+                        <Grid item xs={2} md={3} sm={6} key={job.id}>
+                            <Card className={classes.exampleCardStyle}>
+                                <CardHeader
+                                    avatar={<Avatar src={pranav}/>}
+                                    action={
+                                        <IconButton>
+                                            <ShareIcon/>
+                                        </IconButton>
+                                    }
+                                    title={job.Creator}
+                                    subheader={job.Date}
+                                />
+                                <CardMedia
+                                    className={classes.exampleCardImageStyle}
+                                    image={charlotte}
+                                    title={job.URLs}
+                                />
+                                <CardContent>
+                                    <Typography variant="h6" component="h2">
+                                        {job.URLs}
+                                    </Typography>
+                                </CardContent>
+                                <CardActions>
+                                    <Button
+                                        variant="outlined"
+                                        color="primary"
+                                        onClick={() => handleDatasetCardViewClick(props, job.id)}
+                                    >
+                                        VIEW
+                                    </Button>
+                                    <Button
+                                        variant="outlined"
+                                        color="primary"
+                                        onClick={() => handleDatasetCardDownloadClick(props, job.id)}
+                                    >
+                                        DOWNLOAD
+                                    </Button>
+                                </CardActions>
+                            </Card>
+                        </Grid>
+                    );
+                })}
             </Grid>
-          );
-        })}
-      </Grid>
-    </React.Fragment>
-  )
+        </React.Fragment>
+    )
 }
 
 export function DatasetsPage(props) {
-  const classes = datasetsStyles();
+    const classes = datasetsStyles();
 
-  return (
-    <div className={classes.root}>
-      <LeftDrawer history={props.history}/>
-      <main className={classes.main}>
-        <Samples />
-        <Box pt={4}>
-          <Copyright />
-        </Box>
-      </main>
-    </div>
-  )
+    return (
+        <div className={classes.root}>
+            <LeftDrawer history={props.history}/>
+            <main className={classes.main}>
+                <Samples history={props.history} data={props.data}/>
+                <Box pt={4}>
+                    <Copyright/>
+                </Box>
+            </main>
+        </div>
+    )
 }
 
 class Datasets extends Component {
-  constructor(props) {
-    super(props);
-  }
+    state = {
+        jobs: []
+    }
+
+    constructor(props) {
+        super(props);
+    }
+
+    getCompletedJobs = () => {
+        axios
+            .get('http://localhost:8000/jobs',)
+            .then(res => {
+                let jobs_array = []
+                res.data.forEach(d => {
+                    if (d.status[0] === "Completed") {
+                        jobs_array.push({
+                            id: d._id,
+                            URLs: d.URLs,
+                            Creator: d.created_by,
+                            Date: d.createdDate,
+                            Status: d.status[0]
+                        })
+                    }
+                })
+
+                this.setState({
+                    jobs: jobs_array
+                })
+            })
+            .catch(err => console.log(err));
+    }
+
+    componentDidMount() {
+        this.getCompletedJobs()
+    }
 
     render() {
-    return (
-      <DatasetsPage history={this.props.history}/>
-    )
-  }
+        return (
+            <DatasetsPage history={this.props.history} data={this.state.jobs}/>
+        )
+    }
 }
 
 export default Datasets;

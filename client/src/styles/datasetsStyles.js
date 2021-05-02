@@ -25,5 +25,13 @@ export const datasetsStyles = makeStyles((theme) => ({
 
     table: {
         maxWidth: 800
-    }
+    },
+
+    tablePaper: {
+        width: "100%",
+    },
+
+    tableContainer: {
+        maxHeight: 1000,
+    },
 }));

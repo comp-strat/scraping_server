@@ -1,10 +1,5 @@
 import React, { Component } from "react";
 
-
-//data
-import {urlAmount, progressData} from '../data/pesudoData'
-
-
 //Components
 import {LeftDrawer} from "../components/LeftDrawer";
 import {Copyright} from "../components/Copyright";
@@ -46,6 +41,30 @@ import {
 //Styles
 import {dashboardStyles} from "../styles/dashboardStyles";
 
+
+function createUrlData(time, amount) {
+  return { time, amount };
+}
+
+export const urlAmount = [
+  createUrlData('03/23', 700),
+  createUrlData('03/30', 900),
+  createUrlData('04/06', 600),
+  createUrlData('04/13', 1500),
+  createUrlData('04/20', 1200),
+  createUrlData('04/27', 2000),
+  createUrlData('05/04', 400),
+  createUrlData('05/11', 750),
+  createUrlData('05/18', 1000),
+];
+
+export const progressData = [
+  {
+    status: 'Progress',
+    Completed: "300",
+    Incompleted: "900",
+  },
+]
 
 
 function Title(props) {
