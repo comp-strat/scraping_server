@@ -146,7 +146,7 @@ class Datasets extends Component {
             .then(res => {
                 let jobs_array = []
                 res.data.forEach(d => {
-                    if (d.status[0] === "Completed") {
+                    if (d.status === "Completed") {
                         jobs_array.push({
                             id: d._id,
                             URLs: d.URLs,
