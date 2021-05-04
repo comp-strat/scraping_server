@@ -152,7 +152,7 @@ class Datasets extends Component {
                             URLs: d.URLs,
                             Creator: d.created_by,
                             Date: d.createdDate,
-                            Status: d.status[0]
+                            Status: d.status
                         })
                     }
                 })
