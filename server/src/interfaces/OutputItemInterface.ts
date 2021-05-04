@@ -1,4 +1,6 @@
-export interface OutputItemInterface {
+import * as mongoose from "mongoose";
+
+export interface OutputItemInterface extends mongoose.Document {
     depth: number,
     file_text: string,
     file_urls: Array<string>,

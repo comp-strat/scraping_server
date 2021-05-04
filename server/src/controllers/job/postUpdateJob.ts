@@ -13,9 +13,7 @@ export const postUpdateJob = async (req: Request, res: Response) => {
 
     const job_id = req.params.id;
 
-    const updated_job = await Job.findOneAndUpdate({"_id": job_id}, {
-        status: "Completed"
-    });
+    const updated_job = await Job.findOneAndUpdate({"_id": job_id}, { status: "Completed" });
 
     if (!updated_job) {
         console.log('Hi!');
@@ -42,7 +40,6 @@ export const postUpdateJob = async (req: Request, res: Response) => {
             if (err) {
                 console.log('Error occurred. ' + err.message);
                 res.json({success: false});
-                return process.exit(1);
             }
 
             console.log('Message sent: %s', info.messageId);

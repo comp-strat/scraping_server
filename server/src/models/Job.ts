@@ -1,4 +1,5 @@
-import mongoose, {Schema} from 'mongoose';
+import mongoose from 'mongoose';
+import {JobInterface} from "../interfaces/JobInterface";
 
 
 const jobSchema = new mongoose.Schema({
@@ -8,17 +9,22 @@ const jobSchema = new mongoose.Schema({
 
     URLs: [{ type: String}],
 
-    status: ["Scheduled", "In Progress", "Completed"],
+    status: {
+        type: String,
+        enum: ["In Progress", "Completed", "Scheduled"],
+    },
 
     createdDate: Date,
 
     completedDate: {
         type: Date,
         required: false
-    }
+    },
+
+    redisID: String
 });
 
 
-const Job = mongoose.model('Job', jobSchema, 'jobs');
+const Job = mongoose.model<JobInterface>('Job', jobSchema, 'jobs');
 
 export default Job;

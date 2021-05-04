@@ -5,16 +5,16 @@ import { DatasetInterface} from "../../interfaces/DatasetInterface";
 
 export const getDataset = async (req: Request, res: Response) => {
 
-    const datasetId = req.params.id;
-
-    const dataset = await Dataset.findOne({
-        'job_id':  datasetId
-    });
-
-    if (!dataset) {
-        res.send('The requested dataset does not exist')
-    } else {
-        //TODO pagination
-        res.send(dataset);
-    }
+    // const datasetId = req.params.id;
+    //
+    // const dataset = await Dataset.findOne({
+    //     'job_id':  datasetId
+    // });
+    //
+    // if (!dataset) {
+    //     res.send('The requested dataset does not exist')
+    // } else {
+    //     //TODO pagination
+    //     res.send(dataset);
+    // }
 };

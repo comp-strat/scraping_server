@@ -1,46 +1,57 @@
 import {Request, Response} from "express";
+import request from 'request';
+import ObjectsToCsv from 'objects-to-csv';
 
 import Job from "../../models/Job";
-import { JobInterface} from "../../interfaces/JobInterface";
+import {URLInterface} from "../../interfaces/URLInterface";
+import * as fs from "fs";
+import {createCSVFromURLs} from "../../util/createCSVFromURLs";
 
 export const postCreateJob = async (req: Request, res: Response) => {
-
     const URLs = req.body.URLs;
-
     console.log(URLs);
-
     // TODO parse URLs & do validation
     //  just split by comma for now and assume they are correctly typed
-    const parsedURLs = URLs.split(',')
 
+    const parsedURLs: Array<string> = URLs.split(',')
 
-    // Write a new job to jobs table
-    //  TODO Update once authentication is added!
-    const job = await new Job({
-        created_by: "artemtkachuk",
-        status: "In Progress",
-        createdDate: Date(),
-        URLs: parsedURLs
-    });
+    const filePath = `./src/data/urls_${new Date().getTime()}.csv`;
 
-    const saved_job = await job.save();
+    await createCSVFromURLs(parsedURLs, filePath);
 
-    if (!saved_job) {
-        console.log(`'Error while creating a job!'`);
-        res.json({success: false});
-    } else {
-        console.log(`Success while creating a job!`);
+    // TODO launch a crawling job: aka CURL
+    request.post('http://localhost:5000/crawl-csv', {
+        formData: {'file': fs.createReadStream(filePath)}},
+        async (err, response,body) => {
+            if (err) {
+                console.log(err);
+            }  else {
+                body = JSON.parse(body);
 
-        const job_id = saved_job._id;
-        //TODO prepare URLs for launching a crawling job
-        // and write to CSV ???
+                //TODO if success aka received a response
+                // Write a new job to jobs table
+                //  TODO Update once authentication is added!
+                const jobDocument = {
+                    created_by: "artemtkachuk",
+                    status: body.status === 200 ? "In Progress" : "Completed",
+                    createdDate: Date(),
+                    URLs: parsedURLs,
+                    redisID: body.job_id
+                }
 
-        // TODO launch a crawling job
+                console.log(jobDocument);
 
-        //TODO if success
+                const job = await new Job(jobDocument);
 
-        // TODO else
+                const saved_job = await job.save();
 
-        res.json({job: saved_job, success: true});
-    }
+                if (!saved_job) {
+                    console.log(`'Error while creating a job!'`);
+                    res.json({success: false});
+                } else {
+                    console.log(`Success while creating a job!`);
+                    res.json({job: saved_job, success: true});
+                }
+            }
+        })
 };

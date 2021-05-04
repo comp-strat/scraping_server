@@ -1,4 +1,5 @@
 import mongoose, {Schema} from 'mongoose';
+import {OutputItemInterface} from "../interfaces/OutputItemInterface";
 
 
 const outputItemSchema = new mongoose.Schema({
@@ -29,6 +30,6 @@ const outputItemSchema = new mongoose.Schema({
 });
 
 
-const OutputItem = mongoose.model('OutputItem', outputItemSchema, 'outputItems');
+const OutputItem = mongoose.model<OutputItemInterface>('OutputItem', outputItemSchema, 'outputItems');
 
 export default OutputItem;
