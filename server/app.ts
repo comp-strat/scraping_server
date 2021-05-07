@@ -11,6 +11,6 @@ import mongo from "./src/database/mongo";
 //     console.log(loadEnvSuccess);
 // }
 
-const port = parseInt(process.env.PORT!) || 3000;
+const port = parseInt(process.env.PORT!) || 8000;
 
 mongo(app, port);
