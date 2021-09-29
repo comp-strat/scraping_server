@@ -18,7 +18,6 @@ export const postCreateJob = async (req: Request, res: Response) => {
     const filePath = `./src/data/urls_${new Date().getTime()}.csv`;
 
     await createCSVFromURLs(parsedURLs, filePath);
-
     // TODO launch a crawling job: aka CURL
     request.post('http://localhost:5000/crawl-csv', {
         formData: {'file': fs.createReadStream(filePath)}},

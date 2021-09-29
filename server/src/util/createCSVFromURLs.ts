@@ -2,8 +2,11 @@ import ObjectsToCsv from "objects-to-csv";
 
 import {URLInterface} from "../interfaces/URLInterface";
 
+import * as fs from "fs";
+import path from "path";
 
-export const createCSVFromURLs = async (parsedURLs: Array<string>, filePath: string) => {
+export const createCSVFromURLs = (parsedURLs: Array<string>, filePath: string) => {
+    return new Promise( async (resolve,reject) => {
     // prepare URLs for launching a crawling job
     // TODO probably implement a better system than just one file for the entire server.
     let csvURLs = new Array<URLInterface>();
@@ -15,8 +18,15 @@ export const createCSVFromURLs = async (parsedURLs: Array<string>, filePath: str
 
     if (csvURLs.length != 0) {
         const csv = new ObjectsToCsv(csvURLs);
-        await csv.toDisk(filePath)
+        await fs.mkdir(path.dirname(filePath), { recursive: true }, async (err) => {
+            if (err) throw err;
+            await csv.toDisk(filePath);
+            resolve(null);
+        });
+    } else {
+        reject("No URL");
     }
 
     //TODO handle errors of any kind
+    });
 }
