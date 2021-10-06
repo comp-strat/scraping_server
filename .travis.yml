@@ -6,7 +6,8 @@ services:
   - mongodb
 
 install:
-  - ./.build.sh
+  - git clone --branch alyssa_branch git@github.com:URAP-charter/web_scraping.git flaskserver
+  - sudo ./.build.sh
 
 script:
   - curl -X GET localhost:8080/
