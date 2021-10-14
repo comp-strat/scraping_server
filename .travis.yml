@@ -7,7 +7,6 @@ services:
 
 install:
   - git clone --branch alyssa_branch git@github.com:URAP-charter/web_scraping.git flaskserver
-  - sudo ./.build.sh
 
 script:
-  - curl -X GET localhost:8080/
+  - cd testing && test.sh
