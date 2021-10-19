@@ -9,4 +9,4 @@ install:
   - git clone --branch alyssa_branch git@github.com:URAP-charter/web_scraping.git flaskserver
 
 script:
-  - cd testing && test.sh
+  - cd testing && ./test.sh
