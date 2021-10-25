@@ -5,6 +5,7 @@ import Datasets from './pages/Datasets.js'
 import Dashboard from './pages/Dashboard.js'
 import ViewDataset from "./pages/ViewDataset";
 import CreateNewJob from "./pages/NewJob";
+import Job from './pages/Job.js'
 
 // import './App.css';
 
@@ -25,6 +26,7 @@ class App extends Component {
                     <Switch>
                         <Route exact path="/viewDataset" component={ViewDataset} />
                         <Route exact path="/jobs" component={Jobs} />
+                        <Route exact path="/job/:id" component={Job} />
                         <Route exact path="/datasets" component={Datasets} />
                         <Route exact path="/dashboard" component={Dashboard} />
                         <Route exact path="/new-job" component={CreateNewJob} />

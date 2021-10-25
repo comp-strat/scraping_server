@@ -15,12 +15,12 @@ import Grid from "@material-ui/core/Grid";
 
 // Styles
 import {newJobStyles} from "../styles/newJobStyles";
-
+import {withRouter} from "react-router-dom"
 
 const classes = newJobStyles;
 
-
 class CreateNewJob extends Component {
+    
     state = {
         value: '',
         URLs: '',
@@ -28,12 +28,15 @@ class CreateNewJob extends Component {
     }
 
     // classes = datasetsStyles();
+    
 
     constructor(props) {
         super(props);
+        
+        
     }
 
-
+    
     sendURLs(URLsString) {
         console.log(URLsString);
         this.setState({
@@ -45,6 +48,7 @@ class CreateNewJob extends Component {
                 URLs: URLsString
             })
             .then(res => {
+                this.props.history.push("/job/"+res.job.redisID);
                 this.setState({
                     success: res.data.success,
                     value: ''
@@ -90,4 +94,4 @@ class CreateNewJob extends Component {
     }
 }
 
-export default CreateNewJob;
+export default withRouter(CreateNewJob);

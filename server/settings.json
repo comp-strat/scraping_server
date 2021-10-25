@@ -1,0 +1,3 @@
+{
+    "MONGO_URL":"mongodb://admin:mdipass@localhost:27017" 
+}

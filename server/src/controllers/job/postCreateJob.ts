@@ -6,6 +6,7 @@ import Job from "../../models/Job";
 import {URLInterface} from "../../interfaces/URLInterface";
 import * as fs from "fs";
 import {createCSVFromURLs} from "../../util/createCSVFromURLs";
+import { json } from "body-parser";
 
 export const postCreateJob = async (req: Request, res: Response) => {
     const URLs = req.body.URLs;
@@ -15,12 +16,12 @@ export const postCreateJob = async (req: Request, res: Response) => {
 
     const parsedURLs: Array<string> = URLs.split(',')
 
-    const filePath = `./src/data/urls_${new Date().getTime()}.csv`;
+    //const filePath = `./src/data/urls_${new Date().getTime()}.csv`;
 
-    await createCSVFromURLs(parsedURLs, filePath);
+    //await createCSVFromURLs(parsedURLs, filePath);
     // TODO launch a crawling job: aka CURL
-    request.post('http://localhost:5000/crawl-csv', {
-        formData: {'file': fs.createReadStream(filePath)}},
+    request.post('http://localhost:5000/job', {
+        body: JSON.stringify({"urls": parsedURLs})},
         async (err, response,body) => {
             if (err) {
                 console.log(err);
