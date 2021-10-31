@@ -32,7 +32,7 @@ import charlotte from '../static/img/Charlotte.jpg'
 
 // Styles
 import {datasetsStyles} from "../styles/datasetsStyles";
-
+import config from "../server-config"
 
 function Title(props) {
     return (
@@ -142,7 +142,7 @@ class Datasets extends Component {
 
     getCompletedJobs = () => {
         axios
-            .get('http://localhost:8000/jobs',)
+            .get(config.serverurl+'/jobs',)
             .then(res => {
                 let jobs_array = []
                 res.data.forEach(d => {

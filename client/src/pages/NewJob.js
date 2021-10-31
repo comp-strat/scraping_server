@@ -16,6 +16,7 @@ import Grid from "@material-ui/core/Grid";
 // Styles
 import {newJobStyles} from "../styles/newJobStyles";
 import {withRouter} from "react-router-dom"
+import config from '../server-config'
 
 const classes = newJobStyles;
 
@@ -44,7 +45,7 @@ class CreateNewJob extends Component {
         })
 
         axios
-            .post('http://localhost:8000/job', {
+            .post(config.serverurl+'/job', {
                 URLs: URLsString
             })
             .then(res => {

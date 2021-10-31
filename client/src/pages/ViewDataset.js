@@ -27,6 +27,8 @@ import Fade from "@material-ui/core/Fade";
 import MenuItem from "@material-ui/core/MenuItem";
 import TablePagination from "@material-ui/core/TablePagination";
 
+import config from "../server-config"
+
 const options = [
     'DOWNLOAD'
 ];
@@ -203,7 +205,7 @@ class ViewDataset extends Component {
 
 
         axios
-            .get('http://localhost:8000/get-all-output-items')
+            .get(config.serverurl+'/get-all-output-items')
             .then(res => {
                 this.setState({
                     isLoading: false,

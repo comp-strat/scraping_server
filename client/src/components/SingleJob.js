@@ -1,6 +1,7 @@
 import { Card, Fab } from "@material-ui/core";
 import React, { Component } from "react";
 import {jobsStyles} from "../styles/jobsStyles";
+import config from '../server-config'
 
 const classes = jobsStyles;
 class SingleJob extends Component {
@@ -13,16 +14,16 @@ class SingleJob extends Component {
     }
     
     killFunc = () => {
-        fetch('http://localhost:8000/job/'+this.props.id, {method:"DELETE"})
+        fetch(config.serverurl+'/job/'+this.props.id, {method:"DELETE"})
             .then(res => this.updateStatus());
     }
 
     downloadFunc = () => {
-        window.open("http://localhost:8000/download/files/"+this.props.id);
+        window.open(config.serverurl+"/download/files/"+this.props.id);
     }
 
     updateStatus = () => {
-        fetch('http://localhost:8000/job/'+this.props.id)
+        fetch(config.serverurl+'/job/'+this.props.id)
             .then(res => res.json())
             .then(res => {
                 if (res.completion_status == "Ongoing") setTimeout(this.updateStatus,10000);

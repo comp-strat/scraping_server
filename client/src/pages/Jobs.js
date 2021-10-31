@@ -36,6 +36,9 @@ import Fab from '@material-ui/core/Fab';
 import {jobsStyles} from "../styles/jobsStyles";
 import {render} from "@testing-library/react";
 
+import config from '../server-config'
+
+
 const classes = jobsStyles;
 
 const options = [
@@ -308,7 +311,7 @@ class Jobs extends Component {
     //TODO refactor
     getAllJobs = () => {
         axios
-            .get('http://localhost:8000/jobs',)
+            .get(config.serverurl+'/jobs',)
             .then(res => {
                 let jobs_array = []
                 res.data.forEach(d => {
