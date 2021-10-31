@@ -1,3 +1,4 @@
 {
-    "MONGO_URL":"mongodb://admin:mdipass@localhost:27017" 
+    "MONGO_URL":"mongodb://admin:mdipass@localhost:27017",
+    "CORS_ORIGIN":"http://localhost:3000"
 }
