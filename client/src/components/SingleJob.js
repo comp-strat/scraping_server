@@ -13,8 +13,8 @@ class SingleJob extends Component {
     }
     
     killFunc = () => {
-        fetch('http://localhost:8000/job/'+this.props.id, {method:"DELETE"});
-        this.updateStatus()
+        fetch('http://localhost:8000/job/'+this.props.id, {method:"DELETE"})
+            .then(res => this.updateStatus());
     }
 
     downloadFunc = () => {
@@ -41,26 +41,32 @@ class SingleJob extends Component {
         return (
             <Card variant="outlined" style={{padding:"20px",minWidth:"400px",minHeight:"400px"}}>
                 <h2>Task Details</h2>
-                {this.state.status == "Ongoing" ?
-                    <div><p>Process is Running</p>
-                    <Fab
-                variant="extended"
-                color="primary"
-                className={classes.topButtonStyle} onClick={this.killFunc}>Kill</Fab></div>
-                    : <div></div>
-                }
 
-                {this.state.status == "Error" ?
-                    <div><p>Process Errored</p></div>
-                    : <div></div>
-                }
+                {
+                    {
+                    'Ongoing': <div><p>Process is Running</p>
+                            <Fab
+                                variant="extended"
+                                color="primary"
+                                className={classes.topButtonStyle} 
+                                onClick={this.killFunc}>
+                                    Kill
+                            </Fab>
+                        </div>,
 
-                {this.state.status != "Ongoing" ?
-                    <div><p>Process Completed</p><Fab
-                    variant="extended"
-                    color="primary"
-                    className={classes.topButtonStyle} onClick={this.downloadFunc}>Download</Fab></div>
-                    : <div></div>
+                    'Error': <div><p>Process Errored</p></div>,
+                    'Finished': <div><p>Process Completed</p>
+                        <Fab
+                            variant="extended"
+                            color="primary"
+                            className={classes.topButtonStyle}
+                            onClick={this.downloadFunc}>
+                                Download
+                        </Fab>
+                    </div>,
+                    'Cancelled': <div><p>Process Cancelled</p></div>,
+                    'Failed': <div><p>Process Failed</p></div>
+                    }[this.state.status]
                 }
 
             </Card>

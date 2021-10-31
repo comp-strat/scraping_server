@@ -48,7 +48,7 @@ class CreateNewJob extends Component {
                 URLs: URLsString
             })
             .then(res => {
-                this.props.history.push("/job/"+res.job.redisID);
+                this.props.history.push("/job/"+res.data.job.redisID);
                 this.setState({
                     success: res.data.success,
                     value: ''
