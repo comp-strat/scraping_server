@@ -1,3 +1,5 @@
+
+import React, {Component} from "react";
 import {LeftDrawer} from "../components/LeftDrawer.js";
 import {Copyright} from "../components/Copyright";
 
