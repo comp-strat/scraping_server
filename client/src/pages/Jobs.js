@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 // Components
 import {Copyright} from "../components/Copyright";
@@ -34,6 +35,9 @@ import Fab from '@material-ui/core/Fab';
 //Styles
 import {jobsStyles} from "../styles/jobsStyles";
 import {render} from "@testing-library/react";
+
+import config from '../server-config'
+
 
 const classes = jobsStyles;
 
@@ -145,7 +149,7 @@ export function EnhancedJobTableHead(props) {
                         align={column.align}
                         style={{minWidth: column.minWidth}}
                     >
-                        {column.label}
+                       {column.label}
                     </TableCell>
                 ))}
             </TableRow>
@@ -212,7 +216,7 @@ function JobTable(props) {
                                                 const value = row[column.id];
                                                 return (
                                                     <TableCell key={column.id} align={column.align}>
-                                                        {value}
+                                                        <Link to={"/job/"+row.id}>{value}</Link>
                                                     </TableCell>
                                                 );
                                             })}
@@ -307,7 +311,7 @@ class Jobs extends Component {
     //TODO refactor
     getAllJobs = () => {
         axios
-            .get('http://localhost:8000/jobs',)
+            .get(config.serverurl+'/jobs',)
             .then(res => {
                 let jobs_array = []
                 res.data.forEach(d => {

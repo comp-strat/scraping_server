@@ -15,12 +15,13 @@ import Grid from "@material-ui/core/Grid";
 
 // Styles
 import {newJobStyles} from "../styles/newJobStyles";
-
+import {withRouter} from "react-router-dom"
+import config from '../server-config'
 
 const classes = newJobStyles;
 
-
 class CreateNewJob extends Component {
+    
     state = {
         value: '',
         URLs: '',
@@ -28,12 +29,15 @@ class CreateNewJob extends Component {
     }
 
     // classes = datasetsStyles();
+    
 
     constructor(props) {
         super(props);
+        
+        
     }
 
-
+    
     sendURLs(URLsString) {
         console.log(URLsString);
         this.setState({
@@ -41,10 +45,11 @@ class CreateNewJob extends Component {
         })
 
         axios
-            .post('http://localhost:8000/job', {
+            .post(config.serverurl+'/job', {
                 URLs: URLsString
             })
             .then(res => {
+                this.props.history.push("/job/"+res.data.job.redisID);
                 this.setState({
                     success: res.data.success,
                     value: ''
@@ -90,4 +95,4 @@ class CreateNewJob extends Component {
     }
 }
 
-export default CreateNewJob;
+export default withRouter(CreateNewJob);

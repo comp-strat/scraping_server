@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Todo: make all of the servers docker containers
+
 cd flaskserver
 chmod +x .build.sh
 ./.build.sh

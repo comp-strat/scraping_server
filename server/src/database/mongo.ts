@@ -5,12 +5,13 @@ import User from "../models/User";
 import Job from "../models/Job";
 import Dataset from "../models/Dataset";
 
-const url = process.env.MONGO_URL || "mongodb://localhost:27017";
+var fs = require('fs');
+var dbconfig = JSON.parse(fs.readFileSync('settings.json', 'utf8'));
 
 const mongo = (app: Application, port: number) => {
 
     mongoose
-        .connect(url!, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }, (err) => {
+        .connect(dbconfig.MONGO_URL!, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }, (err) => {
             if (!err) {
                 console.log(`Connected to mongo`);
                 app.listen(port);

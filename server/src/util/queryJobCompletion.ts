@@ -9,7 +9,7 @@ export const queryJobsCompletion = async (jobs: Array<JobInterface>) => {
         // select only jobs in progress & create array of promises to query at once
         const in_progress_jobs_promises = jobs.map((j, index) => {
             if (j.status === "In Progress") {
-                const URL = `http://localhost:5000/task?task_id=${j.redisID}`;
+                const URL = `http://localhost:5000/job/${j.redisID}`;
                 return axios.get(URL)
             }
         });
