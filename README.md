@@ -13,48 +13,62 @@ Downstream features on our bucket list include real-time metrics and access to s
 
 
 ## Running the scraping server
-This requires a Redis server to handle tasks. You can install Redis with instructions here (Ubuntu 18.04): https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-redis-on-ubuntu-18-04
+This requires a Redis server to handle tasks. The instructions below walk you through installing Redis, and [you can find more instructions here](https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-redis-on-ubuntu-18-04) (Ubuntu 18.04). If not yet installed, you will also need to [install MongoDB](https://docs.mongodb.com/manual/installation/) (instructions below don't include this part).
 
 You will need at least 2 screens/terminals for this, although there may be a way to run Redis and/or Flask headless to remove this need. "Screen R" will be your screen for Redis, and "Screen F" will refer to your screen for Flask. 
 
 1. Setup and start Redis on machine:
+```bash
 $ sudo apt-get install redis-server
 $ sudo nano /etc/redis/redis.conf # change 'supervised no' to 'supervised systemd'
 $ sudo systemctl restart redis.service
 $ sudo systemctl status redis # see if redis is actively running
-$ sudo nano /etc/redis/redis.conf # uncomment the line: # bind 127.0.0.1 ::1 # Then restart Redis again if you made this change
+$ sudo nano /etc/redis/redis.conf 
+# uncomment the line: # bind 127.0.0.1 ::1 
+# Then restart Redis again if you made the previous change
 $ sudo systemctl restart redis
+```
 
 
 2. Install required packages and setup (from HOME_DIR, assumed to be /vol_b/data/):
 
 2A. Create python 3 environment and install packages
+```bash
 $ python3 -m venv .venv # create specific crawling environment with packages we want; feel free to use an env name other than `.venv`
 $ source .venv/bin/activate # activate environment
 $ sudo apt update # get latest version info
 $ sudo git clone https://github.com/URAP-charter/web_scraping.git
 $ pip3 install -r web_scraping/scrapy/schools/requirements.txt # install packages we want. may need pandas as version 1.0.4
+```
 
 2B. Set up MongoDB container
+```bash
 $ mkdir mongodata; sudo chmod 1777 mongodata
 $ docker pull mongo && docker run -d --name mongodb -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=mdipass -p 27000:27017 --log-opt max-size=500m --restart always -v /vol_b/data/mongodata:/data/db mongo
+```
 
 2C. Clone scraping server repo and set up prerequisite node modules (this may be deprecated soon as node server is obsolete)
+```bash
 $ sudo git clone https://github.com/URAP-charter/scraping_server.git
 $ cd scraping_server/server
 $ sudo npm install # optional: sudo npm install node-typescript mongoose
 $ sudo npm run prod
+```
 
 
 3. Create two terminal screens: one screen R (for Redis) and one screen F (for Flask).  From each window, navigate to your HOME_DIR (assumed to be /vol_b/data/), activate the python environment you set up in 2A above (default `source .venv/bin/activate`), and run one task per window as follows.
 
 3A. In screen R:
+```bash
 $ cd scraping_server
 $ sudo rq worker crawling-tasks --path .
+```
 
 3B. In screen F: 
+```bash
 $ cd web_scraping/scrapy/schools/
 $ python schools/app.py
+```
 
 
 4. Inspect and test out the client from your web browser at `http://_IP_:3000/`, where IP is your VM IP (something like 149.165.157.138)
