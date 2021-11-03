@@ -30,7 +30,8 @@ $ sudo systemctl restart redis
 ```
 
 
-### 2. Install required packages and setup (from HOME_DIR, assumed to be /vol_b/data/):
+### 2. Install required packages and setup 
+(from HOME_DIR, assumed to be /vol_b/data/):
 
 #### 2A. Create python 3 environment and install packages
 ```bash
@@ -47,7 +48,8 @@ $ mkdir mongodata; sudo chmod 1777 mongodata
 $ docker pull mongo && docker run -d --name mongodb -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=mdipass -p 27000:27017 --log-opt max-size=500m --restart always -v /vol_b/data/mongodata:/data/db mongo
 ```
 
-#### 2C. Clone scraping server repo and set up prerequisite node modules (this may be deprecated soon as node server is obsolete)
+#### 2C. Clone scraping server repo and set up prerequisite node modules 
+(this may be deprecated soon as node server is obsolete)
 ```bash
 $ sudo git clone https://github.com/URAP-charter/scraping_server.git
 $ cd scraping_server/server
@@ -56,7 +58,8 @@ $ sudo npm run prod
 ```
 
 
-### 3. Create two terminal screens: one screen R (for Redis) and one screen F (for Flask).  From each window, navigate to your HOME_DIR (assumed to be /vol_b/data/), activate the python environment you set up in 2A above (default `source .venv/bin/activate`), and run one task per window as follows.
+### 3. Create two terminal screens: one screen R (for Redis) and one screen F (for Flask).  
+From each window, navigate to your HOME_DIR (assumed to be /vol_b/data/), activate the python environment you set up in 2A above (default `source .venv/bin/activate`), and run one task per window as follows.
 
 ##### 3A. In screen R:
 ```bash
