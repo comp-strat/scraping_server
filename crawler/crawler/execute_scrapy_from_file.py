@@ -1,7 +1,7 @@
 from scrapy import cmdline
 import subprocess
 from scrapyscript import Job, Processor
-from schools.spiders.scrapy_vanilla import RecursiveSpider
+from crawler.spiders.recursive_spider import RecursiveSpider
 from scrapy.utils.project import get_project_settings
 
 

@@ -12,7 +12,7 @@ python3 -m pip install --user virtualenv
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-pip install schools --no-index --find-links .
+pip install crawler --no-index --find-links .
 
 # Should not be necessary with travis, but nice to have as a guide
 #wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | apt-key add -
@@ -26,6 +26,6 @@ pip install schools --no-index --find-links .
 
 apt install redis-server
 
-docker pull mongo && docker run --name mongodb -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=mdipass -p 27000:27017 mongo &
+docker pull mongo && docker run --name mongodb --restart always -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=mdipass -p 27000:27017 mongo &
 python3 -m rq worker crawling-tasks --path . &
 python3 schools/app.py &

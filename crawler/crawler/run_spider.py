@@ -15,7 +15,7 @@ import execute_scrapy_from_file as execute_scrapy_from_file
 import subprocess
 from rq import get_current_job
 
-# See scrapy_vanilla.py for the meaning of this command.
+# See recursive_spider.py for the meaning of this command.
 #scrapy_run_cmd = "scrapy crawl recursivespider -a csv_input=spiders/test_urls.tsv"
 SCRAPY_RUN_CMD = "scrapy crawl recursivespider -a target_list="
 

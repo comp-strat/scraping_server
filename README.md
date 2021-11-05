@@ -68,9 +68,9 @@ $ sudo rq worker crawling-tasks --path .
 
 #### 3B. In screen F: 
 ```bash
-$ cd scraping_server/crawler
+$ cd scraping_server/crawler/crawler
 $ python app.py
 ```
 
 
-### 4. Inspect and test out the client from your web browser at `http://_IP_:3000/`, where IP is your VM IP (something like 149.165.157.138)
+### 4. Navigate the client from your web browser at `http://<your_IP_here>:3000/`

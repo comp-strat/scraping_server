@@ -27,10 +27,10 @@ def create_task():
 
     target_list = pd.DataFrame({"NCESSCH":["100" for _ in data["urls"]], "URL_2019":data["urls"]})
     now = datetime.now()
-    target_list.to_csv('./crawler/spiders/' + now.strftime('%d%m%Y_%H%M%S') + '.csv', index=False)
+    target_list.to_csv('./spiders/' + now.strftime('%d%m%Y_%H%M%S') + '.csv', index=False)
     print("tmp file written")
     queue = rq.Queue('crawling-tasks', connection=Redis.from_url('redis://'))
-    job = queue.enqueue('crawler.execute_scrapy_from_flask', './crawler/spiders/' + now.strftime('%d%m%Y_%H%M%S') + '.csv', './crawler/spiders/' + now.strftime('%d%m%Y_%H%M%S'))
+    job = queue.enqueue('crawler.execute_scrapy_from_flask', './spiders/' + now.strftime('%d%m%Y_%H%M%S') + '.csv', './spiders/' + now.strftime('%d%m%Y_%H%M%S'))
     job_id = job.get_id()
     crawl_task = crawlTaskTracker.CrawlTask(job_id) # Future work: add user id too
     #task_mongo_id = task_repository.putTask(crawl_task)
