@@ -33,25 +33,24 @@ $ sudo systemctl restart redis
 ### 2. Install required packages and setup 
 (from HOME_DIR, assumed to be /vol_b/data/):
 
-#### 2A. Create python 3 environment and install packages
+#### 2A. Create python 3 environment, install packages, clone repo
 ```bash
 $ python3 -m venv .venv # create specific crawling environment with packages we want; feel free to use an env name other than `.venv`
 $ source .venv/bin/activate # activate environment
 $ sudo apt update # get latest version info
-$ sudo git clone https://github.com/URAP-charter/web_scraping.git
-$ pip3 install -r web_scraping/scrapy/schools/requirements.txt # install packages we want. may need pandas as version 1.0.4
+$ pip3 install -r requirements.txt # install packages we want. may need pandas as version 1.0.4
+$ sudo git clone https://github.com/URAP-charter/scraping_server.git
 ```
 
 #### 2B. Set up MongoDB container
 ```bash
-$ mkdir mongodata; sudo chmod 1777 mongodata
+$ mkdir mongodata
 $ docker pull mongo && docker run -d --name mongodb -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=mdipass -p 27000:27017 --log-opt max-size=500m --restart always -v /vol_b/data/mongodata:/data/db mongo
 ```
 
-#### 2C. Clone scraping server repo and set up prerequisite node modules 
+#### 2C. Set up prerequisite node modules 
 (this may be deprecated soon as node server is obsolete)
 ```bash
-$ sudo git clone https://github.com/URAP-charter/scraping_server.git
 $ cd scraping_server/server
 $ sudo npm install # optional: sudo npm install node-typescript mongoose
 $ sudo npm run prod
@@ -69,8 +68,8 @@ $ sudo rq worker crawling-tasks --path .
 
 #### 3B. In screen F: 
 ```bash
-$ cd web_scraping/scrapy/schools/
-$ python schools/app.py
+$ cd scraping_server/crawler
+$ python app.py
 ```
 
 
