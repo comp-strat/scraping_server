@@ -48,14 +48,6 @@ $ mkdir mongodata
 $ docker pull mongo && docker run -d --name mongodb -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=mdipass -p 27000:27017 --log-opt max-size=500m --restart always -v /vol_b/data/mongodata:/data/db mongo
 ```
 
-#### 2C. Set up prerequisite node modules 
-(this may be deprecated soon as node server is obsolete)
-```bash
-$ cd scraping_server/server
-$ sudo npm install # optional: sudo npm install node-typescript mongoose
-$ sudo npm run prod
-```
-
 
 ### 3. Create two terminal screens: one screen R (for Redis) and one screen F (for Flask).  
 From each window, navigate to your HOME_DIR (assumed to be /vol_b/data/), activate the python environment you set up in 2A above (default `source .venv/bin/activate`), and run one task per window as follows.
@@ -80,6 +72,9 @@ After configuring, you can now run the flask server:
 $ cd scraping_server/crawler/crawler
 $ python app.py
 ```
+
+
+
 ### 4. Run the client server (React Server):
 In a new terminal window, navigate to the base repository path
 Set the environment variable that will tell your client where your flask server is running.
@@ -93,5 +88,7 @@ $ cd client
 $ npm start
 ```
 
-### 4. Navigate the client from your web browser at `http://<your_IP_here>:3000/`
+
+
+### 5. Navigate the client from your web browser at `http://<your_IP_here>:3000/`
 This will open up the home page.
