@@ -46,10 +46,10 @@ class CreateNewJob extends Component {
 
         axios
             .post(config.serverurl+'/job', {
-                URLs: URLsString
+                urls: URLsString
             })
             .then(res => {
-                this.props.history.push("/job/"+res.data.job.redisID);
+                this.props.history.push("/job/"+res.data.job_id);
                 this.setState({
                     success: res.data.success,
                     value: ''

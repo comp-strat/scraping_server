@@ -31,6 +31,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Fade from '@material-ui/core/Fade';
 import Fab from '@material-ui/core/Fab';
+import { useHistory } from "react-router-dom";
 
 //Styles
 import {jobsStyles} from "../styles/jobsStyles";
@@ -186,6 +187,16 @@ function JobTable(props) {
         setAnchorEl(event.currentTarget);
     };
 
+    const history = useHistory();
+
+    const downloadFunc = (id) => {
+        window.open(config.serverurl+"/job/"+id+"/files");
+    }
+
+    const viewProcess = (id) => {
+        history.push("/job/"+id);
+    }
+
     const handleClose = () => {
         setAnchorEl(null);
     };
@@ -242,11 +253,13 @@ function JobTable(props) {
                                                     }}
                                                     TransitionComponent={Fade}
                                                 >
-                                                    {options.map((option) => (
-                                                        <MenuItem key={option} onClick={handleClose}>
-                                                            {option}
-                                                        </MenuItem>
-                                                    ))}
+                                                    <MenuItem key="view" onClick={() => viewProcess(row.id)}>
+                                                        VIEW
+                                                    </MenuItem>
+                                                    <MenuItem key="view" onClick={() => downloadFunc(row.id)}>
+                                                        DOWNLOAD
+                                                    </MenuItem>
+
                                                 </Menu>
                                             </TableCell>
                                         </TableRow>
@@ -314,7 +327,7 @@ class Jobs extends Component {
             .get(config.serverurl+'/jobs',)
             .then(res => {
                 let jobs_array = []
-                res.data.forEach(d => {
+                res.data.data.forEach(d => {
                     jobs_array.push({
                         id: d._id,
                         URLs: d.URLs,

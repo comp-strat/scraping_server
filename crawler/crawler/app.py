@@ -104,4 +104,4 @@ def send_zip(task_id):
 
 
 if __name__ == '__main__':
-    app.run(host='localhost', debug=True, port=5000)
+    app.run(host='localhost', debug=True, port=settings.SERVER_PORT)

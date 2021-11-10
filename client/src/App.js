@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard.js'
 import ViewDataset from "./pages/ViewDataset";
 import CreateNewJob from "./pages/NewJob";
 import Job from './pages/Job.js'
+import Home from './pages/Home.js'
 
 // import './App.css';
 
@@ -24,6 +25,7 @@ class App extends Component {
             <Router>
                 <div className="container">
                     <Switch>
+                        <Route exact path="/" component={Home} />
                         <Route exact path="/viewDataset" component={ViewDataset} />
                         <Route exact path="/jobs" component={Jobs} />
                         <Route exact path="/job/:id" component={Job} />

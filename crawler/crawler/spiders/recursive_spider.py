@@ -109,7 +109,7 @@ class RecursiveSpider(CrawlSpider):
             callback="parse_items"
         )
     ]
-    def __init__(self, target_list=None, rq_id=None, mongo_settings= {}, user=None, *args, **kwargs):
+    def __init__(self, target_list=None, rq_id=None, mongo_settings= {}, user=None, url=None, *args, **kwargs):
         """
         Overrides default constructor to set custom
         instance attributes.
@@ -141,8 +141,14 @@ class RecursiveSpider(CrawlSpider):
         self.allowed_domains = []
         self.rules = (Rule(CustomLinkExtractor(allow_domains = self.allowed_domains), follow=True, callback="parse_items"),)
         self.domain_to_id = {}
-        self.init_from_target_list(target_list)
         self.custom_settings = mongo_settings
+
+        if target_list is not None: 
+            self.init_from_school_list(target_list)
+        elif url is not None:
+            domain = self.get_domain(url)
+            self.start_urls.append(url)
+            self.allowed_domains.append(domain)
         
 
     # note: make sure we ignore robot.txt
@@ -154,7 +160,7 @@ class RecursiveSpider(CrawlSpider):
         item['text'] = self.get_text(response)
         domain = self.get_domain(response.url)    
 
-        item['target_id'] = self.domain_to_id[domain]
+        #item['target_id'] = self.domain_to_id[domain]
         # uses DepthMiddleware
         item['depth'] = response.request.meta['depth']
         print("Domain Name: ", domain)

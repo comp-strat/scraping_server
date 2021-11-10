@@ -19,7 +19,7 @@ class SingleJob extends Component {
     }
 
     downloadFunc = () => {
-        window.open(config.serverurl+"/download/files/"+this.props.id);
+        window.open(config.serverurl+"/job/"+this.props.id+"/files");
     }
 
     updateStatus = () => {

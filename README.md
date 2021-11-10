@@ -67,10 +67,31 @@ $ sudo rq worker crawling-tasks --path .
 ```
 
 #### 3B. In screen F: 
+Set Environment Variables to set the mongo URI to connect to, the port the flask server should run on and the React client it should accept requests from.
+```bash
+$ export CLIENT_ORIGIN=http://localhost:3000
+$ export MONGO_URI=mongodb://localhost:27017
+$ export SERVER_PORT=5000
+```
+These are the default values used, if no environment variables are set.
+
+After configuring, you can now run the flask server:
 ```bash
 $ cd scraping_server/crawler/crawler
 $ python app.py
 ```
-
+### 4. Run the client server (React Server):
+In a new terminal window, navigate to the base repository path
+Set the environment variable that will tell your client where your flask server is running.
+```bash
+$ export REACT_APP_SERVER_URL=http://localhost:5000
+```
+As done before, the default value, if no environment variable is set, is shown above.
+Now you can run the react server, by simply running:
+```bash
+$ cd client
+$ npm start
+```
 
 ### 4. Navigate the client from your web browser at `http://<your_IP_here>:3000/`
+This will open up the home page.
