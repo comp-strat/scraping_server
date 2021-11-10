@@ -142,6 +142,7 @@ class RecursiveSpider(CrawlSpider):
         self.rules = (Rule(CustomLinkExtractor(allow_domains = self.allowed_domains), follow=True, callback="parse_items"),)
         self.domain_to_id = {}
         self.init_from_target_list(target_list)
+        self.custom_settings = mongo_settings
         
 
     # note: make sure we ignore robot.txt

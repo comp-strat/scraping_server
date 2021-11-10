@@ -8,10 +8,10 @@
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 import os
 
-BOT_NAME = 'schools'
+BOT_NAME = 'crawler'
 
-SPIDER_MODULES = ['schools.spiders']
-NEWSPIDER_MODULE = 'schools.spiders'
+SPIDER_MODULES = ['crawler.spiders']
+NEWSPIDER_MODULE = 'crawler.spiders'
 
 CLIENT_ORIGIN = os.getenv('CLIENT_ORIGIN') or "http://localhost:3000"
 
@@ -111,7 +111,7 @@ ITEM_PIPELINES = {
     'crawler.pipelines.MongoDBPipeline': 300
 }
 
-MONGODB_DB = 'schoolSpider'
+MONGODB_DB = 'crawlerSpider'
 
 MONGODB_COLLECTION_IMAGES = "images"
 MONGODB_COLLECTION_FILES = "files"
@@ -121,7 +121,7 @@ MONGODB_COLLECTION_JOBS = "jobs"
 # running locally without containers
 
 MONGO_URI = os.getenv('MONGO_URI') or 'mongodb://localhost:27017'
-print(MONGO_URI)
+
 # connect to MongoDB which is running in mongodb_container.
 #MONGO_URI = 'mongodb://mongodb_container:27000'
 #MONGO_URI = 'someBadURI'
@@ -131,7 +131,7 @@ MONGO_REPLICATION = False
 
 MONGO_REPLICA_SET = 'mongoCluster' # replica set name if used
 
-MONGO_DATABASE = 'schoolSpider' # database (not collection) name
+MONGO_DATABASE = 'crawlerSpider' # database (not collection) name
 
 MONGO_USERNAME = 'admin' # could probably make a "schoolCrawler" user to use here instead
 

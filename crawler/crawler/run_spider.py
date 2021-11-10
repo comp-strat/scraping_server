@@ -12,12 +12,12 @@ from numpy import add
 from scrapy import cmdline
 import multiprocessing
 import os
-import schools.execute_scrapy_from_file as execute_scrapy_from_file
+import crawler.execute_scrapy_from_file as execute_scrapy_from_file
 import subprocess
 from rq import get_current_job
 
-from schools import crawlTaskTracker
-from schools import settings
+from crawler import crawlTaskTracker
+from crawler import settings
 
 # See scrapy_vanilla.py for the meaning of this command.
 #scrapy_run_cmd = "scrapy crawl schoolspider -a csv_input=schools/spiders/test_urls.csv"
@@ -48,7 +48,7 @@ def execute_scrapy_from_urls(urls, mongo_settings, user=None):
     task_repository.addTask(urls, id)
     
     pool = multiprocessing.Pool(multiprocessing.cpu_count() - 1)
-    pool.starmap(execute_scrapy_from_file.execute_scrapy_from_url, [(url, id,mongo_settings, user) for url in urls])
+    pool.starmap(execute_scrapy_from_file.execute_scrapy_from_url, [(url, id, mongo_settings, user) for url in urls])
     pool.close()
     pool.join()
     
