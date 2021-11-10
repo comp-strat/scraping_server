@@ -1,29 +1,59 @@
 """
-In `crawler/` directory, use the command
+In scrapy/schools, use the command
 
-    python3 run_spider.py 
+    python3 schools/run_schoolspider.py 
 
-To run the recursivespider.
+To run the schoolspider.
 The primary purpose of this file is for the Scrapy Dockerfile.
 
 NOTE: by default, data doesn’t persist when that container no longer exists.
 """
+from numpy import add
 from scrapy import cmdline
 import multiprocessing
 import os
-import execute_scrapy_from_file as execute_scrapy_from_file
+import schools.execute_scrapy_from_file as execute_scrapy_from_file
 import subprocess
 from rq import get_current_job
 
-# See recursive_spider.py for the meaning of this command.
-#scrapy_run_cmd = "scrapy crawl recursivespider -a csv_input=spiders/test_urls.tsv"
-SCRAPY_RUN_CMD = "scrapy crawl recursivespider -a target_list="
+from schools import crawlTaskTracker
+from schools import settings
+
+# See scrapy_vanilla.py for the meaning of this command.
+#scrapy_run_cmd = "scrapy crawl schoolspider -a csv_input=schools/spiders/test_urls.csv"
+SCRAPY_RUN_CMD = "scrapy crawl schoolspider -a school_list="
 
 SPLIT_FILE_CMD = 'split -l 100 --additional-suffix='
 
 SPLIT_PREFIX = 'split_urls/'
 
 #cmdline.execute(scrapy_run_cmd.split())
+
+task_repository = crawlTaskTracker.CrawlTaskRepository(
+    mongo_uri=settings.MONGO_URI, 
+    mongo_user=settings.MONGO_USERNAME, 
+    mongo_pass=settings.MONGO_PASSWORD,
+    db_name=settings.MONGODB_DB,
+    jobs_collection=settings.MONGODB_COLLECTION_JOBS)
+
+def execute_scrapy_from_urls(urls, mongo_settings, user=None):
+    id = get_current_job().id
+    setting = lambda word, otherwise: mongo_settings[word] if word in mongo_settings else otherwise
+    task_repository = crawlTaskTracker.CrawlTaskRepository(
+        mongo_uri=setting("MONGO_URI",settings.MONGO_URI), 
+        mongo_user=setting("MONGO_USERNAME",settings.MONGO_USERNAME), 
+        mongo_pass=setting("MONGO_PASSWORD",settings.MONGO_PASSWORD),
+        db_name=setting("MONGODB_DB",settings.MONGODB_DB),
+        jobs_collection=setting("MONGODB_COLLECTION_JOBS",settings.MONGODB_COLLECTION_JOBS))
+    task_repository.addTask(urls, id)
+    
+    pool = multiprocessing.Pool(multiprocessing.cpu_count() - 1)
+    pool.starmap(execute_scrapy_from_file.execute_scrapy_from_url, [(url, id,mongo_settings, user) for url in urls])
+    pool.close()
+    pool.join()
+    
+    print("Pool Closed")
+
 
 def execute_scrapy_from_flask(filename, file_prefix):
     print('Making new Directory for split files')

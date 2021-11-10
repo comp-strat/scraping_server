@@ -3,9 +3,9 @@
 # See documentation in:
 # https://docs.scrapy.org/en/latest/topics/items.html
 
-import scrapy
+from scrapy.item import Item, Field
 
-class CrawlerItem(scrapy.Item):
+class CrawlerItem(Item):
     """
     Represents the object parsed by the spider.
     Depth is defined by DepthMiddleware.

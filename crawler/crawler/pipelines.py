@@ -41,6 +41,7 @@ class MongoDBImagesPipeline(object):
     @classmethod
     def from_crawler(cls, crawler):
         # pull in information from settings.py
+        print("------------->>>>>>",crawler.settings)
         return cls(
             MONGO_URI=crawler.settings.get('MONGO_URI'),
             MONGODB_DB=crawler.settings.get('MONGODB_DB'),

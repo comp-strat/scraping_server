@@ -74,7 +74,7 @@ from itertools import chain
 import re
 from urllib.parse import urlparse
 import requests
-import pandas as pd
+#import pandas as pd
 
 import chardet
 
@@ -109,7 +109,7 @@ class RecursiveSpider(CrawlSpider):
             callback="parse_items"
         )
     ]
-    def __init__(self, target_list=None, rq_id=None, user=None, *args, **kwargs):
+    def __init__(self, target_list=None, rq_id=None, mongo_settings= {}, user=None, *args, **kwargs):
         """
         Overrides default constructor to set custom
         instance attributes.
@@ -190,7 +190,7 @@ class RecursiveSpider(CrawlSpider):
         """
         if not target_list:
             return
-        if isinstance(target_list, pd.DataFrame):
+        """if isinstance(target_list, pd.DataFrame):
             for i, row in target_list.iterrows():
                 target_id = row['NCESSCH']
                 url = row['URL']
@@ -198,7 +198,8 @@ class RecursiveSpider(CrawlSpider):
                 self.start_urls.append(url)
                 self.allowed_domains.append(domain)
                 self.domain_to_id[domain] = float(target_id)
-                return
+                return"""
+
         with open(target_list, 'r') as f:
             delim = "," if "csv" in target_list else "\t"
             reader = csv.reader(f, delimiter=delim,quoting=csv.QUOTE_NONE)

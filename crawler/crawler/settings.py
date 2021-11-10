@@ -1,4 +1,4 @@
-# Scrapy settings for crawler project
+# Scrapy settings for schools project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -6,12 +6,14 @@
 #     https://docs.scrapy.org/en/latest/topics/settings.html
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
+import os
 
-BOT_NAME = 'crawler'
+BOT_NAME = 'schools'
 
-SPIDER_MODULES = ['crawler.spiders']
-NEWSPIDER_MODULE = 'crawler.spiders'
+SPIDER_MODULES = ['schools.spiders']
+NEWSPIDER_MODULE = 'schools.spiders'
 
+CLIENT_ORIGIN = os.getenv('CLIENT_ORIGIN') or "http://localhost:3000"
 
 # How to log spider output
 #LOG_ENABLED = True
@@ -54,16 +56,17 @@ ROBOTSTXT_OBEY = False
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 SPIDER_MIDDLEWARES = {
     'scrapy.spidermiddlewares.depth.DepthMiddleware': 100, 'scrapy.spidermiddlewares.httperror.HttpErrorMiddleware': 200, 'scrapy.spidermiddlewares.offsite.OffsiteMiddleware': 300
+  
 }
 
-# Configure depth
+# Configure depth 
 DEPTH_LIMIT = 5
 
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
-   'crawler.middlewares.SchoolsDownloaderMiddleware': 543, 'scrapy.downloadermiddlewares.retry.RetryMiddleware': 4
+   'schools.middlewares.SchoolsDownloaderMiddleware': 543, 'scrapy.downloadermiddlewares.retry.RetryMiddleware': 4
 }
 
 # Configure times retried after receiving an error
@@ -108,28 +111,36 @@ ITEM_PIPELINES = {
     'crawler.pipelines.MongoDBPipeline': 300
 }
 
-MONGODB_DB = 'RecursiveSpider'
+MONGODB_DB = 'schoolSpider'
 
 MONGODB_COLLECTION_IMAGES = "images"
 MONGODB_COLLECTION_FILES = "files"
 MONGODB_COLLECTION_TEXT = "text"
+MONGODB_COLLECTION_JOBS = "jobs"
 
 # running locally without containers
-MONGO_URI = 'mongodb://localhost:27000'
+
+MONGO_URI = os.getenv('MONGO_URI') or 'mongodb://localhost:27017'
+print(MONGO_URI)
 # connect to MongoDB which is running in mongodb_container.
 #MONGO_URI = 'mongodb://mongodb_container:27000'
 #MONGO_URI = 'someBadURI'
 #MONGO_URI = '10.0.2.4'
 
 MONGO_REPLICATION = False
+
 MONGO_REPLICA_SET = 'mongoCluster' # replica set name if used
-MONGO_DATABASE = 'RecursiveSpider' # database (not collection) name
+
+MONGO_DATABASE = 'schoolSpider' # database (not collection) name
+
 MONGO_USERNAME = 'admin' # could probably make a "schoolCrawler" user to use here instead
+
 MONGO_PASSWORD = 'mdipass' # Replace with actual password
 
 
-FILES_EXPIRES = 365
+#FILES_EXPIRES = 365
 IMAGES_EXPIRES = 365
 MEDIA_ALLOW_REDIRECTS = True
 IMAGES_MIN_HEIGHT = 150
 IMAGES_MIN_WIDTH = 150
+

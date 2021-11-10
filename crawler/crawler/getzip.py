@@ -35,7 +35,7 @@ def getzip(rq_id):
         gridfs_bucket(db, dir,settings.MONGODB_COLLECTION_IMAGES,rq_id)
         gridfs_bucket(db, dir, settings.MONGODB_COLLECTION_FILES, rq_id)
         text_collection(db, dir, settings.MONGODB_COLLECTION_TEXT, rq_id)
-        zip_path = join("files",rq_id+'_'+str(time.time()))
-        shutil.make_archive(join("crawled_data_",zip_path), 'zip', dir)
+        zip_path = join("crawled_data_","files",rq_id+'_'+str(time.time()))
+        shutil.make_archive(zip_path, 'zip', dir)
 
     return zip_path + ".zip"
