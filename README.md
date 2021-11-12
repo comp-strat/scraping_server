@@ -15,80 +15,78 @@ Downstream features on our bucket list include real-time metrics and access to s
 ## Running the scraping server
 This requires a Redis server to handle tasks. The instructions below walk you through installing Redis, and [you can find more instructions here](https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-redis-on-ubuntu-18-04) (Ubuntu 18.04). If not yet installed, you will also need to [install MongoDB](https://docs.mongodb.com/manual/installation/) (instructions below don't include this part).
 
-You will need at least 2 screens/terminals for this, although there may be a way to run Redis and/or Flask headless to remove this need. "Screen R" will be your screen for Redis, and "Screen F" will refer to your screen for Flask. 
+You will need 3 terminal windows for this, although [there are ways to run Redis and/or Flask headless to remove this need](https://askubuntu.com/questions/106351/running-programs-in-the-background-from-terminal)--the easiest being to add an ampersand (`&`) after the command. If you choose to have separate terminal windows (best for monitoring purposes), create a window for Redis, Flask, and React.
 
 ### 1. Setup and start Redis on machine:
 ```bash
-$ sudo apt-get install redis-server
-$ sudo nano /etc/redis/redis.conf # change 'supervised no' to 'supervised systemd'
-$ sudo systemctl restart redis.service
-$ sudo systemctl status redis # see if redis is actively running
-$ sudo nano /etc/redis/redis.conf 
+sudo apt-get install redis-server
+sudo nano /etc/redis/redis.conf # change 'supervised no' to 'supervised systemd'
+sudo systemctl restart redis.service
+sudo systemctl status redis # see if redis is actively running
+sudo nano /etc/redis/redis.conf 
 # uncomment the line: # bind 127.0.0.1 ::1 
 # Then restart Redis again if you made the previous change
-$ sudo systemctl restart redis
+sudo systemctl restart redis
 ```
 
 
+
 ### 2. Install required packages and setup 
-(from HOME_DIR, assumed to be /vol_b/data/):
+Follow each of these steps from your *home directory* (which for our VMs this is `/vol_b/data/`).
 
 #### 2A. Create python 3 environment, install packages, clone repo
 ```bash
-$ python3 -m venv .venv # create specific crawling environment with packages we want; feel free to use an env name other than `.venv`
-$ source .venv/bin/activate # activate environment
-$ sudo apt update # get latest version info
-$ pip3 install -r requirements.txt # install packages we want. may need pandas as version 1.0.4
-$ sudo git clone https://github.com/URAP-charter/scraping_server.git
+python3 -m venv .venv # create specific crawling environment with packages we want; feel free to use an env name other than `.venv`
+source .venv/bin/activate # activate environment
+sudo apt update # get latest version info
+pip3 install -r requirements.txt # install packages we want. may need pandas as version 1.0.4
+sudo git clone https://github.com/URAP-charter/scraping_server.git
+cd scraping_server/client/
+sudo npm install
 ```
 
 #### 2B. Set up MongoDB container
 ```bash
-$ mkdir mongodata
-$ docker pull mongo && docker run -d --name mongodb -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=mdipass -p 27000:27017 --log-opt max-size=500m --restart always -v /vol_b/data/mongodata:/data/db mongo
+mkdir mongodata
+docker pull mongo && docker run -d --name mongodb -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=mdipass -p 27000:27017 --log-opt max-size=500m --restart always -v /vol_b/data/mongodata:/data/db mongo
 ```
 
-
-### 3. Create two terminal screens: one screen R (for Redis) and one screen F (for Flask).  
-From each window, navigate to your HOME_DIR (assumed to be /vol_b/data/), activate the python environment you set up in 2A above (default `source .venv/bin/activate`), and run one task per window as follows.
-
-##### 3A. In screen R:
+#### 2C. Set environment variables
 ```bash
-$ cd scraping_server
-$ sudo rq worker crawling-tasks --path .
+export CLIENT_ORIGIN=http://localhost:3000 # port React client should accept requests from
+export MONGO_URI=mongodb://localhost:27017 # port for Mongo URI to connect to
+export SERVER_PORT=5000 # port Flask server should run on
+export REACT_APP_SERVER_URL=http://localhost:5000 # tell client where flask server is running
 ```
+These are the default values, if no environment variables are set.
 
-#### 3B. In screen F: 
-Set Environment Variables to set the mongo URI to connect to, the port the flask server should run on and the React client it should accept requests from.
+
+
+### 3. Run server
+Create three terminal screens: one for Redis, one for Flask, one for React. From each window: 
+- navigate to your home directory (in our VMs this is `/vol_b/data/`)
+- activate the python environment you set up in 2A above (default `source .venv/bin/activate`)
+- run one task per window as follows.
+
+##### 3A. In Redis window:
 ```bash
-$ export CLIENT_ORIGIN=http://localhost:3000
-$ export MONGO_URI=mongodb://localhost:27017
-$ export SERVER_PORT=5000
+cd scraping_server
+sudo rq worker crawling-tasks --path . # run Redis
 ```
-These are the default values used, if no environment variables are set.
 
-After configuring, you can now run the flask server:
+#### 3B. In Flask window: 
 ```bash
 $ cd scraping_server/crawler/crawler
-$ python app.py
+$ python app.py # run Flask
 ```
 
-
-
-### 4. Run the client server (React Server):
-In a new terminal window, navigate to the base repository path
-Set the environment variable that will tell your client where your flask server is running.
+### 3C. In React window:
 ```bash
-$ export REACT_APP_SERVER_URL=http://localhost:5000
-```
-As done before, the default value, if no environment variable is set, is shown above.
-Now you can run the react server, by simply running:
-```bash
-$ cd client
-$ npm start
+$ cd scraping_server/client
+$ npm start # run React server
 ```
 
 
 
-### 5. Navigate the client from your web browser at `http://<your_IP_here>:3000/`
+### 4. Navigate the client from your web browser at `http://<your_IP_here>:3000/`
 This will open up the home page.
