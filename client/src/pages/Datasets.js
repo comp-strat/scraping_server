@@ -8,6 +8,8 @@ import {Copyright} from "../components/Copyright";
 
 //Actions
 import {handleRoutes} from "../util/handleRoutes";
+import {useGlobalState} from 'state-pool';
+
 
 // data
 
@@ -27,7 +29,6 @@ import CardMedia from '@material-ui/core/CardMedia';
 
 //images
 import Avatar from '@material-ui/core/Avatar';
-import pranav from '../static/img/pranav.png';
 import charlotte from '../static/img/Charlotte.jpg'
 
 // Styles
@@ -55,7 +56,15 @@ const handleDatasetCardDownloadClick = (props, id) => {
 
 function Samples(props) {
     const classes = datasetsStyles();
-
+    const [user] = useGlobalState("user");
+    const getProfile = () => {
+        if (user.profileObj == undefined) {
+            props.history.push("/");
+        } else {
+            return user.profileObj;
+        }
+    }
+    
     console.log(props.data)
     return (
         <React.Fragment>
@@ -71,7 +80,7 @@ function Samples(props) {
                         <Grid item xs={2} md={3} sm={6} key={job.id}>
                             <Card className={classes.exampleCardStyle}>
                                 <CardHeader
-                                    avatar={<Avatar src={pranav}/>}
+                                    avatar={<Avatar src={getProfile().imageUrl}/>}
                                     action={
                                         <IconButton>
                                             <ShareIcon/>

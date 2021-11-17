@@ -8,7 +8,6 @@ The primary purpose of this file is for the Scrapy Dockerfile.
 
 NOTE: by default, data doesn’t persist when that container no longer exists.
 """
-from numpy import add
 from scrapy import cmdline
 import multiprocessing
 import os

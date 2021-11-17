@@ -144,11 +144,13 @@ class RecursiveSpider(CrawlSpider):
         self.custom_settings = mongo_settings
 
         if target_list is not None: 
-            self.init_from_school_list(target_list)
+            self.init_from_target_list(target_list)
         elif url is not None:
-            domain = self.get_domain(url)
+            domain = self.get_domain(url,True)
             self.start_urls.append(url)
             self.allowed_domains.append(domain)
+        
+        print("Start URLs:",self.start_urls,"Allowed Domains:",self.allowed_domains)
         
 
     # note: make sure we ignore robot.txt

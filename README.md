@@ -54,7 +54,7 @@ From each window, navigate to your HOME_DIR (assumed to be /vol_b/data/), activa
 
 ##### 3A. In screen R:
 ```bash
-$ cd scraping_server
+$ cd crawler
 $ sudo rq worker crawling-tasks --path .
 ```
 

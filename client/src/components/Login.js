@@ -5,6 +5,7 @@ import { GoogleLogin } from 'react-google-login';
 import { refreshTokenSetup } from '../util/refreshToken';
 
 import { useHistory } from "react-router-dom";
+import {store, useGlobalState} from 'state-pool';
 
 const clientId =
   '1080632962111-av26u4euc5vgoollpmfbrtiissptg4dc.apps.googleusercontent.com';
@@ -15,26 +16,28 @@ const clientId =
 //
 //     }
 
+store.setState("user",{})
+
 function Login() {
   const history = useHistory();
-  const onSuccess = (res) => {
-
-
+  const [user, setUser] = useGlobalState("user");
+  const OnSuccess = (res) => {
+    console.log(res);
     console.log('Login Success: currentUser:', res.profileObj);
-
-    alert(
-      `Logged in successfully welcome ${res.profileObj.name}`
-    );
+    setUser(res);
+    //alert(
+    //  `Logged in successfully welcome ${res.profileObj.name}`
+    //);
     refreshTokenSetup(res);
 
-    history.push("/dashboard")
+    history.push("/dashboard");
 
 
   };
 
 
 
-  const onFailure = (res) => {
+  const OnFailure = (res) => {
     console.log('Login failed: res:', res);
     alert(
       `Failed to login.`
@@ -46,8 +49,8 @@ function Login() {
       <GoogleLogin
         clientId={clientId}
         buttonText="Login"
-        onSuccess={onSuccess}
-        onFailure={onFailure}
+        onSuccess={OnSuccess}
+        onFailure={OnFailure}
         cookiePolicy={'single_host_origin'}
         style={{ marginTop: '100px' }}
         isSignedIn={true}

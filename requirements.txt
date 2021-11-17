@@ -1,6 +1,7 @@
 argcomplete==1.10.0
 attrs==20.3.0
 Automat==20.2.0
+Authlib==0.15.5
 beautifulsoup4==4.8.0
 certifi==2020.12.5
 cffi==1.14.4
@@ -60,4 +61,4 @@ zope.interface==5.2.0
 flask==1.1.2
 flask_restful==0.3.8
 scrapyscript==1.1.0
-rq==1.8.0
+rq==1.8.1

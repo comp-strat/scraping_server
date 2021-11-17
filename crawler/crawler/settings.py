@@ -66,7 +66,7 @@ DEPTH_LIMIT = 5
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
-   'schools.middlewares.SchoolsDownloaderMiddleware': 543, 'scrapy.downloadermiddlewares.retry.RetryMiddleware': 4
+   'crawler.middlewares.SchoolsDownloaderMiddleware': 543, 'scrapy.downloadermiddlewares.retry.RetryMiddleware': 4
 }
 
 # Configure times retried after receiving an error
@@ -146,3 +146,6 @@ MEDIA_ALLOW_REDIRECTS = True
 IMAGES_MIN_HEIGHT = 150
 IMAGES_MIN_WIDTH = 150
 
+
+GOOGLE_OAUTH_CLIENT_URL = ""
+GOOGLE_OAUTH_CLIENT_SECRET = ""

@@ -18,7 +18,7 @@ def update_status (id, mongo_settings):
     task_repository.updateStatus(id)
 
 def execute_scrapy_from_url(url, rq_id,mongo_settings, user):
-    print(url, rq_id,user)
+    print("PROCESS STARTING",url, rq_id,mongo_settings,user)
     job = Job(RecursiveSpider, url=url,user=user, mongo_settings=mongo_settings, rq_id=rq_id)
     processor = Processor(settings=get_project_settings())
     data = processor.run(job)

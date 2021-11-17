@@ -20,15 +20,26 @@ import NotificationsIcon from "@material-ui/icons/Notifications";
 //Components
 import {User} from "./User";
 import {handleRoutes} from "../util/handleRoutes";
+import Logout from "../components/Logout.js";
+
 
 //Styles
 import { componentStyles } from "../styles/componentStyles";
 
+import {useGlobalState} from 'state-pool';
 
 
 export function LeftDrawer(props) {
     const classes = componentStyles();
-
+    const [user] = useGlobalState("user");
+    const getProfile = () => {
+        if (user.profileObj == undefined) {
+            props.history.push("/");
+            return {};
+        } else {
+            return user.profileObj;
+        }
+    }
     return (
         <Drawer
             variant="permanent"
@@ -38,7 +49,7 @@ export function LeftDrawer(props) {
                 paper: classes.drawerPaper,
             }}
         >
-            <User name="Pranav Bhasin"/>
+            <User name={getProfile().name} image={getProfile().imageUrl}/>
             <Divider />
             <List>
                 <ListItem button onClick={() => handleRoutes(props, "dashboard")}>
@@ -134,6 +145,10 @@ export function LeftDrawer(props) {
                             </Typography>
                         }
                     />
+                </ListItem>
+
+                <ListItem>
+                    <Logout/>
                 </ListItem>
             </List>
         </Drawer>

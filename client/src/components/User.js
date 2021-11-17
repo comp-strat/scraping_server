@@ -8,15 +8,12 @@ import Box from "@material-ui/core/Box";
 // Components
 import { componentStyles } from "../styles/componentStyles";
 
-// images
-import pranav from "../static/img/pranav.png";
-
 export function User(props) {
     const classes = componentStyles();
 
     return (
         <div className={classes.user}>
-            <Avatar src={pranav} />
+            <Avatar src={props.image} />
             <Typography component="div" variant="h6" component="h6" className={classes.userName}>
                 <Box fontWeight="fontWeightBold" m={0}>
                     {props.name}
