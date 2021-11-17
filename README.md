@@ -39,10 +39,7 @@ Follow each of these steps from your *home directory* (which for our VMs this is
 python3 -m venv .venv # create specific crawling environment with packages we want; feel free to use an env name other than `.venv`
 source .venv/bin/activate # activate environment
 sudo apt update # get latest version info
-pip3 install -r requirements.txt # install packages we want. may need pandas as version 1.0.4
-sudo git clone https://github.com/URAP-charter/scraping_server.git
-cd scraping_server/client/
-sudo npm install
+pip3 install -r requirements.txt
 ```
 
 #### 2B. Set up MongoDB container
@@ -54,7 +51,7 @@ docker pull mongo && docker run -d --name mongodb -e MONGO_INITDB_ROOT_USERNAME=
 #### 2C. Set environment variables
 ```bash
 $ cd crawler
-$ sudo rq worker crawling-tasks
+$ sudo rq worker crawling-tasks --path .
 ```
 These are the default values, if no environment variables are set.
 
@@ -68,22 +65,30 @@ Create three terminal screens: one for Redis, one for Flask, one for React. From
 
 ##### 3A. In Redis window:
 ```bash
-cd scraping_server
+cd crawler
 sudo rq worker crawling-tasks --path . # run Redis
 ```
 
 #### 3B. In Flask window: 
 ```bash
-$ cd scraping_server/crawler/crawler
+$ export CLIENT_ORIGIN=http://localhost:3000
+$ export MONGO_URI=mongodb://localhost:27017
+$ export SERVER_PORT=5000
+$ cd crawler/crawler
 $ python app.py # run Flask
 ```
+The environment variables guide the flask server. The values shown are the default values.
+ - CLIENT_ORIGIN is the client it should accept requests from
+ - MONGO_URI is where it should send database requests
+ - SERVER_PORT is what port should the server run on
 
 ### 3C. In React window:
 ```bash
-$ cd scraping_server/client
+export REACT_APP_SERVER_URL=http://localhost:5000
+$ cd client
 $ npm start # run React server
 ```
-
+The environment variable here is the server url requests should be sent to from the React client (so the address of the flask server)
 
 
 ### 4. Navigate the client from your web browser at `http://<your_IP_here>:3000/`

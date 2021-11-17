@@ -109,8 +109,8 @@ SERVER_PORT = os.getenv('SERVER_PORT') or 5000
 ITEM_PIPELINES = {
     'crawler.pipelines.MongoDBImagesPipeline': 3,
     'crawler.pipelines.MongoDBFilesPipeline': 4,
-    'crawler.pipelines.MongoDBTextPipeline': 300,
-    'crawler.pipelines.MongoDBPipeline': 300
+    'crawler.pipelines.MongoDBTextPipeline': 300
+    #'crawler.pipelines.MongoDBPipeline': 300
 }
 
 MONGODB_DB = 'crawlerSpider'

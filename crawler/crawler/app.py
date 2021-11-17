@@ -16,12 +16,14 @@ import uuid
 import subprocess
 
 from flask import jsonify
+
+"""
 from authlib.integrations.flask_oauth2 import ResourceProtector, current_token
 from authlib.oauth2.rfc7662 import IntrospectTokenValidator
 import requests
-
+"""
 app = Flask(__name__)
-
+"""
 class MyIntrospectTokenValidator(IntrospectTokenValidator):
     def introspect_token(self, token_string):
         url = 'https://example.com/oauth/introspect'
@@ -35,7 +37,7 @@ require_oauth = ResourceProtector()
 
 # only bearer token is supported currently
 require_oauth.register_token_validator(MyIntrospectTokenValidator())
-
+"""
 
 task_repository = crawlTaskTracker.CrawlTaskRepository(
     mongo_uri=settings.MONGO_URI, 
