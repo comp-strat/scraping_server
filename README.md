@@ -48,14 +48,6 @@ mkdir mongodata
 docker pull mongo && docker run -d --name mongodb -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=mdipass -p 27000:27017 --log-opt max-size=500m --restart always -v /vol_b/data/mongodata:/data/db mongo
 ```
 
-#### 2C. Set environment variables
-```bash
-$ cd crawler
-$ sudo rq worker crawling-tasks --path .
-```
-These are the default values, if no environment variables are set.
-
-
 
 ### 3. Run server
 Create three terminal screens: one for Redis, one for Flask, one for React. From each window: 
@@ -63,13 +55,13 @@ Create three terminal screens: one for Redis, one for Flask, one for React. From
 - activate the python environment you set up in 2A above (default `source .venv/bin/activate`)
 - run one task per window as follows.
 
-##### 3A. In Redis window:
+##### 3A. In Redis window (must be in venv):
 ```bash
 cd crawler
 sudo rq worker crawling-tasks --path . # run Redis
 ```
 
-#### 3B. In Flask window: 
+#### 3B. In Flask window (must be in venv): 
 ```bash
 $ export CLIENT_ORIGIN=http://localhost:3000
 $ export MONGO_URI=mongodb://localhost:27017
