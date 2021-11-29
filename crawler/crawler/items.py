@@ -17,7 +17,7 @@ class CrawlerItem(Item):
     is_doc = Field() # bool
     is_im = Field() # bool
     status = Field() # int
-    school_id = Field() # float this is school id or ncessch
+    target_id = Field() # float this is school id or ncessch
     timestamp = Field() # datetime
     date_archived = Field() # datetime
     # Collecting Media

@@ -1,4 +1,4 @@
-from flask import Flask, request, send_file
+from flask import Flask, request, send_file, session, jsonify
 
 #import pandas as pd
 #from datetime import datetime
@@ -14,30 +14,10 @@ import json
 import getzip
 import uuid
 import subprocess
-
-from flask import jsonify
-
-"""
-from authlib.integrations.flask_oauth2 import ResourceProtector, current_token
-from authlib.oauth2.rfc7662 import IntrospectTokenValidator
+from functools import wraps
 import requests
-"""
+
 app = Flask(__name__)
-"""
-class MyIntrospectTokenValidator(IntrospectTokenValidator):
-    def introspect_token(self, token_string):
-        url = 'https://example.com/oauth/introspect'
-        data = {'token': token_string, 'token_type_hint': 'access_token'}
-        auth = (settings.GOOGLE_OAUTH_CLIENT_URL, settings.GOOGLE_OAUTH_CLIENT_SECRET)
-        resp = requests.post(url, data=data, auth=auth)
-        resp.raise_for_status()
-        return resp.json()
-
-require_oauth = ResourceProtector()
-
-# only bearer token is supported currently
-require_oauth.register_token_validator(MyIntrospectTokenValidator())
-"""
 
 task_repository = crawlTaskTracker.CrawlTaskRepository(
     mongo_uri=settings.MONGO_URI, 
@@ -45,6 +25,27 @@ task_repository = crawlTaskTracker.CrawlTaskRepository(
     mongo_pass=settings.MONGO_PASSWORD,
     db_name=settings.MONGODB_DB,
     jobs_collection=settings.MONGODB_COLLECTION_JOBS)
+
+def token_required(f):
+   @wraps(f)
+   def decorator(*args, **kwargs):
+        token = None
+        if 'Authorization' in request.headers:
+            token = request.headers['Authorization'].split(" ")[-1].strip()
+ 
+        if not token:
+            return jsonify({'status':401,'message': 'a valid token is missing'}), 401
+       
+        url = "https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=" + token
+
+        r = requests.get(url)
+        if r.status_code != requests.codes.ok:
+           return jsonify({'status':401,'message': 'token is invalid'}), 401
+        else:
+            current_user = r.json()["email"]
+
+        return f(current_user, *args, **kwargs)
+   return decorator
 
 @app.after_request
 def after_request(response):
@@ -60,7 +61,9 @@ def hello_world():
     return 'Hello, World!'
 
 @app.route('/job', methods=['POST'])
-def create_task():
+@token_required
+def create_task(user):
+    print(user, request.data)
     data = json.loads(request.data.decode('utf-8'))
     if 'urls' not in data:
         return {'status': 400, 'message': 'No urls found!'}
@@ -77,7 +80,7 @@ def create_task():
     mongo_settings = {
         "MONGO_URI": settings.MONGO_URI
     }
-    job = queue.enqueue("crawler.execute_scrapy_from_urls", urls, mongo_settings, job_id=job_id)
+    job = queue.enqueue("crawler.execute_scrapy_from_urls", urls, mongo_settings, user, job_id=job_id)
     queue.enqueue("crawler.update_status",job_id, mongo_settings) # After task is done, update status to failed or completed
 
     #job = queue.enqueue('schools.execute_scrapy_from_flask', './schools/spiders/' + now.strftime('%d%m%Y_%H%M%S') + '.csv', './schools/spiders/' + now.strftime('%d%m%Y_%H%M%S'))
@@ -89,12 +92,14 @@ def create_task():
     return {'status': 200, 'message': 'Crawl Started', 'job_id': str(job_id)}
 
 @app.route('/jobs', methods=['GET'])
-def get_all_jobs():
-    user = None # TODO: get user by session
+@token_required
+def get_all_jobs(user):
     return task_repository.get_all_tasks(user)
 
 @app.route('/job/<task_id>', methods=['GET'])
-def get_task_by_id(task_id):
+@token_required
+def get_task_by_id(user,task_id):
+    # Currently every registered user can get access to task info, TODO: restrict to owner only
     if task_id == None:
         return {'status': 400, 'message': 'No Task ID provided'}
     #completion_status = task_repository.get_task_progress(task_id)
@@ -102,7 +107,9 @@ def get_task_by_id(task_id):
     return {'task_id': task_id, 'completion_status': completion_status}
 
 @app.route('/job/<task_id>', methods=['DELETE'])
-def kill_task(task_id):
+@token_required
+def kill_task(user,task_id):
+    # Currently every registered user can kill a task if they know the id, TODO: restrict to owner only
     print("KILLING TASK",task_id)
     if task_id == None:
         return {'status': 400, 'message': 'No Task ID provided'}
@@ -110,7 +117,8 @@ def kill_task(task_id):
     return {'task_id': task_id, 'kill_sucessful': int(kill_status)}
 
 @app.route('/job/<task_id>/files',methods=["GET"])
-def send_zip(task_id):
+@token_required
+def send_zip(user,task_id):
     if task_id == None:
         return {'status': 400, 'message': 'No Task ID provided'}
     status = task_repository.get_task_progress(task_id)

@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import axios from "axios";
+import {fetcher} from "../util/fetcher";
 import { Link } from "react-router-dom";
 
 // Components
@@ -323,11 +323,11 @@ class Jobs extends Component {
 
     //TODO refactor
     getAllJobs = () => {
-        axios
-            .get(config.serverurl+'/jobs',)
+        fetcher(config.serverurl+'/jobs',{method:"GET"})
+            .then(res => res.json())
             .then(res => {
                 let jobs_array = []
-                res.data.data.forEach(d => {
+                res.data.forEach(d => {
                     jobs_array.push({
                         id: d._id,
                         URLs: d.URLs,

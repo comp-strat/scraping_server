@@ -1,14 +1,12 @@
 import React, {Component} from "react";
 
-import axios from "axios";
-
 //Components
 import {LeftDrawer} from "../components/LeftDrawer";
 import {Copyright} from "../components/Copyright";
 
 //Actions
 import {handleRoutes} from "../util/handleRoutes";
-import {useGlobalState} from 'state-pool';
+import {fetcher, inMemoryUserManager} from "../util/fetcher";
 
 
 // data
@@ -56,7 +54,7 @@ const handleDatasetCardDownloadClick = (props, id) => {
 
 function Samples(props) {
     const classes = datasetsStyles();
-    const [user] = useGlobalState("user");
+    const user = inMemoryUserManager.getUser()
     const getProfile = () => {
         if (user.profileObj == undefined) {
             props.history.push("/");
@@ -150,12 +148,13 @@ class Datasets extends Component {
     }
 
     getCompletedJobs = () => {
-        axios
-            .get(config.serverurl+'/jobs',)
+        fetcher(config.serverurl+'/jobs',{method:"GET"})
+        .then(res => res.json())
             .then(res => {
                 let jobs_array = []
+                console.log(res)
                 res.data.forEach(d => {
-                    if (d.status === "Completed") {
+                    if (d.status === "Finished") {
                         jobs_array.push({
                             id: d._id,
                             URLs: d.URLs,

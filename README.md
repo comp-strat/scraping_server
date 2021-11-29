@@ -58,16 +58,16 @@ Create three terminal screens: one for Redis, one for Flask, one for React. From
 ##### 3A. In Redis window (must be in venv):
 ```bash
 cd crawler
-sudo rq worker crawling-tasks --path . # run Redis
+rq worker crawling-tasks --path . # run Redis
 ```
 
 #### 3B. In Flask window (must be in venv): 
 ```bash
-$ export CLIENT_ORIGIN=http://localhost:3000
-$ export MONGO_URI=mongodb://localhost:27017
-$ export SERVER_PORT=5000
-$ cd crawler/crawler
-$ python app.py # run Flask
+export CLIENT_ORIGIN=http://localhost:3000
+export MONGO_URI=mongodb://localhost:27017
+export SERVER_PORT=5000
+cd crawler/crawler
+python app.py # run Flask
 ```
 The environment variables guide the flask server. The values shown are the default values.
  - CLIENT_ORIGIN is the client it should accept requests from
@@ -77,8 +77,8 @@ The environment variables guide the flask server. The values shown are the defau
 ### 3C. In React window:
 ```bash
 export REACT_APP_SERVER_URL=http://localhost:5000
-$ cd client
-$ npm start # run React server
+cd client
+npm start # run React server
 ```
 The environment variable here is the server url requests should be sent to from the React client (so the address of the flask server)
 

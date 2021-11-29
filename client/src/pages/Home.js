@@ -8,9 +8,6 @@ function Home() {
   return (
     <div className="Home">
       <Login />
-  
-      <Logout />
-
     </div>
   );
 }

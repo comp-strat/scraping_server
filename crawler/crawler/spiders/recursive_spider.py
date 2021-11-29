@@ -139,7 +139,8 @@ class RecursiveSpider(CrawlSpider):
         self.rq_id = rq_id
         self.user = user
         self.allowed_domains = []
-        self.rules = (Rule(CustomLinkExtractor(allow_domains = self.allowed_domains), follow=True, callback="parse_items"),)
+        self.rules = (Rule(CustomLinkExtractor(allow_domains = self.allowed_domains), follow=True, callback="parse_items", 
+            process_request=lambda a,b: print("PROCESS REQUEST",a,b)),)
         self.domain_to_id = {}
         self.custom_settings = mongo_settings
 

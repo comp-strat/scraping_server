@@ -1,9 +1,9 @@
 """
-In scrapy/schools, use the command
+In crawler/crawler, use the command
 
-    python3 schools/run_schoolspider.py 
+    python3 crawler/run_spider.py 
 
-To run the schoolspider.
+To run the recursivespider.
 The primary purpose of this file is for the Scrapy Dockerfile.
 
 NOTE: by default, data doesn’t persist when that container no longer exists.
@@ -19,8 +19,8 @@ from crawler import crawlTaskTracker
 from crawler import settings
 
 # See scrapy_vanilla.py for the meaning of this command.
-#scrapy_run_cmd = "scrapy crawl schoolspider -a csv_input=schools/spiders/test_urls.csv"
-SCRAPY_RUN_CMD = "scrapy crawl schoolspider -a school_list="
+#scrapy_run_cmd = "scrapy crawl recursivespider -a csv_input=schools/spiders/test_urls.csv"
+SCRAPY_RUN_CMD = "scrapy crawl recursivespider -a target_list="
 
 SPLIT_FILE_CMD = 'split -l 100 --additional-suffix='
 
@@ -44,7 +44,7 @@ def execute_scrapy_from_urls(urls, mongo_settings, user=None):
         mongo_pass=setting("MONGO_PASSWORD",settings.MONGO_PASSWORD),
         db_name=setting("MONGODB_DB",settings.MONGODB_DB),
         jobs_collection=setting("MONGODB_COLLECTION_JOBS",settings.MONGODB_COLLECTION_JOBS))
-    task_repository.addTask(urls, id)
+    task_repository.addTask(urls, id, user)
     
     pool = multiprocessing.Pool(multiprocessing.cpu_count() - 1)
     pool.starmap(execute_scrapy_from_file.execute_scrapy_from_url, [(url, id, mongo_settings, user) for url in urls])

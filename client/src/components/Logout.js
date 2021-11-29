@@ -1,19 +1,23 @@
 import React from 'react';
 import { GoogleLogout } from 'react-google-login';
+import { useHistory } from "react-router-dom";
+import {inMemoryUserManager} from '../util/fetcher'
 
-const clientId =
-  '707788443358-u05p46nssla3l8tmn58tpo9r5sommgks.apps.googleusercontent.com';
+import config from '../server-config'
+
 
 function Logout() {
+  const history = useHistory();
   const onSuccess = () => {
     console.log('Logout made successfully');
-    alert('Logout made successfully');
+    history.push("/");
+    inMemoryUserManager.deleteUser();
   };
 
   return (
     <div>
       <GoogleLogout
-        clientId={clientId}
+        clientId={config.google_oauth_clientid}
         buttonText="Logout"
         onLogoutSuccess={onSuccess}
       ></GoogleLogout>

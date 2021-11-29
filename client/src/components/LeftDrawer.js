@@ -26,21 +26,17 @@ import Logout from "../components/Logout.js";
 //Styles
 import { componentStyles } from "../styles/componentStyles";
 
-import {useGlobalState} from 'state-pool';
+import {inMemoryUserManager} from "../util/fetcher";
+import { Redirect, useHistory} from "react-router";
 
 
 export function LeftDrawer(props) {
+    const history = useHistory();
     const classes = componentStyles();
-    const [user] = useGlobalState("user");
-    const getProfile = () => {
-        if (user.profileObj == undefined) {
-            props.history.push("/");
-            return {};
-        } else {
-            return user.profileObj;
-        }
-    }
+    const user = inMemoryUserManager.getUser();
+
     return (
+        user != null && user.profileObj != undefined ?
         <Drawer
             variant="permanent"
             anchor="left"
@@ -49,7 +45,7 @@ export function LeftDrawer(props) {
                 paper: classes.drawerPaper,
             }}
         >
-            <User name={getProfile().name} image={getProfile().imageUrl}/>
+            <User name={user.profileObj.name} image={user.profileObj.imageUrl}/>
             <Divider />
             <List>
                 <ListItem button onClick={() => handleRoutes(props, "dashboard")}>
@@ -151,6 +147,10 @@ export function LeftDrawer(props) {
                     <Logout/>
                 </ListItem>
             </List>
-        </Drawer>
+        </Drawer> : <Redirect to = {{
+                pathname: "/",
+                search: history.location.search,
+                state: { referrer: history.location.pathname }
+            }}/>
     )
 }
