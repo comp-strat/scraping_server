@@ -1,7 +1,0 @@
-./idea
-./build
-.env
-.idea/
-node_modules/
-build/
-src/data/

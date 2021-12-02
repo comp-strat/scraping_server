@@ -1,11 +1,31 @@
 #!/bin/bash
 
-# Todo: make all of the servers docker containers
-
-cd flaskserver
+#cd flaskserver
 chmod +x .build.sh
 ./.build.sh
-cd ../server
+cd server
 npm install
 npm install -g wait-on
 wait-on tcp:5000 && wait-on tcp:27017 && npm run prod &
+
+python3 -m pip install --user virtualenv
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+pip install crawler --no-index --find-links .
+
+# Should not be necessary with travis, but nice to have as a guide
+#wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | apt-key add -
+#echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/5.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-5.0.list
+#apt update && apt install -y mongodb-org
+#apt install apt-transport-https ca-certificates curl software-properties-common
+#curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+#add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+#apt-cache policy docker-ce
+#apt install docker-ce
+
+apt install redis-server
+
+docker pull mongo && docker run --name mongodb --restart always -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=mdipass -p 27000:27017 mongo &
+python3 -m rq worker crawling-tasks --path . &
+python3 schools/app.py &

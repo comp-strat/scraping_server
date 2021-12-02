@@ -1,13 +1,13 @@
 import React, {Component} from "react";
 
-import axios from "axios";
-
 //Components
 import {LeftDrawer} from "../components/LeftDrawer";
 import {Copyright} from "../components/Copyright";
 
 //Actions
 import {handleRoutes} from "../util/handleRoutes";
+import {fetcher, inMemoryUserManager} from "../util/fetcher";
+
 
 // data
 
@@ -27,7 +27,6 @@ import CardMedia from '@material-ui/core/CardMedia';
 
 //images
 import Avatar from '@material-ui/core/Avatar';
-import pranav from '../static/img/pranav.png';
 import charlotte from '../static/img/Charlotte.jpg'
 
 // Styles
@@ -55,7 +54,15 @@ const handleDatasetCardDownloadClick = (props, id) => {
 
 function Samples(props) {
     const classes = datasetsStyles();
-
+    const user = inMemoryUserManager.getUser()
+    const getProfile = () => {
+        if (user.profileObj == undefined) {
+            props.history.push("/");
+        } else {
+            return user.profileObj;
+        }
+    }
+    
     console.log(props.data)
     return (
         <React.Fragment>
@@ -71,7 +78,7 @@ function Samples(props) {
                         <Grid item xs={2} md={3} sm={6} key={job.id}>
                             <Card className={classes.exampleCardStyle}>
                                 <CardHeader
-                                    avatar={<Avatar src={pranav}/>}
+                                    avatar={<Avatar src={getProfile().imageUrl}/>}
                                     action={
                                         <IconButton>
                                             <ShareIcon/>
@@ -141,12 +148,13 @@ class Datasets extends Component {
     }
 
     getCompletedJobs = () => {
-        axios
-            .get(config.serverurl+'/jobs',)
+        fetcher(config.serverurl+'/jobs',{method:"GET"})
+        .then(res => res.json())
             .then(res => {
                 let jobs_array = []
+                console.log(res)
                 res.data.forEach(d => {
-                    if (d.status === "Completed") {
+                    if (d.status === "Finished") {
                         jobs_array.push({
                             id: d._id,
                             URLs: d.URLs,

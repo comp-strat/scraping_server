@@ -2,5 +2,6 @@
 .idea/
 
 .DS_Store
-
+*.venv/*
 data-node/
+mongodata/

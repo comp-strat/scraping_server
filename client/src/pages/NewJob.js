@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import axios from "axios";
+import {fetcher} from "../util/fetcher";
 
 //Components
 import {LeftDrawer} from "../components/LeftDrawer";
@@ -44,14 +44,15 @@ class CreateNewJob extends Component {
             URLs: URLsString
         })
 
-        axios
-            .post(config.serverurl+'/job', {
-                URLs: URLsString
+        fetcher(config.serverurl+'/job', {
+                method: "POST",
+                body: JSON.stringify({urls: URLsString})
             })
+            .then(res => res.json())
             .then(res => {
-                this.props.history.push("/job/"+res.data.job.redisID);
+                this.props.history.push("/job/"+res.job_id);
                 this.setState({
-                    success: res.data.success,
+                    success: res.success,
                     value: ''
                 })
                 console.log(this.state);

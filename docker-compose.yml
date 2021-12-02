@@ -1,5 +1,7 @@
-version: "2"
-
+# Allows Scrapy and MongoDB to work together in separate containers through
+# docker-compose: https://docs.docker.com/compose/.
+# For info on use, see the README.md.
+version: '3'
 services:
     client:
         build: ./client
@@ -17,27 +19,70 @@ services:
     server:
         build: ./server
         restart: always
+        # To do: Change this to 7000 or something
         ports:
-           - "8000:8000"
+            - "8000:8000"
         volumes:
-           - ./server:/server
-           - /server/node_modules
+            - ./server:/server
+            - /server/node_modules
         depends_on:
-           - mongodb
+            - crawler_api
         networks:
             - scraping_server_network
 
-    mongodb:
-        image: mongo
-        restart: always
-        container_name: mongodb
+    crawler_api:
+        build: scrapy/schools # Build the Scrapy Dockerfile.
+        depends_on:
+            - mongodb
+            - redis
+        expose:
+            - 5000
         volumes:
-           - ./data-node:/data/db
-        ports:
-           - 27017:27017
-        command: mongod --noauth
+            - crawler_api:/crawler/
         networks:
-           - scraping_server_network
+            - scraping_server_network
+
+    # credit: https://dev.to/sonyarianto/how-to-spin-mongodb-server-with-docker-and-docker-compose-2lef
+    mongodb:
+        container_name: mongodb
+        image: mongo:latest
+        command: mongod --port 27000
+        restart: always
+        expose:
+            - 27000
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: admin
+            MONGO_INITDB_ROOT_PASSWORD: mdipass
+        volumes:
+            - /vol_b/data/mongodata:/data/db/
+        networks:
+            - scraping_server_network
+        # References from previous versions of this file:
+        # volumes:
+        #    - ./data-node:/data/db
+        # ports:
+        #    - 27017:27017
+        # network_mode: host
+
+    redis:
+        image: redis:latest
+        expose:
+            - 6379
+        networks:
+            - scraping_server_network
+        # command: rq worker crawling-tasks
+
+    redis_worker:
+        build: scrapy/schools
+        depends_on:
+            - mongodb
+            - redis
+        command: rq worker crawling-tasks --path /code/schools/
+        volumes:
+            - crawler_api:/crawler
+        networks:
+            - scraping_server_network
+
 
 networks:
     scraping_server_network:

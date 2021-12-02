@@ -20,16 +20,23 @@ import NotificationsIcon from "@material-ui/icons/Notifications";
 //Components
 import {User} from "./User";
 import {handleRoutes} from "../util/handleRoutes";
+import Logout from "../components/Logout.js";
+
 
 //Styles
 import { componentStyles } from "../styles/componentStyles";
 
+import {inMemoryUserManager} from "../util/fetcher";
+import { Redirect, useHistory} from "react-router";
 
 
 export function LeftDrawer(props) {
+    const history = useHistory();
     const classes = componentStyles();
+    const user = inMemoryUserManager.getUser();
 
     return (
+        user != null && user.profileObj != undefined ?
         <Drawer
             variant="permanent"
             anchor="left"
@@ -38,7 +45,7 @@ export function LeftDrawer(props) {
                 paper: classes.drawerPaper,
             }}
         >
-            <User name="Pranav Bhasin"/>
+            <User name={user.profileObj.name} image={user.profileObj.imageUrl}/>
             <Divider />
             <List>
                 <ListItem button onClick={() => handleRoutes(props, "dashboard")}>
@@ -135,7 +142,15 @@ export function LeftDrawer(props) {
                         }
                     />
                 </ListItem>
+
+                <ListItem>
+                    <Logout/>
+                </ListItem>
             </List>
-        </Drawer>
+        </Drawer> : <Redirect to = {{
+                pathname: "/",
+                search: history.location.search,
+                state: { referrer: history.location.pathname }
+            }}/>
     )
 }
