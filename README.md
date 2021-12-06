@@ -1,5 +1,5 @@
 # Scraping Server
-This Repository accompanies https://github.com/URAP-charter/web_scraping as web interface. It provides a scalable, robust web-crawling pipeline applicable across web designs and accessible for researchers with minimal computational skills. It uses a versatile, scalable architecture built around Python's scrapy module.
+This codebase provides a scalable, robust web-crawling pipeline applicable across web designs and accessible for researchers with minimal computational skills. It uses a versatile, scalable architecture built around Python's scrapy module.
 
 
 ## Description
