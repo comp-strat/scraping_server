@@ -21,13 +21,14 @@ class CrawlTaskRepository():
         self.collection_name = jobs_collection
         self.db_name = db_name
     
-    def addTask(self,urls,rq_id,user=None):
+    def addTask(self,urls,rq_id,user, title):
         db = self.client[self.db_name]
         collection = db[self.collection_name]
         return collection.insert_one({
             "URLs":urls,
             "rq_id":rq_id,
             "user":user,
+            "title":title,
             "created_dt": int(time.time()),
             "status":"Ongoing"
         })
@@ -62,7 +63,8 @@ class CrawlTaskRepository():
         db = self.client[self.db_name]
         collection = db[self.collection_name]
         document = collection.find_one({"rq_id":task_rq_id})
-        return str(document["status"]) if document else self.get_task_progress(task_rq_id)
+
+        return dict(document) if document else {"status":self.get_task_progress(task_rq_id)}
 
     def getIncompleteTasksByUserId(self, user_id):
         db = self.client[self.db_name]
@@ -115,6 +117,7 @@ class CrawlTaskRepository():
             "_id": doc["rq_id"],
             "URLs": doc["URLs"],
             "createdDate": doc["created_dt"],
-            "status": doc["status"]
+            "status": doc["status"],
+            "title": doc["title"]
         } for doc in collection.find({"user":user})]
         return {"data":documents}

@@ -1,4 +1,5 @@
-import { Card, Fab } from "@material-ui/core";
+import { Card, CardContent, CardHeader, Fab, Typography, CardActions, List, ListItem} from "@material-ui/core";
+import { ListItemButton,ListItemText } from '@mui/material';
 import React, { Component } from "react";
 import {jobsStyles} from "../styles/jobsStyles";
 import config from '../server-config'
@@ -7,7 +8,9 @@ import {fetcher} from "../util/fetcher";
 const classes = jobsStyles;
 class SingleJob extends Component {
     state = {
-        status: "Loading"
+        status: "Loading",
+        title: "",
+        URLs: []
     }
 
     constructor(props) {
@@ -39,6 +42,8 @@ class SingleJob extends Component {
             .then(res => {
                 if (res.completion_status == "Ongoing") setTimeout(this.updateStatus,10000);
                 this.setState({
+                    URLs: res.URLs,
+                    title: res.title,
                     status: res.completion_status
                 })
             })
@@ -49,35 +54,51 @@ class SingleJob extends Component {
         this.updateStatus()
     }
 
+
     render() {
         return (
-            <Card variant="outlined" style={{paddingTop: "20px", paddingBottom:"200px", paddingRight:"200px",paddingLeft:"20px"}}>
-                <h2>Task Details</h2>
-
+            <Card variant="outlined" style={{paddingTop: "20px", paddingBottom:"100px", paddingRight:"100px",paddingLeft:"20px"}}>
+                <CardHeader>Task Details</CardHeader>
+                <CardContent>
+                <Typography variant="h3" component="div">
+                    {this.state.title}
+                </Typography>
+                <List>
+                {this.state.URLs.map( (url, i) => {
+                            return (
+                    <ListItem disablePadding>
+                        <ListItemButton component="a" href={url}>
+                        <ListItemText primary={url} />
+                        </ListItemButton>
+                    </ListItem>
+                   )}
+                )} </List>
+                </CardContent>
+                
                 {
                     {
-                    'Ongoing': <div><p>Process is Running</p>
-                            <Fab
+                    'Ongoing': <div><CardContent><p>Process is Running</p></CardContent>
+                            <CardActions><Fab
                                 variant="extended"
                                 color="primary"
                                 className={classes.topButtonStyle} 
                                 onClick={this.killFunc}>
                                     Kill
-                            </Fab>
+                            </Fab></CardActions>
                         </div>,
 
-                    'Error': <div><p>Process Errored</p></div>,
-                    'Finished': <div><p>Process Completed</p>
-                        <Fab
+                    'Error': <CardContent><p>Process Errored</p></CardContent>,
+                    'Finished': <div><CardContent><p>Process Completed</p></CardContent>
+                        <CardActions><Fab
                             variant="extended"
                             color="primary"
                             className={classes.topButtonStyle}
                             onClick={this.downloadFunc}>
                                 Download
-                        </Fab>
+                        </Fab></CardActions>
                     </div>,
-                    'Cancelled': <div><p>Process Cancelled</p></div>,
-                    'Failed': <div><p>Process Failed</p></div>
+                    'Cancelled': <CardContent><p>Process Cancelled</p></CardContent>,
+                    'Failed': <CardContent><p>Process Failed</p></CardContent>
                     }[this.state.status]
                 }
 

@@ -35,7 +35,7 @@ task_repository = crawlTaskTracker.CrawlTaskRepository(
     db_name=settings.MONGODB_DB,
     jobs_collection=settings.MONGODB_COLLECTION_JOBS)
 
-def execute_scrapy_from_urls(urls, mongo_settings, user=None):
+def execute_scrapy_from_urls(urls, mongo_settings, user=None, title=None):
     id = get_current_job().id
     setting = lambda word, otherwise: mongo_settings[word] if word in mongo_settings else otherwise
     task_repository = crawlTaskTracker.CrawlTaskRepository(
@@ -44,7 +44,7 @@ def execute_scrapy_from_urls(urls, mongo_settings, user=None):
         mongo_pass=setting("MONGO_PASSWORD",settings.MONGO_PASSWORD),
         db_name=setting("MONGODB_DB",settings.MONGODB_DB),
         jobs_collection=setting("MONGODB_COLLECTION_JOBS",settings.MONGODB_COLLECTION_JOBS))
-    task_repository.addTask(urls, id, user)
+    task_repository.addTask(urls, id, user, title)
     
     pool = multiprocessing.Pool(multiprocessing.cpu_count() - 1)
     pool.starmap(execute_scrapy_from_file.execute_scrapy_from_url, [(url, id, mongo_settings, user) for url in urls])

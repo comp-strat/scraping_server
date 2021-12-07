@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 // Components
 import {Copyright} from "../components/Copyright";
 import {LeftDrawer} from "../components/LeftDrawer";
+import ResponsiveAppBar from "../components/Navbar";
 
 //helpers
 import {getComparator, stableSort} from "../util/jobSortingHelpers";
@@ -38,6 +39,7 @@ import {jobsStyles} from "../styles/jobsStyles";
 import {render} from "@testing-library/react";
 
 import config from '../server-config'
+import { Container } from "@material-ui/core";
 
 
 const classes = jobsStyles;
@@ -48,7 +50,8 @@ const options = [
 ];
 
 const jobsTableHeader = [
-    {id: 'URLs', label: "URLs", minWidth: 200, align: 'left'},
+    {id: 'Title', label: "Title", minWidth: 120, align: 'left'},
+    {id: 'URLs', label: "URLs", minWidth: 120, align: 'left'},
     {id: 'Creator', label: "Creator", minWidth: 120, align: 'right'},
     {id: 'Date', label: "Date", minWidth: 120, align: 'right'},
     {id: 'Status', label: "Status", minWidth: 100, align: 'right'},
@@ -81,14 +84,14 @@ function TopButtons(props) {
                 NEW JOB
             </Fab>
 
-            <Fab
+            {/*<Fab
                 variant="extended"
                 color="primary"
                 className={classes.topButtonStyle}
             >
                 <AddIcon/>
                 SEARCH
-            </Fab>
+            </Fab>*/}
         </Grid>
     )
 }
@@ -123,7 +126,7 @@ export function EnhancedJobTableHead(props) {
     return (
         <TableHead>
             <TableRow>
-                {jobsTableHeader.slice(0, 4).map((column) => (
+                {jobsTableHeader.slice(0, 5).map((column) => (
                     <TableCell
                         key={column.id}
                         align={column.align}
@@ -136,15 +139,15 @@ export function EnhancedJobTableHead(props) {
                             onClick={createSortHandler(column.id)}
                         >
                             {column.label}
-                            {orderBy === column.id ? (
+                            {/*orderBy === column.id ? (
                                 <span className={classes.visuallyHidden}>
                                     {order === "desc" ? " (sorted desc) " : " (sorted asc) "}
                                 </span>
-                            ) : null}
+                            ) : null*/}
                         </TableSortLabel>
                     </TableCell>
                 ))}
-                {jobsTableHeader.slice(4, 5).map((column) => (
+                {jobsTableHeader.slice(5, 5).map((column) => (
                     <TableCell
                         key={column.id}
                         align={column.align}
@@ -202,7 +205,7 @@ function JobTable(props) {
     };
 
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, props.data.length - page * rowsPerPage);
-
+    console.log(props.data);
     return (
         <Grid container item direction="column">
             <Paper className={classes.tablePaper} variant="outlined">
@@ -222,16 +225,19 @@ function JobTable(props) {
                                 .map((row) => {
 
                                     return (
-                                        <TableRow hover tabIndex={-1} key={row.id}>
-                                            {jobsTableHeader.slice(0, 4).map((column) => {
+                                        <TableRow hover tabIndex={-1} key={row.id} onClick= {() => {
+                                            viewProcess(row.id)
+                                        }} style = {{cursor: "pointer"}}>
+                                            {jobsTableHeader.slice(0, 5).map((column) => {
                                                 const value = row[column.id];
+                                                console.log(row, column.id)
                                                 return (
                                                     <TableCell key={column.id} align={column.align}>
-                                                        <Link to={"/job/"+row.id}>{value}</Link>
+                                                        {value}
                                                     </TableCell>
                                                 );
                                             })}
-                                            <TableCell>
+                                            {/*<TableCell>
                                                 <IconButton
                                                     aria-controls="job-menu"
                                                     aria-haspopup="true"
@@ -261,7 +267,7 @@ function JobTable(props) {
                                                     </MenuItem>
 
                                                 </Menu>
-                                            </TableCell>
+                                                </TableCell>*/}
                                         </TableRow>
                                     );
                                 })}
@@ -291,8 +297,12 @@ function JobsPage(props) {
     const classes = jobsStyles()
 
     return (
+        <div>
+        <ResponsiveAppBar/>
         <div className={classes.root}>
-            <LeftDrawer history={props.history}/>
+            {/*<LeftDrawer history={props.history}/>*/}
+           
+            <Container>
             <main className={classes.main}>
                 <Grid
                     container
@@ -307,7 +317,9 @@ function JobsPage(props) {
                     <Copyright/>
                 </Box>
             </main>
-        </div>
+            </Container>
+
+        </div></div>
     )
 }
 
@@ -330,10 +342,11 @@ class Jobs extends Component {
                 res.data.forEach(d => {
                     jobs_array.push({
                         id: d._id,
-                        URLs: d.URLs,
+                        URLs: d.URLs.join(","),
                         Creator: d.created_by,
-                        Date: d.createdDate,
-                        Status: d.status
+                        Date: (new Date(d.createdDate*1000)).toISOString(),
+                        Status: d.status,
+                        Title: d.title
                     })
                 })
 
