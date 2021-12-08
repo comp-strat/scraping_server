@@ -15,7 +15,8 @@ import getzip
 import uuid
 import subprocess
 from functools import wraps
-import requests
+from google.oauth2 import id_token
+from google.auth.transport import requests
 
 app = Flask(__name__)
 
@@ -35,16 +36,14 @@ def token_required(f):
  
         if not token:
             return jsonify({'status':401,'message': 'a valid token is missing'}), 401
-       
-        url = "https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=" + token
+        
+        try:
+            idinfo = id_token.verify_oauth2_token(token, requests.Request(), settings.GOOGLE_OAUTH_CLIENT_URL)
+            return f(idinfo["email"], *args, **kwargs)
+        except ValueError:
+            return jsonify({'status':401,'message': 'token is invalid'}), 401
 
-        r = requests.get(url)
-        if r.status_code != requests.codes.ok:
-           return jsonify({'status':401,'message': 'token is invalid'}), 401
-        else:
-            current_user = r.json()["email"]
-
-        return f(current_user, *args, **kwargs)
+        
     return decorator
 
 @app.after_request

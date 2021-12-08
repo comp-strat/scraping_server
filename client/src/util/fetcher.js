@@ -27,7 +27,7 @@ function updateOptions(options) {
     if (user) {
       update.headers = {
         ...update.headers,
-        Authorization: `Bearer ${user.accessToken}`,
+        Authorization: `Bearer ${user.tokenId}`,
       };
     }
     return update;
