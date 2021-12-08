@@ -43,6 +43,7 @@ pip3 install -r requirements.txt
 ```
 
 #### 2B. Set up MongoDB container
+When setting up MongoDB, for security we recommend using a custom username and password and forwarding to a different port like 27000. Bypassing these measures makes it likely that you will experience web hacks and attempts to blackmail you by compromising your data stored in Mongo. The code below offers a template for such security through several extensions on the basic command of `docker run mongo`.
 ```bash
 mkdir mongodata
 docker pull mongo && docker run -d --name mongodb -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=mdipass -p 27000:27017 --log-opt max-size=500m --restart always -v /vol_b/data/mongodata:/data/db mongo
@@ -64,7 +65,7 @@ rq worker crawling-tasks --path . # run Redis
 #### 3B. In Flask window (must be in venv): 
 ```bash
 export CLIENT_ORIGIN=http://localhost:3000
-export MONGO_URI=mongodb://localhost:27017
+export MONGO_URI=mongodb://localhost:27000
 export SERVER_PORT=5000
 cd crawler/crawler
 python app.py # run Flask
