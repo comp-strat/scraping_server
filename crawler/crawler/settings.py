@@ -147,4 +147,4 @@ IMAGES_MIN_HEIGHT = 150
 IMAGES_MIN_WIDTH = 150
 
 
-GOOGLE_OAUTH_CLIENT_URL = "1080632962111-av26u4euc5vgoollpmfbrtiissptg4dc.apps.googleusercontent.com"
+GOOGLE_OAUTH_CLIENT_URL = "980011737294-kriddo55g39bja7timpfk233lm83l8jl.apps.googleusercontent.com"
