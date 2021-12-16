@@ -1,11 +1,12 @@
 
 import React, {Component} from "react";
 import {LeftDrawer} from "../components/LeftDrawer.js";
+import ResponsiveAppBar from "../components/Navbar.js";
 import {Copyright} from "../components/Copyright";
 
 import SingleJob from "../components/SingleJob.js"
 
-import { Grid, Box} from '@material-ui/core';
+import { Grid, Box, Container} from '@material-ui/core';
 import { useParams } from 'react-router-dom'
 import {jobsStyles} from "../styles/jobsStyles";
 
@@ -15,9 +16,10 @@ function Job(props) {
     const { id } = useParams()
     return (
         <div className={classes.root}>
-            <LeftDrawer history={props.history}/>
+            <ResponsiveAppBar/>
+            <Container style = {{marginTop: 20}}>
             <main className={classes.main}>
-                <Grid
+            <Grid
                     container
                     direction="column"
                     justify="center"
@@ -29,6 +31,7 @@ function Job(props) {
                     <Copyright/>
                 </Box>
             </main>
+            </Container>
         </div>
     )
 }

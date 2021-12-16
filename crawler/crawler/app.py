@@ -15,7 +15,8 @@ import getzip
 import uuid
 import subprocess
 from functools import wraps
-import requests
+from google.oauth2 import id_token
+from google.auth.transport import requests
 
 app = Flask(__name__)
 
@@ -27,25 +28,23 @@ task_repository = crawlTaskTracker.CrawlTaskRepository(
     jobs_collection=settings.MONGODB_COLLECTION_JOBS)
 
 def token_required(f):
-   @wraps(f)
-   def decorator(*args, **kwargs):
+    @wraps(f)
+    def decorator(*args, **kwargs):
         token = None
         if 'Authorization' in request.headers:
             token = request.headers['Authorization'].split(" ")[-1].strip()
  
         if not token:
             return jsonify({'status':401,'message': 'a valid token is missing'}), 401
-       
-        url = "https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=" + token
+        
+        try:
+            idinfo = id_token.verify_oauth2_token(token, requests.Request(), settings.GOOGLE_OAUTH_CLIENT_URL)
+            return f(idinfo["email"], *args, **kwargs)
+        except ValueError:
+            return jsonify({'status':401,'message': 'token is invalid'}), 401
 
-        r = requests.get(url)
-        if r.status_code != requests.codes.ok:
-           return jsonify({'status':401,'message': 'token is invalid'}), 401
-        else:
-            current_user = r.json()["email"]
-
-        return f(current_user, *args, **kwargs)
-   return decorator
+        
+    return decorator
 
 @app.after_request
 def after_request(response):
@@ -53,6 +52,7 @@ def after_request(response):
     header["Access-Control-Allow-Credentials"] =  True
     header["Access-Control-Allow-Origin"] = settings.CLIENT_ORIGIN
     header["Access-Control-Allow-Headers"] = "*"
+    header["Access-Control-Allow-Methods"] = "*"
     header["Content-Type"] = "text/json"
     return response
 
@@ -67,27 +67,18 @@ def create_task(user):
     data = json.loads(request.data.decode('utf-8'))
     if 'urls' not in data:
         return {'status': 400, 'message': 'No urls found!'}
-    
-    #school_list = pd.DataFrame({"NCESSCH":["100" for _ in data["urls"]], "URL_2019":data["urls"]})
-    #now = datetime.now()
-    #school_list.to_csv('./schools/spiders/' + now.strftime('%d%m%Y_%H%M%S') + '.csv', index=False)
-    #print("tmp file written")
 
-    queue = rq.Queue('crawling-tasks', connection=Redis.from_url('redis://'))
+    queue = rq.Queue('crawling-tasks', default_timeout=3600, connection=Redis.from_url('redis://'))
     
     urls = data["urls"].split(",")
+    title = data["title"] if "title" in data else None
     job_id = str(uuid.uuid4())
     mongo_settings = {
         "MONGO_URI": settings.MONGO_URI
     }
-    job = queue.enqueue("crawler.execute_scrapy_from_urls", urls, mongo_settings, user, job_id=job_id)
+    job = queue.enqueue("crawler.execute_scrapy_from_urls", urls, mongo_settings, user, title, job_id=job_id)
     queue.enqueue("crawler.update_status",job_id, mongo_settings) # After task is done, update status to failed or completed
 
-    #job = queue.enqueue('schools.execute_scrapy_from_flask', './schools/spiders/' + now.strftime('%d%m%Y_%H%M%S') + '.csv', './schools/spiders/' + now.strftime('%d%m%Y_%H%M%S'))
-    #job_id = job.get_id()
-    
-    #crawl_task = crawlTaskTracker.CrawlTask(job_id) # Future work: add user id too
-    #task_mongo_id = task_repository.putTask(crawl_task)
     print("Created job", job_id, urls)
     return {'status': 200, 'message': 'Crawl Started', 'job_id': str(job_id)}
 
@@ -103,8 +94,13 @@ def get_task_by_id(user,task_id):
     if task_id == None:
         return {'status': 400, 'message': 'No Task ID provided'}
     #completion_status = task_repository.get_task_progress(task_id)
-    completion_status = task_repository.getStatus(task_id)
-    return {'task_id': task_id, 'completion_status': completion_status}
+    document = task_repository.getStatus(task_id)
+    return {
+        'task_id': task_id, 
+        'completion_status': document["status"],
+        'title': "Unadded Task" if "title" not in document else document["title"],
+        'URLs': [""] if "URLs" not in document else document["URLs"]
+    }
 
 @app.route('/job/<task_id>', methods=['DELETE'])
 @token_required

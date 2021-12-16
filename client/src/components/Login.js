@@ -18,7 +18,7 @@ function Login() {
     refreshTokenSetup(res);
     console.log(history);
     if (history.location.state == undefined || history.location.state.referrer == undefined)
-      history.push("/dashboard");
+      history.push("/jobs");
     else
       history.push(history.location.state.referrer);
   };

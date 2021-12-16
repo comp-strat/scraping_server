@@ -122,7 +122,7 @@ MONGODB_COLLECTION_JOBS = "jobs"
 
 # running locally without containers
 
-MONGO_URI = os.getenv('MONGO_URI') or 'mongodb://localhost:27017'
+MONGO_URI = os.getenv('MONGO_URI') or 'mongodb://localhost:27000'
 
 # connect to MongoDB which is running in mongodb_container.
 #MONGO_URI = 'mongodb://mongodb_container:27000'
@@ -147,5 +147,4 @@ IMAGES_MIN_HEIGHT = 150
 IMAGES_MIN_WIDTH = 150
 
 
-GOOGLE_OAUTH_CLIENT_URL = ""
-GOOGLE_OAUTH_CLIENT_SECRET = ""
+GOOGLE_OAUTH_CLIENT_URL = "980011737294-kriddo55g39bja7timpfk233lm83l8jl.apps.googleusercontent.com"

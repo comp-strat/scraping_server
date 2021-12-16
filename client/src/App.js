@@ -23,17 +23,16 @@ class App extends Component {
     render() {
         return (
             <Router>
-                <div className="container">
-                    <Switch>
-                        <Route exact path="/" component={Home} />
-                        <Route exact path="/viewDataset" component={ViewDataset} />
-                        <Route exact path="/jobs" component={Jobs} />
-                        <Route exact path="/job/:id" component={Job} />
-                        <Route exact path="/datasets" component={Datasets} />
-                        <Route exact path="/dashboard" component={Dashboard} />
-                        <Route exact path="/new-job" component={CreateNewJob} />
-                    </Switch>
-                </div>
+                <Switch>
+                    <Route exact path="/" component={Home} />
+                    <Route exact path="/new-job" component={CreateNewJob} />
+                    <Route exact path="/jobs" component={Jobs} />
+                    <Route exact path="/job/:id" component={Job} />
+                    {/* <Route exact path="/viewDataset" component={ViewDataset} />
+                    <Route exact path="/datasets" component={Datasets} />
+                     <Route exact path="/dashboard" component={Dashboard} /> */}
+                    
+                </Switch>
             </Router>
         )
     }
