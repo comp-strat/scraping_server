@@ -122,7 +122,7 @@ MONGODB_COLLECTION_JOBS = "jobs"
 
 # running locally without containers
 
-MONGO_URI = os.getenv('MONGO_URI') or 'mongodb://localhost:27017'
+MONGO_URI = os.getenv('MONGO_URI') or 'mongodb://localhost:27000'
 
 # connect to MongoDB which is running in mongodb_container.
 #MONGO_URI = 'mongodb://mongodb_container:27000'
