@@ -132,7 +132,15 @@ dist
 
 .idea/
 
-.DS_Store
+# Python
 *.venv/*
+__pycache__
+*.pyc
+
+# macOS
+.DS_Store
+
 data-node/
 mongodata/
+
+
