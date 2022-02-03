@@ -116,13 +116,13 @@ brew install redis
 ```
 and start the redis server using _brew service._
 ```bash
-brew service start redis
+brew services start redis
 ```
 
 ### 3. Conda Environment
 Create a Conda environment named `wc-server` using Python 3.10
 ```bash
-conda create --name wc-server python=3.10 --file requirements.txt
+conda create --name wc-server python=3.10
 ```
 Activate the environment
 ```bash
@@ -135,6 +135,9 @@ pip install -r requirements.txt
 Setup environment variables
 ```bash
 echo "CLIENT_ORIGIN=http://localhost:3000 MONGO_URI=mongodb://localhost:27000 SERVER_PORT=5000 REACT_APP_SERVER_URL=http://localhost:5000" | xargs conda env config vars set
+
+conda deactivate
+conda activate wc-server
 ```
 
 ### 4. Docker
@@ -159,7 +162,7 @@ brew install node
 ```
 and install all the necessary node modules (such as React)
 ```bash
-npm install
+npm --prefix ./client install
 ```
 
 ### 6. Set up user authorization with Google Sign-In
