@@ -52,7 +52,7 @@ import tldextract
 import regex # 3rd party library supports recursion and unicode handling
 
 import csv
-from bs4 import BeautifulSoup # BS reads and parses even poorly/unreliably coded HTML 
+from bs4 import BeautifulSoup # BS reads and parses even poorly/unreliably coded HTML
 from bs4.element import Comment # helps with detecting inline/junk tags when parsing with BS
 import html5lib # slower but more accurate bs4 parser for messy HTML # lxml faster
 from scrapy.linkextractors import LinkExtractor
@@ -85,8 +85,8 @@ CONTROL_CHAR_RE = re.compile('[%s]' % re.escape(control_chars))
 TEXTRACT_EXTENSIONS = [".pdf", ".doc", ".docx", ""]
 
 # Define inline tags for cleaning out HTML
-inline_tags = ["b", "big", "i", "small", "tt", "abbr", "acronym", "cite", "dfn", "kbd", 
-               "samp", "var", "bdo", "map", "object", "q", "span", "sub", "sup", "head", 
+inline_tags = ["b", "big", "i", "small", "tt", "abbr", "acronym", "cite", "dfn", "kbd",
+               "samp", "var", "bdo", "map", "object", "q", "span", "sub", "sup", "head",
                "title", "[document]", "script", "style", "meta", "noscript"]
 
 
@@ -139,29 +139,34 @@ class RecursiveSpider(CrawlSpider):
         self.rq_id = rq_id
         self.user = user
         self.allowed_domains = []
-        self.rules = (Rule(CustomLinkExtractor(allow_domains = self.allowed_domains), follow=True, callback="parse_items", 
-            process_request=lambda a,b: print("PROCESS REQUEST",a,b)),)
+        self.rules = (
+            Rule(CustomLinkExtractor(
+                allow_domains=self.allowed_domains), follow=True,
+                callback="parse_items",
+                process_request=lambda a, b: print("PROCESS REQUEST", a, b)
+            )
+        )
         self.domain_to_id = {}
         self.custom_settings = mongo_settings
 
-        if target_list is not None: 
+        if target_list is not None:
             self.init_from_target_list(target_list)
         elif url is not None:
             domain = self.get_domain(url,True)
             self.start_urls.append(url)
             self.allowed_domains.append(domain)
-        
+
         print("Start URLs:",self.start_urls,"Allowed Domains:",self.allowed_domains)
-        
+
 
     # note: make sure we ignore robot.txt
     # Method for parsing items
     def parse_items(self, response):
-        
+
         item = CrawlerItem()
         item['url'] = response.url
         item['text'] = self.get_text(response)
-        domain = self.get_domain(response.url)    
+        domain = self.get_domain(response.url)
 
         #item['target_id'] = self.domain_to_id[domain]
         # uses DepthMiddleware
@@ -170,14 +175,19 @@ class RecursiveSpider(CrawlSpider):
         print("Full URL: ", response.url)
         print("Depth: ", item['depth'])
         item['image_urls'] = self.collect_image_URLs(response)
-        
+
         item['file_urls'], item['file_text'] = self.collect_file_URLs(domain, item, response)
         print(item['file_urls'])
         yield item
         # Will this be recursive for all of eternity?
         if 'text/html' in str(response.headers['Content-Type']):
-            for href in response.xpath('//a/@href').getall():
-                yield Request(response.urljoin(href), self.parse_items)
+            yield from response.follow_all(
+                css="a[href]" \
+                    + ":not([href^='javascript:'])" \
+                    + ":not([href^='tel:'])" \
+                    + ":not([href^='mailto:'])",
+                callback=self.parse_items
+            )
 
     def init_from_target_list(self, target_list):
         """
@@ -218,7 +228,7 @@ class RecursiveSpider(CrawlSpider):
                 if first_row:
                     first_row = False
                     continue
-                
+
                 print(raw_row)
                 target_id, url = raw_row
 
@@ -229,7 +239,7 @@ class RecursiveSpider(CrawlSpider):
                 # note: float('3.70014E+11') == 370014000000.0
                 self.domain_to_id[domain] = float(target_id)
 
-                
+
     def get_domain(self, url, init = False):
         """
         Given the url, gets the top level domain using the
@@ -250,23 +260,23 @@ class RecursiveSpider(CrawlSpider):
         print("get_domain: Permissive:", permissive_domain)
         print("get_domain: Specific:", specific_domain)
         top_level = len(specific_domain.replace("/", "")) == len(permissive_domain) # compare specific and permissive domain
-        
+
         if init: # Check if this is the initialization period for the Spider.
             if top_level:
                 return permissive_domain
             else:
                 return specific_domain
-        
+
         # secondary round
         if permissive_domain in self.allowed_domains:
             return permissive_domain
-        
+
         #implement dictionary for if specific domain is used in original allowed_domains; key is specific_domain?
-        
-        
-        return specific_domain # use `permissive_domain` to scrape much more broadly 
-    
-    
+
+
+        return specific_domain # use `permissive_domain` to scrape much more broadly
+
+
     def get_text(self, response):
         """
         Gets the readable text from a website's body and filters it.
@@ -295,15 +305,15 @@ class RecursiveSpider(CrawlSpider):
         visible_text = soup.get_text(strip = False) # get text from each chunk, leave unicode spacing (e.g., `\xa0`) for now to avoid globbing words
 
         print("Text pulled from soup!")
-        
+
         # Remove ascii (such as "\u00")
         filtered_text = visible_text.encode('ascii', 'ignore').decode('ascii')
-        
+
         print("Filtering ad junk from the soupy text")
 
         # Remove ad junk
-        filtered_text = re.sub(r'\b\S*pic.twitter.com\/\S*', '', filtered_text) 
-        filtered_text = re.sub(r'\b\S*cnxps\.cmd\.push\(.+\)\;', '', filtered_text) 
+        filtered_text = re.sub(r'\b\S*pic.twitter.com\/\S*', '', filtered_text)
+        filtered_text = re.sub(r'\b\S*cnxps\.cmd\.push\(.+\)\;', '', filtered_text)
         # Replace all consecutive spaces (including in unicode), tabs, or "|"s with a single space
         filtered_text = regex.sub(r"[ \t\h\|]+", " ", filtered_text)
         # Replace any consecutive linebreaks with a single newline
@@ -330,7 +340,7 @@ class RecursiveSpider(CrawlSpider):
             # make each image_url into a readable URL and add to image_urls
             image_urls.append(response.urljoin(image_url))
         return image_urls
-    
+
     def collect_file_URLs(self, domain, item, response):
         """
         Collects and returns the file URLs found on a given webpage
@@ -371,7 +381,7 @@ class RecursiveSpider(CrawlSpider):
         print("Content-Type Header: " + str(response.headers['Content-Type']))
 #        print("\n\n\n\nHeaders: " + str(response.headers.keys()) + "\n\n\n\n")
         print("PDF FOUND", extracted_links)
-        
+
         # iterate over list of links with .pdf/.doc/.docx in them and appends urls for downloading
         file_text = []
         for href in extracted_links:
@@ -380,15 +390,15 @@ class RecursiveSpider(CrawlSpider):
                 href = "http://" + domain + href
             # Add file URL to pipeline
             file_urls += [href]
-            
+
             # Parse file text and it to list of file texts
             try:
                 file_text += [self.parse_file(href, item['url'])]
             except UnicodeDecodeError:
                 print("Error parsing file: " + str(href) + " -- Unsupported Unicode Character")
-            
+
         return file_urls, file_text
-    
+
     def parse_file(self, href, parent_url):
         """
         Given the file's url and its parent url, 
@@ -418,7 +428,7 @@ class RecursiveSpider(CrawlSpider):
         print("Retrieved file data from response")
 
         extension = list(filter(lambda x: response_href.url.lower().endswith(x), TEXTRACT_EXTENSIONS))[0]
-      
+
         print("Extension found: " + str(extension))
         print("Pulling file data into tempfile")
         tempfile = NamedTemporaryFile(suffix=extension)
