@@ -1,10 +1,10 @@
+import React, {Component} from "react";
 import { makeStyles } from "@material-ui/core";
 import { Button, Container, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import HomeNavbar from "../components/HomeNavbar.js";
 import Login from "../components/Login.js";
 import Logout from "../components/Logout.js";
-import Socrates from '../static/img/Socratesacademy.jpg'
 
 
 const useStyles = makeStyles(theme => ({
@@ -39,7 +39,7 @@ const Hero = () => {
         width:"100%",
         height:"100%"
       }}
-      src = {Socrates}
+      src = {"/static/img/Socratesacademy.jpg"}
       />
       <div className={classes.overlay}>
         <Box

@@ -27,7 +27,6 @@ import CardMedia from '@material-ui/core/CardMedia';
 
 //images
 import Avatar from '@material-ui/core/Avatar';
-import charlotte from '../static/img/Charlotte.jpg'
 
 // Styles
 import {datasetsStyles} from "../styles/datasetsStyles";
@@ -89,7 +88,7 @@ function Samples(props) {
                                 />
                                 <CardMedia
                                     className={classes.exampleCardImageStyle}
-                                    image={charlotte}
+                                    src={"/static/img/Charlotte.jpg"}
                                     title={job.URLs}
                                 />
                                 <CardContent>
