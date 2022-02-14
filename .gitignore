@@ -144,3 +144,5 @@ data-node/
 mongodata/
 
 instance/
+*.bundle.js
+*.bundle.js.map
