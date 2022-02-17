@@ -11,12 +11,12 @@ NOTE: by default, data doesn’t persist when that container no longer exists.
 from scrapy import cmdline
 import multiprocessing
 import os
-import crawler.execute_scrapy_from_file as execute_scrapy_from_file
+import server.crawler.execute_scrapy_from_file as execute_scrapy_from_file
 import subprocess
 from rq import get_current_job
 
-from crawler import crawlTaskTracker
-from crawler import settings
+from server.crawler import crawlTaskTracker
+from server import settings
 
 # See scrapy_vanilla.py for the meaning of this command.
 #scrapy_run_cmd = "scrapy crawl recursivespider -a csv_input=schools/spiders/test_urls.csv"

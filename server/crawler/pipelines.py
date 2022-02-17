@@ -18,7 +18,7 @@ https://pymongo.readthedocs.io/en/stable/api/pymongo/collection.html#pymongo.col
 """
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
-from crawler.items import CrawlerItem
+from server.crawler.items import CrawlerItem
 from scrapy.exceptions import DropItem
 import os
 

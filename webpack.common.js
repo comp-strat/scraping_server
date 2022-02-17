@@ -9,12 +9,12 @@ module.exports = {
         path: path.resolve(__dirname, 'server/static/scripts')
     },
     resolve: {
-        extensions: ['.ts', '.tsx', '.js']
+        extensions: ['.js', '.jsx', '.css']
     },
     module: {
         rules: [
             {
-                test: /\.(js|ts|tsx)$/,
+                test: /\.jsx?$/,
                 exclude: /node_modules/,
                 loader: 'babel-loader',
                 options: {
@@ -22,14 +22,13 @@ module.exports = {
                         '@babel/preset-env',
                         '@babel/react',{
                             'plugins': ['@babel/plugin-proposal-class-properties']
-                        },
-                        '@babel/preset-typescript'
+                        }
                     ],
                 }
             },
             {
                 test: /\.css$/,
-                use: [],
+                use: [ 'style-loader', 'css-loader' ],
                 exclude: /node_modules/
             }
         ]

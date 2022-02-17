@@ -30,33 +30,35 @@ USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36
 ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-#CONCURRENT_REQUESTS = 32
+# CONCURRENT_REQUESTS = 32
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-#DOWNLOAD_DELAY = 3
+# DOWNLOAD_DELAY = 3
 # The download delay setting will honor only one of:
-#CONCURRENT_REQUESTS_PER_DOMAIN = 16
-#CONCURRENT_REQUESTS_PER_IP = 16
+# CONCURRENT_REQUESTS_PER_DOMAIN = 16
+# CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
-#COOKIES_ENABLED = False
+# COOKIES_ENABLED = False
 
 # Disable Telnet Console (enabled by default)
-#TELNETCONSOLE_ENABLED = False
+# TELNETCONSOLE_ENABLED = False
 
 # Override the default request headers:
-#DEFAULT_REQUEST_HEADERS = {
+# DEFAULT_REQUEST_HEADERS = {
 #   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
 #   'Accept-Language': 'en',
-#}
+# }
 
-# Enable or disable spider middlewares. These are set by default, but explicitly stated for the sake of highlighting what needs configuration.
+# Enable or disable spider middlewares. These are set by default,
+# but explicitly stated for the sake of highlighting what needs configuration.
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 SPIDER_MIDDLEWARES = {
-    'scrapy.spidermiddlewares.depth.DepthMiddleware': 100, 'scrapy.spidermiddlewares.httperror.HttpErrorMiddleware': 200, 'scrapy.spidermiddlewares.offsite.OffsiteMiddleware': 300
-  
+    'scrapy.spidermiddlewares.depth.DepthMiddleware': 100,
+    'scrapy.spidermiddlewares.httperror.HttpErrorMiddleware': 200,
+    'scrapy.spidermiddlewares.offsite.OffsiteMiddleware': 300
 }
 
 # Configure depth 
@@ -77,9 +79,9 @@ DOWNLOADS_DELAY = 10
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
-#EXTENSIONS = {
-#    'scrapy.extensions.telnet.TelnetConsole': None,
-#}
+# EXTENSIONS = {
+#   'scrapy.extensions.telnet.TelnetConsole': None,
+# }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
@@ -96,13 +98,11 @@ AUTOTHROTTLE_DEBUG = False
 
 # Enable and configure HTTP caching (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html#httpcache-middleware-settings
-#HTTPCACHE_ENABLED = True
-#HTTPCACHE_EXPIRATION_SECS = 0
-#HTTPCACHE_DIR = 'httpcache'
-#HTTPCACHE_IGNORE_HTTP_CODES = []
-#HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
-
-SERVER_PORT = os.getenv('SERVER_PORT') or 5000
+# HTTPCACHE_ENABLED = True
+# HTTPCACHE_EXPIRATION_SECS = 0
+# HTTPCACHE_DIR = 'httpcache'
+# HTTPCACHE_IGNORE_HTTP_CODES = []
+# HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 # Item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
@@ -110,7 +110,7 @@ ITEM_PIPELINES = {
     'crawler.pipelines.MongoDBImagesPipeline': 3,
     'crawler.pipelines.MongoDBFilesPipeline': 4,
     'crawler.pipelines.MongoDBTextPipeline': 300
-    #'crawler.pipelines.MongoDBPipeline': 300
+    # 'crawler.pipelines.MongoDBPipeline': 300
 }
 
 MONGODB_DB = 'crawlerSpider'
@@ -125,9 +125,9 @@ MONGODB_COLLECTION_JOBS = "jobs"
 MONGO_URI = os.getenv('MONGO_URI') or 'mongodb://localhost:27000'
 
 # connect to MongoDB which is running in mongodb_container.
-#MONGO_URI = 'mongodb://mongodb_container:27000'
-#MONGO_URI = 'someBadURI'
-#MONGO_URI = '10.0.2.4'
+# MONGO_URI = 'mongodb://mongodb_container:27000'
+# MONGO_URI = 'someBadURI'
+# MONGO_URI = '10.0.2.4'
 
 MONGO_REPLICATION = False
 
@@ -140,11 +140,12 @@ MONGO_USERNAME = 'admin' # could probably make a "schoolCrawler" user to use her
 MONGO_PASSWORD = 'mdipass' # Replace with actual password
 
 
-#FILES_EXPIRES = 365
+# FILES_EXPIRES = 365
 IMAGES_EXPIRES = 365
 MEDIA_ALLOW_REDIRECTS = True
 IMAGES_MIN_HEIGHT = 150
 IMAGES_MIN_WIDTH = 150
 
 
-GOOGLE_OAUTH_CLIENT_URL = "980011737294-kriddo55g39bja7timpfk233lm83l8jl.apps.googleusercontent.com"
+GOOGLE_OAUTH_CLIENT_URL = os.getenv('GOOGLE_OAUTH_CLIENT_ID') or None
+assert(GOOGLE_OAUTH_CLIENT_URL is not None, "Missing Google oauth client ID")

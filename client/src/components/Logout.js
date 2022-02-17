@@ -1,15 +1,15 @@
-import React from 'react';
-import { GoogleLogout } from 'react-google-login';
+import React from "react";
+import { GoogleLogout } from "react-google-login";
 import { useHistory } from "react-router-dom";
-import {inMemoryUserManager} from '../util/fetcher'
+import {inMemoryUserManager} from "../util/fetcher";
 
-import config from '../server-config'
+import config from "../server-config";
 
 
 function Logout() {
   const history = useHistory();
   const onSuccess = () => {
-    console.log('Logout made successfully');
+    console.log("Logout made successfully");
     history.push("/");
     inMemoryUserManager.deleteUser();
   };
@@ -20,7 +20,7 @@ function Logout() {
         clientId={config.google_oauth_clientid}
         buttonText="Logout"
         onLogoutSuccess={onSuccess}
-      ></GoogleLogout>
+      />
     </div>
   );
 }

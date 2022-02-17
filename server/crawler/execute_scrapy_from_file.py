@@ -1,10 +1,10 @@
 from scrapy import cmdline
 import subprocess
 from scrapyscript import Job, Processor
-from crawler.spiders.recursive_spider import RecursiveSpider
+from server.crawler.spiders.recursive_spider import RecursiveSpider
 from scrapy.utils.project import get_project_settings
-from crawler import crawlTaskTracker
-from crawler import settings
+from server.crawler import crawlTaskTracker
+from server import settings
 
 SCRAPY_RUN_CMD = "scrapy crawl schoolspider -a school_list="
 def update_status (id, mongo_settings):

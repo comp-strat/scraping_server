@@ -30,7 +30,7 @@ class App extends Component {
                     <Route exact path="/job/:id" component={Job} />
                     {/* <Route exact path="/viewDataset" component={ViewDataset} />
                     <Route exact path="/datasets" component={Datasets} />
-                     <Route exact path="/dashboard" component={Dashboard} /> */}
+                     <Route exact path="/dashboard" component={DashboardStyled} /> */}
                     
                 </Switch>
             </Router>

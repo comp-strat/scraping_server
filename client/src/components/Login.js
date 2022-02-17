@@ -1,19 +1,19 @@
-import React from 'react';
+import React from "react";
 
-import { GoogleLogin } from 'react-google-login';
+import { GoogleLogin } from "react-google-login";
 // refresh token
-import { refreshTokenSetup } from '../util/refreshToken';
+import { refreshTokenSetup } from "../util/refreshToken";
 
 import { useHistory } from "react-router-dom";
-import {inMemoryUserManager} from '../util/fetcher'
+import {inMemoryUserManager} from "../util/fetcher";
 
-import config from '../server-config'
+import config from "../server-config";
 
 function Login() {
   const history = useHistory();
 
   const OnSuccess = (res) => {
-    console.log('Login Success: currentUser:', res.profileObj);
+    console.log("Login Success: currentUser:", res.profileObj);
     inMemoryUserManager.setUser(res);
     refreshTokenSetup(res);
     console.log(history);
@@ -26,9 +26,9 @@ function Login() {
 
 
   const OnFailure = (res) => {
-    console.log('Login failed: res:', res);
+    console.log("Login failed: res:", res);
     alert(
-      `Failed to login.`
+      "Failed to login."
     );
   };
 
@@ -39,8 +39,8 @@ function Login() {
         buttonText="Login"
         onSuccess={OnSuccess}
         onFailure={OnFailure}
-        cookiePolicy={'single_host_origin'}
-        style={{ marginTop: '100px' }}
+        cookiePolicy={"single_host_origin"}
+        style={{ marginTop: "100px" }}
         isSignedIn={true}
       />
     </div>

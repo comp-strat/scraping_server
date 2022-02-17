@@ -1,6 +1,6 @@
 import pymongo
 import gridfs
-import settings
+from server import settings
 from tempfile import TemporaryDirectory
 from os.path import join
 import shutil
