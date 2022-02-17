@@ -12,7 +12,7 @@ We will test the architecture by crawling all 100,000 or so U.S. school websites
 Downstream features on our bucket list include real-time metrics and access to scraped data, error checks and backup scrapers (including the simple wget algorithm), and toggles for capturing data over time with the Internet Archive. 
 
 
-## Running the scraping server
+## Running the scraping server (Ubuntu)
 This requires a Redis server to handle tasks. The instructions below walk you through installing Redis, and [you can find more instructions here](https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-redis-on-ubuntu-18-04) (Ubuntu 18.04). If not yet installed, you will also need to [install MongoDB](https://docs.mongodb.com/manual/installation/) (instructions below don't include this part). You will also need access to authorization credentials for Google Sign-In; [here are instructions to create these if you haven't used them before](https://developers.google.com/identity/sign-in/web/sign-in#create_authorization_credentials). 
 
 You will need 3 terminal windows for this, although [there are ways to run Redis and/or Flask headless to remove this need](https://askubuntu.com/questions/106351/running-programs-in-the-background-from-terminal)--the easiest being to add an ampersand (`&`) after the command. If you choose to have separate terminal windows (best for monitoring purposes), create a window for Redis, Flask, and React.
@@ -34,12 +34,13 @@ sudo systemctl restart redis
 ### 2. Install required packages and setup 
 Follow each of these steps from your *home directory* (which for our VMs this is `/vol_b/data/`).
 
-#### 2A. Create python 3 environment, install packages, clone repo
+#### 2A. Create python 3 environment and install packages
 ```bash
 python3 -m venv .venv # create specific crawling environment with packages we want; feel free to use an env name other than `.venv`
 source .venv/bin/activate # activate environment
 sudo apt update # get latest version info
 pip3 install -r requirements.txt
+npm --prefix ./client install
 ```
 
 #### 2B. Set up MongoDB container
@@ -93,5 +94,99 @@ npm start # run React server
 The environment variable here, `REACT_APP_SERVER_URL`, is the address of the flask server, to which the React client should send server url requests.
 
 
-### 4. Navigate the client from your web browser at `http://<your_IP_here>:3000/`
+### 4. Navigate the client from your web browser at `http://localhost:3000/`
 This will open up the home page.
+
+## Running the scraping server (macOS)
+
+### 1. Homebrew and Conda
+First, make sure you have both [Homebrew](https://brew.sh)
+```bash
+brew -v
+```
+and [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/macos.html#install-macos-silent) installed.
+```bash
+conda -V
+```
+
+### 2. Redis
+To install Redis on Mac
+```bash
+brew install redis
+```
+and start the redis server using _brew service._
+```bash
+brew services start redis
+```
+
+### 3. Conda Environment
+Create a Conda environment named `wc-server` using Python 3.10
+```bash
+conda create --name wc-server python=3.10
+```
+Activate the environment
+```bash
+conda activate wc-server
+```
+Install dependencies using `pip`
+```bash
+pip install -r requirements.txt
+```
+Setup environment variables
+```bash
+echo "CLIENT_ORIGIN=http://localhost:3000 MONGO_URI=mongodb://localhost:27000 SERVER_PORT=5000 REACT_APP_SERVER_URL=http://localhost:5000" | xargs conda env config vars set
+
+conda deactivate
+conda activate wc-server
+```
+
+### 4. Docker
+To install the Docker macOS App
+```bash
+brew install --cask docker
+brew install docker-machine
+```
+In the project folder, create a folder called `mongodata`, we will use it as the mounting point of our docker container.
+```bash
+mkdir mongodata
+```
+Then we can spawn the docker instance using
+```bash
+docker pull mongo && docker run -d --name mongodb -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=mdipass -p 27000:27017 --log-opt max-size=500m --restart always -v $PWD/mongodata:/data/db mongo
+```
+
+### 5. Node modules
+To install Node.js and NPM
+```bash
+brew install node
+```
+and install all the necessary node modules (such as React)
+```bash
+npm --prefix ./client install
+```
+
+### 6. Set up user authorization with Google Sign-In
+Replace the Client ID in [`client/src/server-config.js`](https://github.com/URAP-charter/scraping_server/blob/97c303d4f6455a51efe83f16c8d5a8daec272941/client/src/server-config.js#L5) and [`client/src/settings.py`](https://github.com/URAP-charter/scraping_server/blob/97c303d4f6455a51efe83f16c8d5a8daec272941/crawler/crawler/settings.py#L150) with your own ([how to create authorization credentials](https://developers.google.com/identity/sign-in/web/sign-in#create_authorization_credentials)). You can enable crawling requests from your IP addresses (if not `localhost`) as "Authorized Javascript Origins" with your Client ID on [the Google Console Credentials page](https://console.developers.google.com/apis/credentials). The current repo uses the Client ID created by [Jaren Haber, PhD](https://www.jarenhaber.com/), which will work for the purposes of testing and developing the crawling server.
+
+### 7. Run Redis Queue, Flask, React Server
+In three Terminal windows, navigate to the project folder and run the following commands.
+
+Terminal 1:
+```bash
+conda activate wc-server
+rq worker crawling-tasks --path ./crawler
+```
+
+Terminal 2:
+```bash
+conda activate wc-server
+python ./crawler/crawler/app.py
+```
+
+Terminal 3:
+```bash
+conda activate wc-server
+npm --prefix ./client start
+```
+
+At this point, you should be able to see the web interface running on [localhost:3000](http://localhost:3000)
