@@ -190,3 +190,37 @@ npm --prefix ./client start
 ```
 
 At this point, you should be able to see the web interface running on [localhost:3000](http://localhost:3000)
+
+## Running a Simple Scrapy Crawl
+
+### 1. Install Dependencies
+SSH into the VM using ssh user@ip_address. Navigate to the scraping_server repo by first navigating to the Desktop, then using:
+
+```bash
+cd /vol_c/data/scraping_server
+```
+OR 
+```bash
+cd scraping_server
+```
+(depending on which VM you are using).
+
+Then run the following commands:
+
+```bash
+# Create and start a virtual environment for Python dependencies.
+python3 -m venv .venv
+source .venv/bin/activate
+# Install dependencies.
+pip3 install -r requirements.txt
+```
+
+### 2. Run Simple Crawl
+
+Navigate to `/crawler/crawler` and run:
+
+```bash
+scrapy crawl recursivespider -a target_list=spiders/test_urls.tsv -o schoolspider_output.json
+```
+
+Once the spider has finished running, you can view its output via schoolspider_output.json, created in the `scraping_server/crawler/crawler` directory. 
