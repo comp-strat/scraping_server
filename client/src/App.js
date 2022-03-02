@@ -1,10 +1,7 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Jobs from "./pages/Jobs.js";
-import Datasets from "./pages/Datasets.js";
-import Dashboard from "./pages/Dashboard.js";
-import ViewDataset from "./pages/ViewDataset";
-import CreateNewJob from "./pages/NewJob";
+import NewJob from "./pages/NewJob.js";
 import Job from "./pages/Job.js";
 import Home from "./pages/Home.js";
 
@@ -22,18 +19,18 @@ class App extends Component {
 
   render() {
     return (
-      <Router>
-        <Switch>
-          <Route exact path="/" component={Home} />
-          <Route exact path="/new-job" component={CreateNewJob} />
-          <Route exact path="/jobs" component={Jobs} />
-          <Route exact path="/job/:id" component={Job} />
+      <BrowserRouter>
+        <Routes>
+          <Route exact path="/" element={<Home />} />
+          <Route exact path="/new-job" element={<NewJob />} />
+          <Route exact path="/jobs" element={<Job />} />
+          <Route exact path="/job/:id" element={<Job />} />
           {/* <Route exact path="/viewDataset" component={ViewDataset} />
                     <Route exact path="/datasets" component={Datasets} />
                      <Route exact path="/dashboard" component={DashboardStyled} /> */}
                     
-        </Switch>
-      </Router>
+        </Routes>
+      </BrowserRouter>
     );
   }
 }

@@ -43,7 +43,7 @@ def token_required(f):
     return decorator
 
 
-@bp.route("/new_job", methods=["POST"])
+@bp.route("/jobs/create", methods=["POST"])
 @token_required
 def create_task(user):
     data = json.loads(request.data.decode("utf-8"))

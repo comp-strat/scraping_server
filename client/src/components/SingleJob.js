@@ -1,18 +1,17 @@
 import {
-  Card, CardContent, CardHeader, Fab, Typography,
+  Card, CardContent, CardHeader, Typography,
   CardActions, List, ListItem, ListItemButton, ListItemText
 } from "@mui/material";
 import React, { Component } from "react";
-import {jobsStyled} from "../styles/JobsStyled";
+import {TopButton} from "../styles/JobsStyled";
 import config from "../server-config";
 import {fetcher} from "../util/fetcher";
 
-const classes = jobsStyled;
 class SingleJob extends Component {
   state = {
     status: "Loading",
     title: "",
-    URLs: []
+    urls: []
   };
 
   constructor(props) {
@@ -42,9 +41,9 @@ class SingleJob extends Component {
     fetcher(config.serverurl+"/job/"+this.props.id, {method:"GET"})
       .then(res => res.json())
       .then(res => {
-        if (res.completion_status == "Ongoing") setTimeout(this.updateStatus,10000);
+        if (res.completion_status === "Ongoing") setTimeout(this.updateStatus,10000);
         this.setState({
-          URLs: res.URLs,
+          urls: res.urls,
           title: res.title,
           status: res.completion_status
         });
@@ -66,7 +65,7 @@ class SingleJob extends Component {
             {this.state.title}
           </Typography>
           <List>
-            {this.state.URLs.map( (url, i) => {
+            {this.state.urls.map( (url, i) => {
               return (
                 <ListItem disablePadding key={i}>
                   <ListItemButton component="a" href={url}>
@@ -80,24 +79,22 @@ class SingleJob extends Component {
         {
           {
             "Ongoing": <div><CardContent><p>Process is Running</p></CardContent>
-              <CardActions><Fab
+              <CardActions><TopButton
                 variant="extended"
                 color="primary"
-                className={classes.topButtonStyle} 
                 onClick={this.killFunc}>
                                     Kill
-              </Fab></CardActions>
+              </TopButton></CardActions>
             </div>,
 
             "Error": <CardContent><p>Process Errored</p></CardContent>,
             "Finished": <div><CardContent><p>Process Completed</p></CardContent>
-              <CardActions><Fab
+              <CardActions><TopButton
                 variant="extended"
                 color="primary"
-                className={classes.topButtonStyle}
                 onClick={this.downloadFunc}>
                                 Download
-              </Fab></CardActions>
+              </TopButton></CardActions>
             </div>,
             "Cancelled": <CardContent><p>Process Cancelled</p></CardContent>,
             "Failed": <CardContent><p>Process Failed</p></CardContent>

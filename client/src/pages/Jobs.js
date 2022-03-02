@@ -9,9 +9,9 @@ import {getComparator, stableSort} from "../util/jobSortingHelpers";
 
 //Material UI
 import {
-  Grid, Paper, Table, TableBody,
-  TableCell, TableContainer, TableHead, TablePagination,
-  TableRow, Toolbar, Typography, Box, TableSortLabel, Fab
+  Grid, Table, TableBody, Container,
+  TableCell, TableHead, TablePagination,
+  TableRow, Toolbar, Box, TableSortLabel, Fab
 } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
@@ -19,12 +19,9 @@ import AddIcon from "@mui/icons-material/Add";
 import { useHistory } from "react-router-dom";
 
 //Styles
-import {jobsStyled} from "../styles/JobsStyled";
-
 import config from "../server-config";
-import { Container } from "@mui/material";
-
-const classes = jobsStyled;
+import {WCTableContainer, WCTablePaper} from "../styles/DatasetsStyled";
+import {JobTableToolBarTitle, TopButton, RootDiv, Main} from "../styles/JobsStyled";
 
 // const options = [
 //   "VIEW",
@@ -48,7 +45,6 @@ const handleNewJobClick = (props) => {
 
 
 function TopButtons(props) {
-  const classes = jobsStyled();
 
   return (
     <Grid container item
@@ -56,36 +52,24 @@ function TopButtons(props) {
       justify="flex-start"
       alignItems="center"
     >
-      <Fab
+      <TopButton
         variant="extended"
         color="primary"
-        className={classes.topButtonStyle}
         onClick={() => handleNewJobClick(props)}
       >
         <AddIcon />
                 NEW JOB
-      </Fab>
-
-      {/*<Fab
-                variant="extended"
-                color="primary"
-                className={classes.topButtonStyle}
-            >
-                <AddIcon/>
-                SEARCH
-            </Fab>*/}
+      </TopButton>
     </Grid>
   );
 }
 
 
 export function JobTableToolBar(props) {
-  const classes = jobsStyled();
 
   return (
     <Toolbar>
-      <Typography
-        className={classes.JobTableToolBarTitle}
+      <JobTableToolBarTitle
         variant="h6"
         id="tableTitle"
         component="div"
@@ -93,14 +77,14 @@ export function JobTableToolBar(props) {
         <Box fontWeight="fontWeightBold" m={0}>
           {props.name}
         </Box>
-      </Typography>
+      </JobTableToolBarTitle>
     </Toolbar>
   );
 }
 
 
 export function EnhancedJobTableHead(props) {
-  const {classes, order, orderBy, onRequestSort} = props;
+  const {order, orderBy, onRequestSort} = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
@@ -121,11 +105,6 @@ export function EnhancedJobTableHead(props) {
               onClick={createSortHandler(column.id)}
             >
               {column.label}
-              {/*orderBy === column.id ? (
-                                <span className={classes.visuallyHidden}>
-                                    {order === "desc" ? " (sorted desc) " : " (sorted asc) "}
-                                </span>
-                            ) : null*/}
             </TableSortLabel>
           </TableCell>
         ))}
@@ -190,12 +169,11 @@ function JobTable(props) {
   console.log(props.data);
   return (
     <Grid container item direction="column">
-      <Paper className={classes.tablePaper} variant="outlined">
+      <WCTablePaper variant="outlined">
         <JobTableToolBar name="Jobs"/>
-        <TableContainer className={classes.tableContainer}>
+        <WCTableContainer>
           <Table stickyHeader>
             <EnhancedJobTableHead
-              classes={classes}
               order={order}
               orderBy={orderBy}
               onRequestSort={handleRequestSort}
@@ -219,37 +197,6 @@ function JobTable(props) {
                           </TableCell>
                         );
                       })}
-                      {/*<TableCell>
-                                                <IconButton
-                                                    aria-controls="job-menu"
-                                                    aria-haspopup="true"
-                                                    onClick={handleClick}
-                                                >
-                                                    <MoreVertIcon/>
-                                                </IconButton>
-                                                <Menu
-                                                    id="job-menu"
-                                                    anchorEl={anchorEl}
-                                                    keepMounted
-                                                    open={open}
-                                                    onClose={handleClose}
-                                                    PaperProps={{
-                                                        style: {
-                                                            maxHeight: 96,
-                                                            width: '20ch',
-                                                        },
-                                                    }}
-                                                    TransitionComponent={Fade}
-                                                >
-                                                    <MenuItem key="view" onClick={() => viewProcess(row.id)}>
-                                                        VIEW
-                                                    </MenuItem>
-                                                    <MenuItem key="view" onClick={() => downloadFunc(row.id)}>
-                                                        DOWNLOAD
-                                                    </MenuItem>
-
-                                                </Menu>
-                                                </TableCell>*/}
                     </TableRow>
                   );
                 })}
@@ -260,32 +207,31 @@ function JobTable(props) {
               )}
             </TableBody>
           </Table>
-        </TableContainer>
+        </WCTableContainer>
         <TablePagination
           rowsPerPageOptions={[5, 10, 20, 100]}
           component="div"
           count={props.data.length}
           rowsPerPage={rowsPerPage}
           page={page}
-          onChangePage={handleChangePage}
+          onPageChange={handleChangePage}
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
-      </Paper>
+      </WCTablePaper>
     </Grid>
   );
 }
 
 function JobsPage(props) {
-  const classes = jobsStyled();
 
   return (
     <div>
       <ResponsiveAppBar/>
-      <div className={classes.root}>
+      <RootDiv>
         {/*<LeftDrawer history={props.history}/>*/}
            
         <Container>
-          <main className={classes.main}>
+          <Main>
             <Grid
               container
               direction="column"
@@ -298,10 +244,11 @@ function JobsPage(props) {
             <Box pt={4}>
               <Copyright/>
             </Box>
-          </main>
+          </Main>
         </Container>
 
-      </div></div>
+      </RootDiv>
+    </div>
   );
 }
 

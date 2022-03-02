@@ -12,27 +12,25 @@ import {
 
 // Styles
 import { RootDiv, Main, TopButton } from "../styles/JobsStyled";
-import {withRouter} from "react-router-dom";
 import config from "../server-config";
 import ResponsiveAppBar from "../components/Navbar";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-class CreateNewJob extends Component {
+class NewJob extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      title: "",
-      URLs: [""]
+      title: null,
+      urls: [""]
     };
   }
 
-  sendURLs = (URLsString,title) => {
-    console.log(URLsString);
+  sendURLs = (urls, title) => {
 
-    fetcher(config.serverurl+"/job", {
+    fetcher("/job/create", {
       method: "POST",
-      body: JSON.stringify({urls: URLsString,title:title})
+      body: JSON.stringify({urls: urls, title: title})
     })
       .then(res => res.json())
       .then(res => {
@@ -44,20 +42,23 @@ class CreateNewJob extends Component {
 
 
   handleSubmit = (event) => {
-    console.log("A name was submitted: " , this.state);
+    console.log("A name was submitted: ", this.state);
+    if (this.state.urls.length === 1 && this.state.urls[0] === "") {
+      return;
+    }
     event.preventDefault();
-    this.sendURLs(this.state.URLs.join(","),this.state.title);
+    this.sendURLs(this.state.urls, this.state.title);
   };
 
   addURL = () => {
-    this.setState({URLs:this.state.URLs.concat([""])});
+    this.setState({urls: this.state.urls.concat([""])});
   };
 
   removeURL = (i) => {
     return () => {
-      let urls = this.state.URLs;
+      let urls = this.state.urls;
       urls.splice(i,1);
-      this.setState({URLs:urls});
+      this.setState({urls: urls});
     };
   };
 
@@ -80,7 +81,8 @@ class CreateNewJob extends Component {
                   <Typography variant="h5" component="div">
                             Enter Title
                   </Typography>
-                  <TextField id="title-input" 
+                  <TextField
+                    id="title-input"
                     label="Title" 
                     variant="outlined"
                     name="title"
@@ -95,24 +97,23 @@ class CreateNewJob extends Component {
                             Enter URLs
                   </Typography>
                   <FormGroup>
-                    {this.state.URLs.map( (url, i) => {
+                    {this.state.urls.map( (url, i) => {
                       return (
                         <FormGroup key={i} row>
                           <TextField id="title-input"
                             label={"URL " + (i+1)} 
                             variant="outlined"
                             name="title"
-                            type="text"
+                            type="url"
                             size="small"
                             margin="dense"
-                            type="url"
                             autoComplete="url"
-                            required={i==0}
+                            required={i===0}
                             value={this.state.URLs[i]}
                             onChange={(event) => {
-                              let urls = this.state.URLs;
+                              let urls = this.state.urls;
                               urls[i] = event.target.value;
-                              this.setState({URLs:urls});
+                              this.setState({urls: urls});
                             }}/>
                                     
                           {i > 0 ? <TopButton
@@ -154,4 +155,4 @@ class CreateNewJob extends Component {
   }
 }
 
-export default withRouter(CreateNewJob);
+export default NewJob;

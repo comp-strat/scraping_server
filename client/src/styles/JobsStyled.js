@@ -1,5 +1,5 @@
 import {styled} from "@mui/system";
-import {Fab} from "@mui/material";
+import {Fab, Typography} from "@mui/material";
 
 export const RootDiv = styled("div")`
   display: flex;
@@ -15,4 +15,8 @@ export const TopButton = styled(Fab)`
   align-items: center;
   margin: 15px;
   width: 120px;
+`;
+
+export const JobTableToolBarTitle = styled(Typography)`
+  flex: 1 1 100%;
 `;

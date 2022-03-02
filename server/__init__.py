@@ -3,6 +3,7 @@ import os
 from flask import Flask, request, send_file, session, jsonify
 from server.settings import *
 
+
 def create_app(test_config=None):
     app = Flask(__name__)
 
