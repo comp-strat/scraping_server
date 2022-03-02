@@ -17,7 +17,8 @@ function Login() {
     inMemoryUserManager.setUser(res);
     refreshTokenSetup(res);
     console.log(history);
-    if (history.location.state == undefined || history.location.state.referrer == undefined)
+    if (history.location.state === undefined
+      || history.location.state.referrer === undefined)
       history.push("/jobs");
     else
       history.push(history.location.state.referrer);

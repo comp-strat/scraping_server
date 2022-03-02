@@ -6,28 +6,19 @@ import {LeftDrawer} from "../components/LeftDrawer";
 import {Copyright} from "../components/Copyright";
 
 // Material UI
-import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableContainer from "@mui/material/TableContainer";
-import TableCell from "@mui/material/TableCell";
-import TableHead from "@mui/material/TableHead";
-import TableBody from "@mui/material/TableBody";
-import TableRow from "@mui/material/TableRow";
+import {
+  Box, Table, TableCell,
+  TableHead, TableBody, TableRow, LinearProgress, Grid,
+  IconButton, Menu, Fade, MenuItem, TablePagination
+} from "@mui/material";
+
+import {MoreVert} from "@mui/icons-material";
 
 // Styles
-import {datasetsStyles} from "../styles/datasetsStyles";
-import LinearProgress from "@material-ui/core/LinearProgress";
-import {Grid} from "@material-ui/core";
-import {JobTableToolBar} from "./Jobs";
-import IconButton from "@material-ui/core/IconButton";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
-import Menu from "@material-ui/core/Menu";
-import Fade from "@material-ui/core/Fade";
-import MenuItem from "@material-ui/core/MenuItem";
-import TablePagination from "@material-ui/core/TablePagination";
+import {Main, RootDiv, WCTableContainer, WCTablePaper} from "../styles/DatasetsStyled";
 
 import config from "../server-config";
+import {JobTableToolBar} from "./Jobs";
 
 const options = [
   "DOWNLOAD"
@@ -42,7 +33,6 @@ export const DatasetDetailHeader = [
 ];
 
 function NormalJobTableHead(props) {
-  const classes = datasetsStyles();
 
   return (
     <TableHead>
@@ -62,7 +52,6 @@ function NormalJobTableHead(props) {
 }
 
 function Details(props) {
-  const classes = datasetsStyles();
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -90,11 +79,11 @@ function Details(props) {
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, props.data.length - page * rowsPerPage);
 
   return (
-    <div className={classes.root}>
+    <RootDiv>
       <Grid container item direction="column">
-        <Paper className={classes.tablePaper} variant="outlined">
+        <WCTablePaper variant="outlined">
           <JobTableToolBar name="Dataset Details"/>
-          <TableContainer className={classes.tableContainer}>
+          <WCTableContainer>
             <Table stickyHeader>
               <NormalJobTableHead/>
               <TableBody>
@@ -117,7 +106,7 @@ function Details(props) {
                             aria-haspopup="true"
                             onClick={handleClick}
                           >
-                            <MoreVertIcon />
+                            <MoreVert />
                           </IconButton>
                           <Menu
                             id="job-menu"
@@ -150,7 +139,7 @@ function Details(props) {
                 )}
               </TableBody>
             </Table>
-          </TableContainer>
+          </WCTableContainer>
           <TablePagination
             rowsPerPageOptions={[1, 5, 10, 20, 100]}
             component="div"
@@ -160,26 +149,25 @@ function Details(props) {
             onChangePage={handleChangePage}
             onChangeRowsPerPage={handleChangeRowsPerPage}
           />
-        </Paper>
+        </WCTablePaper>
       </Grid>
-    </div>
+    </RootDiv>
   );
 }
 
 
 function DatasetDetailsPage(props) {
-  const classes = datasetsStyles();
 
   return (
-    <div className={classes.root}>
+    <RootDiv>
       <LeftDrawer history={props.history}/>
-      <main className={classes.main}>
+      <Main>
         <Details history={props.history} data={props.data}/>
         <Box pt={4}>
           <Copyright />
         </Box>
-      </main>
-    </div>
+      </Main>
+    </RootDiv>
   );
 }
 
@@ -189,7 +177,7 @@ class ViewDataset extends Component {
     data: null,
   };
 
-  // classes = datasetsStyles();
+  // classes = datasetsStyled();
 
   constructor(props) {
     super(props);

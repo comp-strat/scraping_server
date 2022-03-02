@@ -1,21 +1,14 @@
 import React from "react";
 
 //Material UI
-import Drawer from "@material-ui/core/Drawer";
-import Divider from "@material-ui/core/Divider";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import DashboardRoundedIcon from "@material-ui/icons/DashboardRounded";
-import ListItemText from "@material-ui/core/ListItemText";
-import Typography from "@material-ui/core/Typography";
-import Box from "@material-ui/core/Box";
-import AssignmentTurnedInRoundedIcon from "@material-ui/icons/AssignmentTurnedInRounded";
-import AssignmentRoundedIcon from "@material-ui/icons/AssignmentRounded";
-import ErrorIcon from "@material-ui/icons/Error";
-import ListSubheader from "@material-ui/core/ListSubheader";
-import SettingsIcon from "@material-ui/icons/Settings";
-import NotificationsIcon from "@material-ui/icons/Notifications";
+import {
+  Divider, List, ListItem, ListItemIcon,
+  ListItemText, Typography, Box, ListSubheader
+} from "@mui/material";
+import {
+  DashboardRounded, AssignmentTurnedInRounded,
+  AssignmentRounded, Error, Settings, Notifications
+} from "@mui/icons-material";
 
 //Components
 import {User} from "./User";
@@ -24,25 +17,23 @@ import Logout from "../components/Logout.js";
 
 
 //Styles
-import { componentStyles } from "../styles/componentStyles";
+import { WCDrawer, drawerPaper } from "../styles/ComponentStyled";
 
 import {inMemoryUserManager} from "../util/fetcher";
-import { Redirect, useHistory} from "react-router";
+import { Redirect, useHistory } from "react-router-dom";
 
 
 export function LeftDrawer(props) {
   const history = useHistory();
-  const classes = componentStyles();
   const user = inMemoryUserManager.getUser();
 
   return (
-    user != null && user.profileObj != undefined ?
-      <Drawer
+    user != null && user.profileObj !== undefined ?
+      <WCDrawer
         variant="permanent"
         anchor="left"
-        className={classes.drawer}
         classes={{
-          paper: classes.drawerPaper,
+          paper: drawerPaper,
         }}
       >
         <User name={user.profileObj.name} image={user.profileObj.imageUrl}/>
@@ -50,7 +41,7 @@ export function LeftDrawer(props) {
         <List>
           <ListItem button onClick={() => handleRoutes(props, "dashboard")}>
             <ListItemIcon>
-              <DashboardRoundedIcon />
+              <DashboardRounded />
             </ListItemIcon>
             <ListItemText
               disableTypography
@@ -65,7 +56,7 @@ export function LeftDrawer(props) {
           </ListItem>
           <ListItem button onClick={() => handleRoutes(props, "jobs")}>
             <ListItemIcon>
-              <AssignmentTurnedInRoundedIcon />
+              <AssignmentTurnedInRounded />
             </ListItemIcon>
             <ListItemText
               disableTypography
@@ -80,7 +71,7 @@ export function LeftDrawer(props) {
           </ListItem>
           <ListItem button onClick={() => handleRoutes(props, "datasets")}>
             <ListItemIcon>
-              <AssignmentRoundedIcon />
+              <AssignmentRounded />
             </ListItemIcon>
             <ListItemText
               disableTypography
@@ -95,7 +86,7 @@ export function LeftDrawer(props) {
           </ListItem>
           <ListItem button>
             <ListItemIcon>
-              <ErrorIcon />
+              <Error />
             </ListItemIcon>
             <ListItemText
               disableTypography
@@ -114,7 +105,7 @@ export function LeftDrawer(props) {
           <ListSubheader inset>Settings</ListSubheader>
           <ListItem button>
             <ListItemIcon>
-              <SettingsIcon />
+              <Settings />
             </ListItemIcon>
             <ListItemText
               disableTypography
@@ -129,7 +120,7 @@ export function LeftDrawer(props) {
           </ListItem>
           <ListItem button>
             <ListItemIcon>
-              <NotificationsIcon />
+              <Notifications />
             </ListItemIcon>
             <ListItemText
               disableTypography
@@ -147,7 +138,7 @@ export function LeftDrawer(props) {
             <Logout/>
           </ListItem>
         </List>
-      </Drawer> : <Redirect to = {{
+      </WCDrawer> : <Redirect to = {{
         pathname: "/",
         search: history.location.search,
         state: { referrer: history.location.pathname }

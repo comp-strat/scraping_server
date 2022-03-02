@@ -1,19 +1,12 @@
 import * as React from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
+import {
+  AppBar, Box, Toolbar, IconButton, Typography, Menu,
+  Container, Avatar, Button, Tooltip, MenuItem
+} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
-import MenuItem from "@mui/material/MenuItem";
 
 import {inMemoryUserManager} from "../util/fetcher";
-import { Redirect, useHistory} from "react-router";
+import { Redirect, useHistory } from "react-router-dom";
 import Logout from "./Logout";
 import { Link } from "react-router-dom";
 
@@ -43,7 +36,7 @@ const ResponsiveAppBar = () => {
   const history = useHistory();
   const crawlerLink = () => {return (<Link to="/jobs" style={{ textDecoration: "none", color:"inherit"}}>Crawler</Link>);};
   return (
-    user != null && user.profileObj != undefined ?
+    user != null && user.profileObj !== undefined ?
       <AppBar position="static">
         <Container maxWidth="xl">
           <Toolbar disableGutters>

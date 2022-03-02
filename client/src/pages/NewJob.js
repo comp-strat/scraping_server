@@ -4,24 +4,18 @@ import {fetcher} from "../util/fetcher";
 //Components
 import {Copyright} from "../components/Copyright";
 
-// recharts
-import {Text} from "recharts";
-
 // Material UI
 import {
-  TextField, Box, Fab, Grid, Typography,
-  CardContent, Card, FormGroup, CardActions
+  TextField, Box, Grid, Typography,
+  CardContent, Container, Card, FormGroup, CardActions
 } from "@mui/material";
 
 // Styles
-import {newJobStyles} from "../styles/newJobStyles";
+import { RootDiv, Main, TopButton } from "../styles/JobsStyled";
 import {withRouter} from "react-router-dom";
 import config from "../server-config";
 import ResponsiveAppBar from "../components/Navbar";
-import { Container } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-
-const classes = newJobStyles;
 
 class CreateNewJob extends Component {
 
@@ -70,112 +64,92 @@ class CreateNewJob extends Component {
   render() {
 
     return (
-      <div className={classes.root}>
+      <RootDiv>
         <ResponsiveAppBar/>
         <Container style = {{marginTop: 20}}>
-          <main className={classes.main}> <Grid
-            container
-            spacing="20px"
-            direction="column"
-            justify="center"
-            alignItems="center"
-          >
-            <Card variant="outlined" style={{paddingTop: "20px", paddingBottom:"200px", paddingRight:"200px",paddingLeft:"20px"}}>
-              <CardContent>
-                <Typography variant="h5" component="div">
+          <Main>
+            <Grid
+              container
+              spacing="20px"
+              direction="column"
+              justify="center"
+              alignItems="center"
+            >
+              <Card variant="outlined" style={{paddingTop: "20px", paddingBottom:"200px", paddingRight:"200px",paddingLeft:"20px"}}>
+                <CardContent>
+                  <Typography variant="h5" component="div">
                             Enter Title
-                </Typography>
-                <TextField id="title-input" 
-                  label="Title" 
-                  variant="outlined"
-                  name="title"
-                  type="text"
-                  value={this.state.title}
-                  fullWidth={true}
-                  margin="normal"
-                  onChange={(event) => {this.setState({title: event.target.value});}}
-                />
+                  </Typography>
+                  <TextField id="title-input" 
+                    label="Title" 
+                    variant="outlined"
+                    name="title"
+                    type="text"
+                    value={this.state.title}
+                    fullWidth={true}
+                    margin="normal"
+                    onChange={(event) => {this.setState({title: event.target.value});}}
+                  />
                         
-                <Typography style = {{marginTop:"20px"}} variant="h5" component="div">
+                  <Typography style = {{marginTop:"20px"}} variant="h5" component="div">
                             Enter URLs
-                </Typography>
-                <FormGroup>
-                  {this.state.URLs.map( (url, i) => {
-                    return (
-                      <FormGroup key={i} row>
-                        <TextField id="title-input"
-                          label={"URL " + (i+1)} 
-                          variant="outlined"
-                          name="title"
-                          type="text"
-                          size="small"
-                          margin="dense"
-                          type="url"
-                          autoComplete="url"
-                          required={i==0}
-                          value={this.state.URLs[i]}
-                          onChange={(event) => {
-                            let urls = this.state.URLs;
-                            urls[i] = event.target.value;
-                            this.setState({URLs:urls});
-                          }}/>
+                  </Typography>
+                  <FormGroup>
+                    {this.state.URLs.map( (url, i) => {
+                      return (
+                        <FormGroup key={i} row>
+                          <TextField id="title-input"
+                            label={"URL " + (i+1)} 
+                            variant="outlined"
+                            name="title"
+                            type="text"
+                            size="small"
+                            margin="dense"
+                            type="url"
+                            autoComplete="url"
+                            required={i==0}
+                            value={this.state.URLs[i]}
+                            onChange={(event) => {
+                              let urls = this.state.URLs;
+                              urls[i] = event.target.value;
+                              this.setState({URLs:urls});
+                            }}/>
                                     
-                        {i > 0 ? <Fab
-                          size="small"
-                          style={{margin:"10px"}}
-                          variant="extended"
-                          color="secondary"
-                          className={classes.topButtonStyle}
-                          onClick={this.removeURL(i)}>
-                          <DeleteIcon/>
-                        </Fab> : <p/>}
+                          {i > 0 ? <TopButton
+                            size="small"
+                            style={{margin:"10px"}}
+                            variant="extended"
+                            color="secondary"
+                            onClick={this.removeURL(i)}>
+                            <DeleteIcon/>
+                          </TopButton> : <p/>}
                                 
-                      </FormGroup>);})}
-                </FormGroup>
-                            
+                        </FormGroup>);})}
+                  </FormGroup>
 
-              </CardContent>
-              <CardActions>
-                <Fab
-                  variant="extended"
-                  color="primary"
-                  className={classes.topButtonStyle}
-                  onClick={this.addURL}>
+                </CardContent>
+                <CardActions>
+                  <TopButton
+                    variant="extended"
+                    color="primary"
+                    onClick={this.addURL}>
                                     Add
-                </Fab>
-                <Fab
-                  variant="extended"
-                  color="primary"
-                  className={classes.topButtonStyle}
-                  //type="submit"
-                  onClick={this.handleSubmit}>
+                  </TopButton>
+                  <TopButton
+                    variant="extended"
+                    color="primary"
+                    //type="submit"
+                    onClick={this.handleSubmit}>
                                 Submit
-                </Fab>
-              </CardActions>
-
-              {/*<SearchBar
-                                value={this.state.value}
-                                onChange={(newValue) => this.setState({ value: newValue })}
-                                onRequestSearch={() => this.sendURLs(this.state.value)}
-                                style={{
-                                    margin: '0 auto',
-                                    maxWidth: 800,
-                                    minWidth: 600
-                                }}
-                            />
-
-                            {this.state.success ?
-                                (<p>A job with the following URLs was successfully created: <br/><b>{this.state.URLs}!</b> <br/> You will get an email once this job is finished! Please check out the results on the dataset page!</p>)
-                                : (<p/>) }*/}
-
-                        
-            </Card>
-            <Box pt={4}>
-              <Copyright />
-            </Box>
-          </Grid>
-          </main></Container>
-      </div>
+                  </TopButton>
+                </CardActions>
+              </Card>
+              <Box pt={4}>
+                <Copyright />
+              </Box>
+            </Grid>
+          </Main></Container>
+      </RootDiv>
     );
   }
 }

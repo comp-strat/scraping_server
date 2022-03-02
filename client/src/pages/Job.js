@@ -1,23 +1,22 @@
 
 import React from "react";
 import ResponsiveAppBar from "../components/Navbar.js";
-import {Copyright} from "../components/Copyright";
+import {Copyright} from "../components/Copyright.js";
 
 import SingleJob from "../components/SingleJob.js";
 
 import { Grid, Box, Container } from "@mui/material";
 import { useParams } from "react-router-dom";
-import { jobsStyles } from "../styles/jobsStyles";
+import { RootDiv, Main } from "../styles/JobsStyled.js";
 
-const classes = jobsStyles;
 
 function Job() {
   const { id } = useParams();
   return (
-    <div className={classes.root}>
+    <RootDiv>
       <ResponsiveAppBar/>
       <Container style = {{marginTop: 20}}>
-        <main className={classes.main}>
+        <Main>
           <Grid
             container
             direction="column"
@@ -29,9 +28,9 @@ function Job() {
           <Box pt={4}>
             <Copyright/>
           </Box>
-        </main>
+        </Main>
       </Container>
-    </div>
+    </RootDiv>
   );
 }
 

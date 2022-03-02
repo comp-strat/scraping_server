@@ -1,11 +1,13 @@
-import { Card, CardContent, CardHeader, Fab, Typography, CardActions, List, ListItem} from "@material-ui/core";
-import { ListItemButton,ListItemText } from "@mui/material";
+import {
+  Card, CardContent, CardHeader, Fab, Typography,
+  CardActions, List, ListItem, ListItemButton, ListItemText
+} from "@mui/material";
 import React, { Component } from "react";
-import {jobsStyles} from "../styles/jobsStyles";
+import {jobsStyled} from "../styles/JobsStyled";
 import config from "../server-config";
 import {fetcher} from "../util/fetcher";
 
-const classes = jobsStyles;
+const classes = jobsStyled;
 class SingleJob extends Component {
   state = {
     status: "Loading",
@@ -66,7 +68,7 @@ class SingleJob extends Component {
           <List>
             {this.state.URLs.map( (url, i) => {
               return (
-                <ListItem disablePadding>
+                <ListItem disablePadding key={i}>
                   <ListItemButton component="a" href={url}>
                     <ListItemText primary={url} />
                   </ListItemButton>

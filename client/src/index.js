@@ -1,15 +1,15 @@
-import React from 'react';
-import { render } from 'react-dom';
-import App from './App';
+import React from "react";
+import { render } from "react-dom";
+import App from "./App";
 // import reportWebVitals from '../other/reportWebVitals';
 
-const container = document.getElementById("react-app")
+const container = document.getElementById("react-app");
 render(
   <React.StrictMode>
     <App />
   </React.StrictMode>,
   container
-)
+);
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

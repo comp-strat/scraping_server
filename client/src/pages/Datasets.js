@@ -7,28 +7,25 @@ import {Copyright} from "../components/Copyright";
 //Actions
 import {fetcher, inMemoryUserManager} from "../util/fetcher";
 
-// data
-
-
 //Material UI
 import {
-  Box, Grid, Typography, Button, IconButton, Card,
-  CardHeader, CardActions, CardContent, CardMedia
+  Avatar, Box, Grid, Typography, Button, IconButton,
+  CardHeader, CardActions, CardContent,
 } from "@mui/material";
 
 import { Share } from "@mui/icons-material";
 
-//images
-import Avatar from "@material-ui/core/Avatar";
-
 // Styles
-import {DatasetGrid, datasetsStyles} from "../styles/datasetsStyles";
+import {
+  ExampleCard, ExampleCardImage, DatasetGrid, RootDiv,
+  Main,
+} from "../styles/DatasetsStyled";
 import config from "../server-config";
 
 function Title(props) {
   return (
     <Typography component="h2" variant="h4" color="primary" gutterBottom>
-      {props.children}
+      {props.text}
     </Typography>
   );
 }
@@ -45,10 +42,9 @@ const handleDatasetCardDownloadClick = () => {
 };
 
 function Samples(props) {
-  const classes = datasetsStyles();
   const user = inMemoryUserManager.getUser();
   const getProfile = () => {
-    if (user.profileObj == undefined) {
+    if (user.profileObj === undefined) {
       props.history.push("/");
     } else {
       return user.profileObj;
@@ -58,7 +54,7 @@ function Samples(props) {
   console.log(props.data);
   return (
     <React.Fragment>
-      <Title children="Datasets"/>
+      <Title text="Datasets"/>
       <DatasetGrid
         container
         justify="space-evenly"
@@ -67,7 +63,7 @@ function Samples(props) {
         {props.data.map((job) => {
           return (
             <Grid item xs={2} md={3} sm={6} key={job.id}>
-              <Card className={classes.exampleCardStyle}>
+              <ExampleCard>
                 <CardHeader
                   avatar={<Avatar src={getProfile().imageUrl}/>}
                   action={
@@ -78,8 +74,7 @@ function Samples(props) {
                   title={job.Creator}
                   subheader={job.Date}
                 />
-                <CardMedia
-                  className={classes.exampleCardImageStyle}
+                <ExampleCardImage
                   src={"/static/img/Charlotte.jpg"}
                   title={job.URLs}
                 />
@@ -104,7 +99,7 @@ function Samples(props) {
                     DOWNLOAD
                   </Button>
                 </CardActions>
-              </Card>
+              </ExampleCard>
             </Grid>
           );
         })}
@@ -114,18 +109,17 @@ function Samples(props) {
 }
 
 export function DatasetsPage(props) {
-  const classes = datasetsStyles();
 
   return (
-    <div className={classes.root}>
+    <RootDiv>
       <LeftDrawer history={props.history}/>
-      <main className={classes.main}>
+      <Main>
         <Samples history={props.history} data={props.data}/>
         <Box pt={4}>
           <Copyright/>
         </Box>
-      </main>
-    </div>
+      </Main>
+    </RootDiv>
   );
 }
 

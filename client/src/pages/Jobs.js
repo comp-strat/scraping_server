@@ -19,12 +19,12 @@ import AddIcon from "@mui/icons-material/Add";
 import { useHistory } from "react-router-dom";
 
 //Styles
-import {jobsStyles} from "../styles/jobsStyles";
+import {jobsStyled} from "../styles/JobsStyled";
 
 import config from "../server-config";
 import { Container } from "@mui/material";
 
-const classes = jobsStyles;
+const classes = jobsStyled;
 
 // const options = [
 //   "VIEW",
@@ -48,7 +48,7 @@ const handleNewJobClick = (props) => {
 
 
 function TopButtons(props) {
-  const classes = jobsStyles();
+  const classes = jobsStyled();
 
   return (
     <Grid container item
@@ -80,7 +80,7 @@ function TopButtons(props) {
 
 
 export function JobTableToolBar(props) {
-  const classes = jobsStyles();
+  const classes = jobsStyled();
 
   return (
     <Toolbar>
@@ -276,7 +276,7 @@ function JobTable(props) {
 }
 
 function JobsPage(props) {
-  const classes = jobsStyles();
+  const classes = jobsStyled();
 
   return (
     <div>

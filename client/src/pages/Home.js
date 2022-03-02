@@ -1,6 +1,5 @@
 import React from "react";
-import { Typography } from "@mui/material";
-import Box from "@mui/system";
+import { Typography, Box } from "@mui/material";
 import { styled } from "@mui/system";
 import HomeNavbar from "../components/HomeNavbar.js";
 
