@@ -16,6 +16,7 @@ bp = Blueprint("interfaces", __name__, url_prefix="")
 queue = rq.Queue("crawling-tasks", default_timeout=3600,
                  connection=redis.Redis.from_url('redis://'))
 
+
 def token_required(f):
     @wraps(f)
     def decorator(*args, **kwargs):
@@ -41,6 +42,17 @@ def token_required(f):
             ), 401
 
     return decorator
+
+
+@bp.after_request
+def after_request(response):
+    header = response.headers
+    header["Access-Control-Allow-Credentials"] = True
+    header["Access-Control-Allow-Origin"] = settings.CLIENT_ORIGIN
+    header["Access-Control-Allow-Headers"] = "*"
+    header["Access-Control-Allow-Methods"] = "*"
+    header["Content-Type"] = "text/json"
+    return response
 
 
 @bp.route("/jobs/create", methods=["POST"])

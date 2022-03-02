@@ -17,16 +17,6 @@ def create_app(test_config=None):
     from .interfaces import views as interface_views
     app.register_blueprint(interface_views.bp)
 
-    @app.after_request
-    def after_request(response):
-        header = response.headers
-        header["Access-Control-Allow-Credentials"] = True
-        header["Access-Control-Allow-Origin"] = settings.CLIENT_ORIGIN
-        header["Access-Control-Allow-Headers"] = "*"
-        header["Access-Control-Allow-Methods"] = "*"
-        header["Content-Type"] = "text/json"
-        return response
-
     return app
 
 
