@@ -1,22 +1,34 @@
+import json
 from functools import wraps
+
+import rq, os, redis
 from flask import render_template, Blueprint, request, jsonify
 from server import settings
+from server.crawler.run_spider import scrapy_execute
 from google.oauth2 import id_token
 from google.auth.transport import requests
+from uuid import uuid4
+from server.settings import *
+
+
 bp = Blueprint("interfaces", __name__, url_prefix="")
+
+queue = rq.Queue("crawling-tasks", default_timeout=3600,
+                 connection=redis.Redis.from_url('redis://'))
 
 def token_required(f):
     @wraps(f)
     def decorator(*args, **kwargs):
         token = None
+        if DEBUG_NO_AUTH_ENABLED:
+            return f("DEBUG_NO_AUTH_ENABLED", *args, **kwargs)
         if "Authorization" in request.headers:
             token = request.headers["Authorization"].split(" ")[-1].strip()
 
         if token is None:
-            return jsonify({
-                "status": 401,
-                "message": "Authentication Failed: Missing Token"
-            }), 401
+            return jsonify(
+                message="Authentication Failed: Missing Token"
+            ), 401
 
         try:
             idinfo = id_token.verify_oauth2_token(
@@ -24,11 +36,32 @@ def token_required(f):
             )
             return f(idinfo["email"], *args, **kwargs)
         except ValueError:
-            return jsonify({
-                "status": 401,
-                "message": "Authentication Failed: Invalid Token"
-            }), 401
+            return jsonify(
+                message="Authentication Failed: Invalid Token"
+            ), 401
 
     return decorator
 
+
+@bp.route("/new_job", methods=["POST"])
+@token_required
+def create_task(user):
+    data = json.loads(request.data.decode("utf-8"))
+    if "urls" not in data:
+        return jsonify(
+            message="No URL in the request payload"
+        ), 400
+
+    # queue = rq.Queue("crawling-tasks", default_timeout=3600,
+    #                  connection=Redis.from_url('redis://'))
+
+    urls = data["urls"]
+    title = data["title"] if "title" in data else None
+    job_id = str(uuid4())
+
+    queue.enqueue(scrapy_execute, urls, user, title, job_id)
+
+    return jsonify(
+        jobID=job_id,
+    ), 200
 

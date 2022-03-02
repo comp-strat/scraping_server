@@ -47,6 +47,8 @@ TODO
 """
 
 # make sure the dependencies are installed
+import os.path
+
 import rq
 import tldextract
 import regex # 3rd party library supports recursion and unicode handling
@@ -59,23 +61,21 @@ from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import Rule, CrawlSpider
 from scrapy.exceptions import NotSupported
 from scrapy.http import Request
+from urllib.parse import urlparse
 
 import sys
 sys.path.append(".")
 
-from crawler.items import CrawlerItem
+from server.crawler.items import CrawlerItem
 
 # The following are required for parsing File text
 
-import os
 from tempfile import NamedTemporaryFile
 import textract
 from itertools import chain
 import re
 from urllib.parse import urlparse
 import requests
-#import pandas as pd
-
 import chardet
 
 
@@ -109,13 +109,14 @@ class RecursiveSpider(CrawlSpider):
             callback="parse_items"
         )
     ]
-    def __init__(self, target_list=None, rq_id=None, mongo_settings= {}, user=None, url=None, *args, **kwargs):
+
+    def __init__(self, target, job_id, mongo_settings=None, user=None, *args, **kwargs):
         """
         Overrides default constructor to set custom
         instance attributes.
         
         Parameters:
-        - target_list: csv or tsv format
+        - target: csv or tsv format
             List of target entities to scrape, containing string domains and ids.
             
         Attributes:
@@ -135,8 +136,10 @@ class RecursiveSpider(CrawlSpider):
             csv_input.
         """
         super(RecursiveSpider, self).__init__(*args, **kwargs)
+        if mongo_settings is None:
+            mongo_settings = {}
         self.start_urls = []
-        self.rq_id = rq_id
+        self.job_id = job_id
         self.user = user
         self.allowed_domains = []
         self.rules = (
@@ -149,35 +152,44 @@ class RecursiveSpider(CrawlSpider):
         self.domain_to_id = {}
         self.custom_settings = mongo_settings
 
-        if target_list is not None:
-            self.init_from_target_list(target_list)
-        elif url is not None:
-            domain = self.get_domain(url,True)
-            self.start_urls.append(url)
-            self.allowed_domains.append(domain)
+        if target is None:
+            raise TypeError("Spider started with empty target list")
+        if type(target) is list:
+            for url in target:
+                self.start_urls.append(url)
+                self.allowed_domains.append(
+                    self.get_domain(url)
+                )
+        elif type(target) is str:
+            result = urlparse(target)
+            if result.scheme and result.netloc:
+                self.start_urls.append(target)
+                self.allowed_domains.append(
+                    self.get_domain(target)
+                )
+            else:
+                if not os.path.exists(target):
+                    raise ValueError(f"{target} is not a valid url or path")
+                self.init_from_target_list(target)
+        else:
+            raise TypeError(f"Wrong type in argument target, expected list or str, but got {type(target)}")
 
-        print("Start URLs:",self.start_urls,"Allowed Domains:",self.allowed_domains)
-
+        print("Start URLs:", self.start_urls, "Allowed Domains:", self.allowed_domains)
 
     # note: make sure we ignore robot.txt
     # Method for parsing items
     def parse_items(self, response):
-
+        print(f"Processing item {response.url}")
         item = CrawlerItem()
         item['url'] = response.url
+        item["job_id"] = self.job_id
+        item["user"] = self.user
         item['text'] = self.get_text(response)
         domain = self.get_domain(response.url)
-
-        #item['target_id'] = self.domain_to_id[domain]
         # uses DepthMiddleware
         item['depth'] = response.request.meta['depth']
-        print("Domain Name: ", domain)
-        print("Full URL: ", response.url)
-        print("Depth: ", item['depth'])
         item['image_urls'] = self.collect_image_URLs(response)
-
         item['file_urls'], item['file_text'] = self.collect_file_URLs(domain, item, response)
-        print(item['file_urls'])
         yield item
         # Will this be recursive for all of eternity?
         if 'text/html' in str(response.headers['Content-Type']):
@@ -210,8 +222,8 @@ class RecursiveSpider(CrawlSpider):
         """
         if not target_list:
             return
-        """if isinstance(target_list, pd.DataFrame):
-            for i, row in target_list.iterrows():
+        """if isinstance(target, pd.DataFrame):
+            for i, row in target.iterrows():
                 target_id = row['NCESSCH']
                 url = row['URL']
                 domain = self.get_domain(url)
@@ -222,7 +234,7 @@ class RecursiveSpider(CrawlSpider):
 
         with open(target_list, 'r') as f:
             delim = "," if "csv" in target_list else "\t"
-            reader = csv.reader(f, delimiter=delim,quoting=csv.QUOTE_NONE)
+            reader = csv.reader(f, delimiter=delim, quoting=csv.QUOTE_NONE)
             first_row = True
             for raw_row in reader:
                 if first_row:
@@ -239,13 +251,13 @@ class RecursiveSpider(CrawlSpider):
                 # note: float('3.70014E+11') == 370014000000.0
                 self.domain_to_id[domain] = float(target_id)
 
-
-    def get_domain(self, url, init = False):
+    def get_domain(self, url, init=False):
         """
         Given the url, gets the top level domain using the
         tldextract library.
         
         Args:
+            url (str): The url
             init (Boolean): True if this function is called while initializing the Spider, else False
         Ex:
         >>> get_domain('http://www.charlottesecondary.org/')
@@ -254,14 +266,14 @@ class RecursiveSpider(CrawlSpider):
         socratesacademy.us
         """
         extracted = tldextract.extract(url)
-        permissive_domain = f'{extracted.domain}.{extracted.suffix}' # gets top level domain: very permissive crawling
-        #specific_domain = re.sub(r'https?\:\/\/', '', url) # full URL without http
-        specific_domain = re.sub(r'https?\:\/\/w{0,3}\.?', '', url) # full URL without http and www. to compare w/ permissive
-        print("get_domain: Permissive:", permissive_domain)
-        print("get_domain: Specific:", specific_domain)
-        top_level = len(specific_domain.replace("/", "")) == len(permissive_domain) # compare specific and permissive domain
+        permissive_domain = f'{extracted.domain}.{extracted.suffix}'  # gets top level domain: very permissive crawling
+        # specific_domain = re.sub(r'https?\:\/\/', '', url) # full URL without http
+        # full URL without http and www. to compare w/ permissive
+        specific_domain = re.sub(r'https?\:\/\/w{0,3}\.?', '', url)
+        # compare specific and permissive domain
+        top_level = len(specific_domain.replace("/", "")) == len(permissive_domain)
 
-        if init: # Check if this is the initialization period for the Spider.
+        if init:  # Check if this is the initialization period for the Spider.
             if top_level:
                 return permissive_domain
             else:
@@ -271,10 +283,8 @@ class RecursiveSpider(CrawlSpider):
         if permissive_domain in self.allowed_domains:
             return permissive_domain
 
-        #implement dictionary for if specific domain is used in original allowed_domains; key is specific_domain?
-
-
-        return specific_domain # use `permissive_domain` to scrape much more broadly
+        # implement dictionary for if specific domain is used in original allowed_domains; key is specific_domain?
+        return specific_domain  # use `permissive_domain` to scrape much more broadly
 
 
     def get_text(self, response):
@@ -295,21 +305,17 @@ class RecursiveSpider(CrawlSpider):
             print("Response is not HTML text. Cannot extract text")
             return ''
 
-        print("Pulling text with BeautifulSoup...")
-
         # Load HTML into BeautifulSoup, extract text
-        soup = BeautifulSoup(response.body, 'html5lib') # slower but more accurate parser for messy HTML # lxml faster
+        # slower but more accurate parser for messy HTML # lxml faster
+        soup = BeautifulSoup(response.body, 'html5lib')
         # Remove non-visible tags from soup
-        [s.decompose() for s in soup(inline_tags)] # quick method for BS
+        [s.decompose() for s in soup(inline_tags)]  # quick method for BS
         # Extract text, remove <p> tags
-        visible_text = soup.get_text(strip = False) # get text from each chunk, leave unicode spacing (e.g., `\xa0`) for now to avoid globbing words
-
-        print("Text pulled from soup!")
+        # get text from each chunk, leave unicode spacing (e.g., `\xa0`) for now to avoid globbing words
+        visible_text = soup.get_text(strip = False)
 
         # Remove ascii (such as "\u00")
         filtered_text = visible_text.encode('ascii', 'ignore').decode('ascii')
-
-        print("Filtering ad junk from the soupy text")
 
         # Remove ad junk
         filtered_text = re.sub(r'\b\S*pic.twitter.com\/\S*', '', filtered_text)
@@ -317,12 +323,11 @@ class RecursiveSpider(CrawlSpider):
         # Replace all consecutive spaces (including in unicode), tabs, or "|"s with a single space
         filtered_text = regex.sub(r"[ \t\h\|]+", " ", filtered_text)
         # Replace any consecutive linebreaks with a single newline
-        filtered_text = regex.sub(r"[\n\r\f\v]+", "\n", filtered_text)
+        filtered_text = regex.sub(r"(\s?[\n\r\f\v])+", "\n", filtered_text)
         # Remove json strings: https://stackoverflow.com/questions/21994677/find-json-strings-in-a-string
         filtered_text = regex.sub(r"{(?:[^{}]*|(?R))*}", " ", filtered_text)
 
         # Remove white spaces at beginning and end of string; return
-        print("Text found and filtered successfully!")
         return filtered_text.strip()
 
     def collect_image_URLs(self, response):
@@ -335,7 +340,6 @@ class RecursiveSpider(CrawlSpider):
             extracted_urls = response.xpath('//img/@src').extract()
         else:
             extracted_urls = []
-            print("No HTML to search for images here")
         for image_url in extracted_urls:
             # make each image_url into a readable URL and add to image_urls
             image_urls.append(response.urljoin(image_url))
@@ -356,7 +360,8 @@ class RecursiveSpider(CrawlSpider):
         else:
             print("No Response HTML. Domain is: " + str(domain) + " \nand URL is: " + str(response.url))
             extracted_links = []
-            # If the url is not part of the domain being scraped ("something.com/this.pdf" vs "someother.org/"), don't include it
+            # If the url is not part of the domain being scraped
+            # ("something.com/this.pdf" vs "someother.org/"), don't include it
             if not response.url.startswith('/') and domain not in response.url:
                 extracted_links = []
             elif 'application/pdf' in str(response.headers['Content-Type']):
@@ -365,7 +370,8 @@ class RecursiveSpider(CrawlSpider):
                 else:
                     file_url = response.url + '.pdf'
                 extracted_links.append(file_url)
-            elif 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' in str(response.headers['Content-Type']):
+            elif 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' \
+                    in str(response.headers['Content-Type']):
                 if response.url.endswith('/'):
                     file_url = response.url[:-1] + '.docx'
                 else:
@@ -377,10 +383,6 @@ class RecursiveSpider(CrawlSpider):
                 else:
                     file_url = response.url + '.doc'
                 extracted_links.append(file_url)
-#        print("Cannot extract file. Domain is: " + str(domain))
-        print("Content-Type Header: " + str(response.headers['Content-Type']))
-#        print("\n\n\n\nHeaders: " + str(response.headers.keys()) + "\n\n\n\n")
-        print("PDF FOUND", extracted_links)
 
         # iterate over list of links with .pdf/.doc/.docx in them and appends urls for downloading
         file_text = []
@@ -417,28 +419,21 @@ class RecursiveSpider(CrawlSpider):
         
         """
 
-        # If the url is not part of the domain being scraped ("something.com/this.pdf" vs "someother.org/"), don't include it
-        # This logic is very basic and a starting point for further development of ensuring that we are still on the same page. TODO: improve domain splitting/comparing logic to avoid hitting external sites
+        # If the url is not part of the domain being scraped ("something.com/this.pdf" vs "someother.org/"),
+        # don't include it. This logic is very basic and a starting point for further development of
+        # ensuring that we are still on the same page.
+        # TODO: improve domain splitting/comparing logic to avoid hitting external sites
         if not str(href).startswith('/') and str(parent_url).split(".")[1] != str(href).split(".")[1]:
             print("Danger! File source is from an external site. Source: " + str(href) + " \n\tand parent url: " + str(parent_url))
             return ''
         # Parse text from file and add to .txt file AND item
-        print("Requesting the file data from its source: " + str(href) + " \n\tat the parent url: " + str(parent_url))
         response_href = requests.get(href)
-        print("Retrieved file data from response")
 
         extension = list(filter(lambda x: response_href.url.lower().endswith(x), TEXTRACT_EXTENSIONS))[0]
-
-        print("Extension found: " + str(extension))
-        print("Pulling file data into tempfile")
         tempfile = NamedTemporaryFile(suffix=extension)
         tempfile.write(response_href.content)
         tempfile.flush()
-
-        print("Processing file with Textract...")
         extracted_data = textract.process(tempfile.name)
-        print("Data encoding = " + str(chardet.detect(extracted_data)['encoding']))
-        print("Decoding with utf-8")
         # Should remove try/catch flow control!
         try:
             extracted_data = extracted_data.decode('utf-8')
@@ -449,7 +444,6 @@ class RecursiveSpider(CrawlSpider):
         extracted_data = CONTROL_CHAR_RE.sub('', extracted_data)
         tempfile.close()
         base_url = self.get_domain(parent_url)
-        print("Text extracted sucessfully!")
         return extracted_data
         '''
         # Create a filepath for the .txt file

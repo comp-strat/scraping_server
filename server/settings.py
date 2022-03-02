@@ -17,7 +17,7 @@ CLIENT_ORIGIN = os.getenv('CLIENT_ORIGIN') or "http://localhost:3000"
 
 # How to log spider output
 #LOG_ENABLED = True
-#LOG_LEVEL = 'INFO'
+LOG_LEVEL = 'INFO'
 #LOG_FILE = 'schoolspider_log.log'
 
 
@@ -107,10 +107,7 @@ AUTOTHROTTLE_DEBUG = False
 # Item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'crawler.pipelines.MongoDBImagesPipeline': 3,
-    'crawler.pipelines.MongoDBFilesPipeline': 4,
-    'crawler.pipelines.MongoDBTextPipeline': 300
-    # 'crawler.pipelines.MongoDBPipeline': 300
+    'crawler.pipelines.MongoDBPipeline': 300
 }
 
 MONGODB_DB = 'crawlerSpider'
@@ -122,7 +119,7 @@ MONGODB_COLLECTION_JOBS = "jobs"
 
 # running locally without containers
 
-MONGO_URI = os.getenv('MONGO_URI') or 'mongodb://localhost:27000'
+MONGO_URI = os.getenv('MONGO_URI') or 'mongodb://localhost:27017'
 
 # connect to MongoDB which is running in mongodb_container.
 # MONGO_URI = 'mongodb://mongodb_container:27000'
@@ -131,13 +128,13 @@ MONGO_URI = os.getenv('MONGO_URI') or 'mongodb://localhost:27000'
 
 MONGO_REPLICATION = False
 
-MONGO_REPLICA_SET = 'mongoCluster' # replica set name if used
+MONGO_REPLICA_SET = 'mongoCluster'  # replica set name if used
 
-MONGO_DATABASE = 'crawlerSpider' # database (not collection) name
+MONGO_DATABASE = 'crawlerSpider'  # database (not collection) name
 
-MONGO_USERNAME = 'admin' # could probably make a "schoolCrawler" user to use here instead
+MONGO_USERNAME = 'admin'  # could probably make a "schoolCrawler" user to use here instead
 
-MONGO_PASSWORD = 'mdipass' # Replace with actual password
+MONGO_PASSWORD = 'mdipass'  # Replace with actual password
 
 
 # FILES_EXPIRES = 365
@@ -147,5 +144,8 @@ IMAGES_MIN_HEIGHT = 150
 IMAGES_MIN_WIDTH = 150
 
 
-GOOGLE_OAUTH_CLIENT_URL = os.getenv('GOOGLE_OAUTH_CLIENT_ID') or None
-assert(GOOGLE_OAUTH_CLIENT_URL is not None, "Missing Google oauth client ID")
+GOOGLE_OAUTH_CLIENT_URL = os.getenv('GOOGLE_OAUTH_CLIENT_ID')
+
+FLASK_ENV = os.getenv("FLASK_ENV") or "production"
+DEBUG_NO_AUTH_ENABLED = os.getenv("DEBUG_NO_AUTH_ENABLED") == "True"
+

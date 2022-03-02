@@ -10,16 +10,18 @@ class CrawlerItem(Item):
     Represents the object parsed by the spider.
     Depth is defined by DepthMiddleware.
     """
-    url = Field() # str
-    text = Field() # str
-    depth = Field() # int
-    is_pdf = Field() # bool
-    is_doc = Field() # bool
-    is_im = Field() # bool
-    status = Field() # int
-    target_id = Field() # float this is school id or ncessch
-    timestamp = Field() # datetime
-    date_archived = Field() # datetime
+    url = Field()            # str
+    job_id = Field()         # str
+    user = Field()           # str
+    text = Field()           # str
+    depth = Field()          # int
+    is_pdf = Field()         # bool
+    is_doc = Field()         # bool
+    is_im = Field()          # bool
+    status = Field()         # int
+    target_id = Field()      # float this is school id or ncessch
+    timestamp = Field()      # datetime
+    date_archived = Field()  # datetime
     # Collecting Media
     image_urls = Field()
     images = Field()

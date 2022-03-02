@@ -77,7 +77,7 @@ def create_task(user):
         "MONGO_URI": settings.MONGO_URI
     }
     job = queue.enqueue("crawler.execute_scrapy_from_urls", urls, mongo_settings, user, title, job_id=job_id)
-    queue.enqueue("crawler.update_status",job_id, mongo_settings) # After task is done, update status to failed or completed
+    queue.enqueue("crawler.update_status", job_id, mongo_settings) # After task is done, update status to failed or completed
 
     print("Created job", job_id, urls)
     return {'status': 200, 'message': 'Crawl Started', 'job_id': str(job_id)}
