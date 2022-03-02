@@ -6,7 +6,7 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 
 import {inMemoryUserManager} from "../util/fetcher";
-import { Redirect, useHistory } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import Logout from "./Logout";
 import { Link } from "react-router-dom";
 
@@ -33,7 +33,7 @@ const ResponsiveAppBar = () => {
   };
 
   const user = inMemoryUserManager.getUser();
-  const history = useHistory();
+  const navigate = useNavigate();
   const crawlerLink = () => {return (<Link to="/jobs" style={{ textDecoration: "none", color:"inherit"}}>Crawler</Link>);};
   return (
     user != null && user.profileObj !== undefined ?
@@ -139,7 +139,7 @@ const ResponsiveAppBar = () => {
             </Box>
           </Toolbar>
         </Container>
-      </AppBar> : <Redirect to = {{
+      </AppBar> : <Navigate to = {{
         pathname: "/",
         search: history.location.search,
         state: { referrer: history.location.pathname }

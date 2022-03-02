@@ -16,10 +16,9 @@ import {
 
 import AddIcon from "@mui/icons-material/Add";
 
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 //Styles
-import config from "../server-config";
 import {WCTableContainer, WCTablePaper} from "../styles/DatasetsStyled";
 import {JobTableToolBarTitle, TopButton, RootDiv, Main} from "../styles/JobsStyled";
 
@@ -38,9 +37,7 @@ const jobsTableHeader = [
 ];
 
 const handleNewJobClick = (props) => {
-  props.history.push({
-    pathname: "/new-job"
-  });
+  props.navigate("/new-job");
 };
 
 
@@ -151,14 +148,14 @@ function JobTable(props) {
     setAnchorEl(event.currentTarget);
   };
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const downloadFunc = (id) => {
-    window.open(config.serverurl+"/job/"+id+"/files");
+    window.open("/job/"+id+"/files");
   };
 
   const viewProcess = (id) => {
-    history.push("/job/"+id);
+    navigate("/job/"+id);
   };
 
   const handleClose = () => {
@@ -238,8 +235,8 @@ function JobsPage(props) {
               justify="center"
               alignItems="flex-end"
             >
-              <TopButtons history={props.history}/>
-              <JobTable history={props.history} data={props.data}/>
+              <TopButtons navigate={props.navigate}/>
+              <JobTable navigate={props.navigate} data={props.data}/>
             </Grid>
             <Box pt={4}>
               <Copyright/>
@@ -264,7 +261,7 @@ class Jobs extends Component {
 
   //TODO refactor
   getAllJobs = () => {
-    fetcher(config.serverurl+"/jobs",{method:"GET"})
+    fetcher("/jobs",{method:"GET"})
       .then(res => res.json())
       .then(res => {
         let jobs_array = [];

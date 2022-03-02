@@ -5,7 +5,7 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Login from "./Login";
 
 const pages = []; //['Products', 'Pricing', 'Blog'];
@@ -30,7 +30,7 @@ const HomeNavbar = () => {
     setAnchorElUser(null);
   };
 
-  const history = useHistory();
+  const navigate = useNavigate();
   const crawlerLink = () => {return (<div>Crawler</div>);};
   return (
     <AppBar position="sticky">

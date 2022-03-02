@@ -4,24 +4,22 @@ import { GoogleLogin } from "react-google-login";
 // refresh token
 import { refreshTokenSetup } from "../util/refreshToken";
 
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {inMemoryUserManager} from "../util/fetcher";
 
-import config from "../server-config";
-
 function Login() {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const OnSuccess = (res) => {
     console.log("Login Success: currentUser:", res.profileObj);
     inMemoryUserManager.setUser(res);
     refreshTokenSetup(res);
-    console.log(history);
-    if (history.location.state === undefined
-      || history.location.state.referrer === undefined)
-      history.push("/jobs");
+    console.log(navigate);
+    if (navigate.location.state === undefined
+      || navigate.location.state.referrer === undefined)
+      navigate("/jobs");
     else
-      history.push(history.location.state.referrer);
+      navigate(navigate.location.state.referrer);
   };
 
 
@@ -36,7 +34,7 @@ function Login() {
   return (
     <div>
       <GoogleLogin
-        clientId={config.google_oauth_clientid}
+        clientId={"980011737294-kriddo55g39bja7timpfk233lm83l8jl.apps.googleusercontent.com"}
         buttonText="Login"
         onSuccess={OnSuccess}
         onFailure={OnFailure}

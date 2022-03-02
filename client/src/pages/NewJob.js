@@ -9,12 +9,12 @@ import {
   TextField, Box, Grid, Typography,
   CardContent, Container, Card, FormGroup, CardActions
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 // Styles
 import { RootDiv, Main, TopButton } from "../styles/JobsStyled";
-import config from "../server-config";
 import ResponsiveAppBar from "../components/Navbar";
-import DeleteIcon from "@mui/icons-material/Delete";
+
 
 class NewJob extends Component {
 

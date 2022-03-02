@@ -4,7 +4,6 @@ import {
 } from "@mui/material";
 import React, { Component } from "react";
 import {TopButton} from "../styles/JobsStyled";
-import config from "../server-config";
 import {fetcher} from "../util/fetcher";
 
 class SingleJob extends Component {
@@ -19,12 +18,12 @@ class SingleJob extends Component {
   }
     
   killFunc = () => {
-    fetcher(config.serverurl+"/job/"+this.props.id, {method:"DELETE"})
+    fetcher("/job/"+this.props.id, {method:"DELETE"})
       .then(res => this.updateStatus());
   };
 
   downloadFunc = () => {
-    fetcher(config.serverurl+"/job/"+this.props.id+"/files", {method:"GET"})
+    fetcher("/job/"+this.props.id+"/files", {method:"GET"})
       .then(response => response.blob())
       .then(blob => {
         var url = window.URL.createObjectURL(blob);
@@ -38,7 +37,7 @@ class SingleJob extends Component {
   };
 
   updateStatus = () => {
-    fetcher(config.serverurl+"/job/"+this.props.id, {method:"GET"})
+    fetcher("/job/"+this.props.id, {method:"GET"})
       .then(res => res.json())
       .then(res => {
         if (res.completion_status === "Ongoing") setTimeout(this.updateStatus,10000);
