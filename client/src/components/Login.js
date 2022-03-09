@@ -11,15 +11,9 @@ function Login() {
   const navigate = useNavigate();
 
   const OnSuccess = (res) => {
-    console.log("Login Success: currentUser:", res.profileObj);
     inMemoryUserManager.setUser(res);
     refreshTokenSetup(res);
-    console.log(navigate);
-    if (navigate.location.state === undefined
-      || navigate.location.state.referrer === undefined)
-      navigate("/jobs");
-    else
-      navigate(navigate.location.state.referrer);
+    navigate("/jobs");
   };
 
 

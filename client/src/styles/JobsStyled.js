@@ -7,7 +7,10 @@ export const RootDiv = styled("div")`
 
 export const Main = styled("main")(({ theme }) => ({
   flexGrow: 1,
-  padding: [2, 4, 0, 4].map(theme.spacing),
+  paddingTop: theme.spacing(2),
+  paddingRight: theme.spacing(4),
+  paddingBottom: theme.spacing(0),
+  paddingLeft: theme.spacing(4),
 }));
 
 export const TopButton = styled(Fab)`
