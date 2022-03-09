@@ -20,12 +20,7 @@ from google.auth.transport import requests
 
 app = Flask(__name__)
 
-task_repository = crawlTaskTracker.CrawlTaskRepository(
-    mongo_uri=settings.MONGO_URI, 
-    mongo_user=settings.MONGO_USERNAME, 
-    mongo_pass=settings.MONGO_PASSWORD,
-    db_name=settings.MONGODB_DB,
-    jobs_collection=settings.MONGODB_COLLECTION_JOBS)
+task_repository = crawlTaskTracker
 
 def token_required(f):
     @wraps(f)
@@ -43,7 +38,6 @@ def token_required(f):
         except ValueError:
             return jsonify({'status':401,'message': 'token is invalid'}), 401
 
-        
     return decorator
 
 @app.after_request

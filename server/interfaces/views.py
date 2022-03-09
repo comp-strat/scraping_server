@@ -7,8 +7,8 @@ from server import settings
 from server.crawler.run_spider import scrapy_execute
 from google.oauth2 import id_token
 from google.auth.transport import requests
-from uuid import uuid4
 from server.settings import *
+from server.crawler.tracking import task_repository
 
 
 bp = Blueprint("interfaces", __name__, url_prefix="")
@@ -69,7 +69,7 @@ def create_task(user):
 
     urls = data["urls"]
     title = data["title"] if "title" in data else None
-    job_id = str(uuid4())
+    job_id = task_repository.new_task(urls, user, title)
 
     queue.enqueue(scrapy_execute, urls, user, title, job_id)
 

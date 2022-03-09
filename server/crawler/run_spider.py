@@ -8,43 +8,15 @@ The primary purpose of this file is for the Scrapy Dockerfile.
 
 NOTE: by default, data doesn’t persist when that container no longer exists.
 """
-import multiprocessing
-import os
-import subprocess
-from rq import get_current_job
 from scrapy.utils.project import get_project_settings
-from server.crawler import crawl_task_tracker
-from server import settings
 from scrapy.crawler import CrawlerRunner
 from server.crawler.spiders.recursive_spider import RecursiveSpider
 from twisted.internet import reactor
-
-# See scrapy_vanilla.py for the meaning of this command.
-#scrapy_run_cmd = "scrapy crawl recursivespider -a csv_input=schools/spiders/test_urls.csv"
-SCRAPY_RUN_CMD = "scrapy crawl recursivespider -a target="
-
-SPLIT_FILE_CMD = 'split -l 100 --additional-suffix='
-
-SPLIT_PREFIX = 'split_urls/'
-
-#cmdline.execute(scrapy_run_cmd.split())
-
-task_repository = crawl_task_tracker.CrawlTaskRepository(
-    mongo_uri=settings.MONGO_URI, 
-    mongo_user=settings.MONGO_USERNAME, 
-    mongo_pass=settings.MONGO_PASSWORD,
-    db_name=settings.MONGODB_DB,
-    jobs_collection=settings.MONGODB_COLLECTION_JOBS
-)
+from server.settings import scrapy_project_setting
 
 
 def scrapy_execute(urls, user, title, job_id):
-    s = get_project_settings()
-    s["ITEM_PIPELINES"] = {
-        'server.crawler.pipelines.MongoDBPipeline': 300
-    }
-    s["LOG_LEVEL"] = "INFO"
-    runner = CrawlerRunner(s)
+    runner = CrawlerRunner(scrapy_project_setting)
     runner.crawl(RecursiveSpider, target=urls, job_id=job_id, user=user)
     d = runner.join()
     d.addBoth(lambda _: reactor.stop())

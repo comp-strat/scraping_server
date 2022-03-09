@@ -19,8 +19,8 @@ https://pymongo.readthedocs.io/en/stable/api/pymongo/collection.html#pymongo.col
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
 from server.crawler.items import CrawlerItem
+from server.crawler.tracking import task_repository, CrawlTaskStatus
 import server.settings as settings
-from scrapy.exceptions import DropItem
 import os
 
 import logging
@@ -62,6 +62,7 @@ class MongoDBPipeline:
 
     def open_spider(self, spider):
         # initializing spider
+        print(f"Spiders {spider.job_id} opening...")
         print("Connecting to MongoDB...")
         if self.mongo_replication:
             self.client = pymongo.MongoClient(self.mongo_uri, replicaSet=self.mongo_replica_set_name,
@@ -76,6 +77,9 @@ class MongoDBPipeline:
 
     def close_spider(self, spider):
         # clean up when spider is closed
+        print(f"Spiders {spider.job_id} closing...")
+        result = task_repository.update_status(spider.job_id, CrawlTaskStatus.finished)
+        print(f"Updated tasks repo, result {result}")
         self.client.close()
 
     def process_item(self, item, spider):
@@ -92,7 +96,6 @@ class MongoDBPipeline:
         adapted_item = ItemAdapter(item).asdict()
         # Finds the document with the matching url.
         query = {'url': item['url']}
-        print("Starting pipeline process...")
 
         if not isinstance(item, CrawlerItem):
             print("Not an instance of CrawlerItem")

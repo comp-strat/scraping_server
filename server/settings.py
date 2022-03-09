@@ -8,26 +8,14 @@
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 import os
 
+from scrapy.utils.project import get_project_settings
+
 BOT_NAME = 'crawler'
 
 SPIDER_MODULES = ['crawler.spiders']
 NEWSPIDER_MODULE = 'crawler.spiders'
 
 CLIENT_ORIGIN = os.getenv('CLIENT_ORIGIN') or "http://localhost:3000"
-
-# How to log spider output
-#LOG_ENABLED = True
-LOG_LEVEL = 'INFO'
-#LOG_FILE = 'schoolspider_log.log'
-
-
-# Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'schools (+http://www.yourdomain.com)'
-USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'
-
-
-# Obey robots.txt rules
-ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 # CONCURRENT_REQUESTS = 32
@@ -52,17 +40,6 @@ ROBOTSTXT_OBEY = False
 #   'Accept-Language': 'en',
 # }
 
-# Enable or disable spider middlewares. These are set by default,
-# but explicitly stated for the sake of highlighting what needs configuration.
-# See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
-SPIDER_MIDDLEWARES = {
-    'scrapy.spidermiddlewares.depth.DepthMiddleware': 100,
-    'scrapy.spidermiddlewares.httperror.HttpErrorMiddleware': 200,
-    'scrapy.spidermiddlewares.offsite.OffsiteMiddleware': 300
-}
-
-# Configure depth 
-DEPTH_LIMIT = 5
 
 
 # Enable or disable downloader middlewares
@@ -104,21 +81,14 @@ AUTOTHROTTLE_DEBUG = False
 # HTTPCACHE_IGNORE_HTTP_CODES = []
 # HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
-# Item pipelines
-# See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-ITEM_PIPELINES = {
-    'crawler.pipelines.MongoDBPipeline': 300
-}
 
 MONGODB_DB = 'crawlerSpider'
-
 MONGODB_COLLECTION_IMAGES = "images"
 MONGODB_COLLECTION_FILES = "files"
 MONGODB_COLLECTION_TEXT = "text"
 MONGODB_COLLECTION_JOBS = "jobs"
 
 # running locally without containers
-
 MONGO_URI = os.getenv('MONGO_URI') or 'mongodb://localhost:27017'
 
 # connect to MongoDB which is running in mongodb_container.
@@ -136,16 +106,44 @@ MONGO_USERNAME = 'admin'  # could probably make a "schoolCrawler" user to use he
 
 MONGO_PASSWORD = 'mdipass'  # Replace with actual password
 
-
 # FILES_EXPIRES = 365
 IMAGES_EXPIRES = 365
 MEDIA_ALLOW_REDIRECTS = True
 IMAGES_MIN_HEIGHT = 150
 IMAGES_MIN_WIDTH = 150
 
-
 GOOGLE_OAUTH_CLIENT_URL = os.getenv('GOOGLE_OAUTH_CLIENT_ID')
 
 FLASK_ENV = os.getenv("FLASK_ENV") or "production"
 DEBUG_NO_AUTH_ENABLED = os.getenv("DEBUG_NO_AUTH_ENABLED") == "True"
+
+__settings = get_project_settings()
+# Item pipelines
+# See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
+__settings["ITEM_PIPELINES"] = {
+    'server.crawler.pipelines.MongoDBPipeline': 300
+}
+__settings["LOG_LEVEL"] = "INFO"
+
+# Enable or disable spider middlewares. These are set by default,
+# but explicitly stated for the sake of highlighting what needs configuration.
+# See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
+__settings["SPIDER_MIDDLEWARES"] = {
+    'scrapy.spidermiddlewares.depth.DepthMiddleware': 100,
+    'scrapy.spidermiddlewares.httperror.HttpErrorMiddleware': 200,
+    'scrapy.spidermiddlewares.offsite.OffsiteMiddleware': 300
+}
+
+# Configure depth
+__settings["DEPTH_LIMIT"] = 1
+
+# Crawl responsibly by identifying yourself (and your website) on the user-agent
+# USER_AGENT = 'schools (+http://www.yourdomain.com)'
+__settings["USER_AGENT"] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) ' \
+                           'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'
+
+# Obey robots.txt rules
+__settings["ROBOTSTXT_OBEY"] = False
+
+scrapy_project_setting = __settings
 
