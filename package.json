@@ -28,7 +28,7 @@
   },
   "scripts": {
     "dev::webpack": "webpack --watch --config webpack.dev.js",
-    "dev::server": "flask run -p 3000",
+    "dev::server": "flask run --host=localhost -p 3000",
     "prod::build": "webpack --config webpack.prod.js"
   },
   "eslintConfig": {
