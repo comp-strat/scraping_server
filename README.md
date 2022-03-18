@@ -168,6 +168,8 @@ npm --prefix ./client install
 ### 6. Set up user authorization with Google Sign-In
 Replace the Client ID in [`client/src/server-config.js`](https://github.com/URAP-charter/scraping_server/blob/97c303d4f6455a51efe83f16c8d5a8daec272941/client/src/server-config.js#L5) and [`client/src/settings.py`](https://github.com/URAP-charter/scraping_server/blob/97c303d4f6455a51efe83f16c8d5a8daec272941/crawler/crawler/settings.py#L150) with your own ([how to create authorization credentials](https://developers.google.com/identity/sign-in/web/sign-in#create_authorization_credentials)). You can enable crawling requests from your IP addresses (if not `localhost`) as "Authorized Javascript Origins" with your Client ID on [the Google Console Credentials page](https://console.developers.google.com/apis/credentials). The current repo uses the Client ID created by [Jaren Haber, PhD](https://www.jarenhaber.com/), which will work for the purposes of testing and developing the crawling server.
 
+In addition, you msut replace the placeholder "clientID" in line 3 of the .env file contained in the main repository with your own Google OAuth Client ID.
+
 ### 7. Run Redis Queue, Flask, React Server
 In three Terminal windows, navigate to the project folder and run the following commands.
 
@@ -180,13 +182,13 @@ rq worker crawling-tasks --path ./crawler
 Terminal 2:
 ```bash
 conda activate wc-server
-python ./crawler/crawler/app.py
+npm run dev::server
 ```
 
 Terminal 3:
 ```bash
 conda activate wc-server
-npm --prefix ./client start
+npm run dev::webpack
 ```
 
 At this point, you should be able to see the web interface running on [localhost:3000](http://localhost:3000)
