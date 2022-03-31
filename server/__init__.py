@@ -14,8 +14,10 @@ def create_app(test_config=None):
     
     from .home import views as home_views
     app.register_blueprint(home_views.bp)
-    from .interfaces import views as interface_views
-    app.register_blueprint(interface_views.bp)
+    from .jobs import interfaces as job_interfaces
+    app.register_blueprint(job_interfaces.bp)
+    from .jobs import actions as job_actions
+    app.register_blueprint(job_actions.bp)
 
     return app
 

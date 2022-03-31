@@ -19,7 +19,7 @@ https://pymongo.readthedocs.io/en/stable/api/pymongo/collection.html#pymongo.col
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
 from server.crawler.items import CrawlerItem
-from server.crawler.tracking import task_repository, CrawlTaskStatus
+from server.crawler.tracking import job_repository, CrawlJobStatus
 import server.settings as settings
 import os
 
@@ -78,7 +78,7 @@ class MongoDBPipeline:
     def close_spider(self, spider):
         # clean up when spider is closed
         print(f"Spiders {spider.job_id} closing...")
-        result = task_repository.update_status(spider.job_id, CrawlTaskStatus.finished)
+        result = job_repository.update_status(spider.job_id, CrawlJobStatus.finished)
         print(f"Updated tasks repo, result {result}")
         self.client.close()
 

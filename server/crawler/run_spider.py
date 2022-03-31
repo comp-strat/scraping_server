@@ -25,7 +25,7 @@ def scrapy_execute(urls, user, title, job_id):
 
 # def execute_scrapy_from_urls(urls, mongo_settings, user=None, title=None):
 #     id = get_current_job().id
-#     task_repository.addTask(urls, id, user, title)
+#     job_repository.addTask(urls, id, user, title)
 #
 #     pool = multiprocessing.Pool(multiprocessing.cpu_count() - 1)
 #     pool.starmap(execute_scrapy_from_file.execute_scrapy_from_url, [(url, id, mongo_settings, user) for url in urls])
