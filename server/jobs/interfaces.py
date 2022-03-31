@@ -4,7 +4,7 @@ import rq, os, redis
 from flask import render_template, Blueprint, request, jsonify
 from server import settings
 from server.crawler.run_spider import scrapy_execute
-from utils import token_required
+from .utils import token_required
 from server.crawler.tracking import job_repository, CrawlJobStatus
 
 bp = Blueprint("job_interfaces", __name__, url_prefix="/jobs")

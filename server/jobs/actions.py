@@ -2,7 +2,7 @@ import json
 from functools import wraps
 from flask import Blueprint, request, jsonify
 from server.crawler.tracking import job_repository, CrawlJobStatus
-from utils import token_required
+from .utils import token_required
 
 bp = Blueprint("job_actions", __name__, url_prefix="/jobs")
 
