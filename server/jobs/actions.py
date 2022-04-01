@@ -3,23 +3,28 @@ from functools import wraps
 from flask import Blueprint, request, jsonify
 from server.crawler.tracking import job_repository, CrawlJobStatus
 from .utils import token_required
+from bson.errors import BSONError
 
-bp = Blueprint("job_actions", __name__, url_prefix="/jobs")
+bp = Blueprint("job_actions", __name__, url_prefix="/api/jobs")
 
 
 def validate_job_id(f):
     @wraps(f)
     def decorator(*args, **kwargs):
-        job_id = kwargs["job_id"]
+        job_id = request.view_args["job_id"]
         if job_id is None or not task_exist(job_id):
             return jsonify(
-                message=f"{job_id} does not exist"
-            )
+                message=f"Cannot find job with id {job_id}"
+            ), 404
         else:
             return f(*args, **kwargs)
 
     def task_exist(job_id) -> bool:
-        return job_repository.get_job(job_id) is not None
+        try:
+            job = job_repository.get_job(job_id)
+            return job is not None
+        except BSONError as e:  # Catch all mongoDB error
+            return False
 
     return decorator
 
@@ -43,14 +48,14 @@ def after_request(response):
 
 
 @bp.route("/<job_id>", methods=["GET"])
-def get_job(user, job_id):
+def get_job(job_id):
     return jsonify(
         job_repository.get_job(job_id).to_dict()
     ), 200
 
 
 @bp.route("/<job_id>/status", methods=["GET"])
-def job_status(user, job_id):
+def job_status(job_id):
     status = job_repository.get_status(job_id)
     return jsonify(
         status=status.value
@@ -58,7 +63,7 @@ def job_status(user, job_id):
 
 
 @bp.route("/<job_id>/cancel", methods=["GET"])
-def job_cancel(user, job_id):
+def job_cancel(job_id):
     status = job_repository.get_status(job_id)
     if status is CrawlJobStatus.ongoing:
         job_repository.kill_job(job_id)
@@ -72,6 +77,6 @@ def job_cancel(user, job_id):
 
 
 @bp.route("/<job_id>/result", methods=["GET"])
-def job_result(user, job_id):
+def job_result(job_id):
     status = job_repository.get_status(job_id)
     # TODO: Serialize and send results

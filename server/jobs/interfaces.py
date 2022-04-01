@@ -1,13 +1,13 @@
 import json
 
 import rq, os, redis
-from flask import render_template, Blueprint, request, jsonify
+from flask import render_template, Blueprint, request, jsonify, g
 from server import settings
 from server.crawler.run_spider import scrapy_execute
 from .utils import token_required
 from server.crawler.tracking import job_repository, CrawlJobStatus
 
-bp = Blueprint("job_interfaces", __name__, url_prefix="/jobs")
+bp = Blueprint("job_interfaces", __name__, url_prefix="/api/jobs")
 queue = rq.Queue("crawling-tasks", default_timeout=3600,
                  connection=redis.Redis.from_url('redis://'))
 
@@ -30,13 +30,15 @@ def after_request(response):
 
 
 @bp.route("/", methods=["GET"])
-def all_jobs(user):
-    job_repository.get_all_jobs(user)
-    return jsonify()
+def all_jobs():
+    jobs = job_repository.get_all_jobs(g.user)
+    return jsonify([
+        job.to_dict() for job in jobs
+    ])
 
 
 @bp.route("/create", methods=["POST"])
-def create_job(user):
+def create_job():
     data = json.loads(request.data.decode("utf-8"))
     if "urls" not in data:
         return jsonify(
@@ -45,9 +47,9 @@ def create_job(user):
 
     urls = data["urls"]
     title = data["title"] if "title" in data else None
-    job_id = job_repository.new_job(urls, user, title)
+    job_id = job_repository.new_job(urls, g.user, title)
 
-    queue.enqueue(scrapy_execute, urls, user, title, job_id)
+    queue.enqueue(scrapy_execute, urls, g.user, title, job_id)
 
     return jsonify(
         jobID=job_id,
