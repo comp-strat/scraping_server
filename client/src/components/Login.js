@@ -1,22 +1,19 @@
 import React from "react";
 
 import { GoogleLogin } from "react-google-login";
-// refresh token
 import { refreshTokenSetup } from "../util/refreshToken";
-
 import { useNavigate } from "react-router-dom";
-import {inMemoryUserManager} from "../util/fetcher";
+import {AuthManager} from "../util/AuthManager";
 
 function Login() {
   const navigate = useNavigate();
 
   const OnSuccess = (res) => {
-    inMemoryUserManager.setUser(res);
+    console.log(res);
+    AuthManager.setUser(res);
     refreshTokenSetup(res);
     navigate("/jobs");
   };
-
-
 
   const OnFailure = (res) => {
     console.log("Login failed: res:", res);

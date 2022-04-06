@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {fetcher} from "../util/fetcher";
+import {AuthManager} from "../util/AuthManager";
 
 //Components
 import {Copyright} from "../components/Copyright";
@@ -27,8 +27,7 @@ class NewJob extends Component {
   }
 
   sendURLs = (urls, title) => {
-
-    fetcher("/job/create", {
+    AuthManager("/jobs/create", {
       method: "POST",
       body: JSON.stringify({urls: urls, title: title})
     })
@@ -66,7 +65,7 @@ class NewJob extends Component {
 
     return (
       <RootDiv>
-        <ResponsiveAppBar/>
+        {/*<ResponsiveAppBar/>*/}
         <Container style = {{marginTop: 20}}>
           <Main>
             <Grid
@@ -109,7 +108,7 @@ class NewJob extends Component {
                             margin="dense"
                             autoComplete="url"
                             required={i===0}
-                            value={this.state.URLs[i]}
+                            value={this.state.urls[i]}
                             onChange={(event) => {
                               let urls = this.state.urls;
                               urls[i] = event.target.value;

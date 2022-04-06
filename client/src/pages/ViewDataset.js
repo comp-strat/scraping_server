@@ -18,7 +18,7 @@ import {MoreVert} from "@mui/icons-material";
 import {Main, RootDiv, WCTableContainer, WCTablePaper} from "../styles/DatasetsStyled";
 
 import config from "../server-config";
-import {JobTableToolBar} from "./Jobs";
+import {JobTableToolBar} from "./JobsDashboard";
 
 const options = [
   "DOWNLOAD"

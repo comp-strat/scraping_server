@@ -5,7 +5,7 @@ import {LeftDrawer} from "../components/LeftDrawer";
 import {Copyright} from "../components/Copyright";
 
 //Actions
-import {fetcher, inMemoryUserManager} from "../util/fetcher";
+import {AuthManager} from "../util/AuthManager";
 
 //Material UI
 import {
@@ -20,7 +20,6 @@ import {
   ExampleCard, ExampleCardImage, DatasetGrid, RootDiv,
   Main,
 } from "../styles/DatasetsStyled";
-import config from "../server-config";
 
 function Title(props) {
   return (
@@ -42,7 +41,7 @@ const handleDatasetCardDownloadClick = () => {
 };
 
 function Samples(props) {
-  const user = inMemoryUserManager.getUser();
+  const user = AuthManager.getUser();
   const getProfile = () => {
     if (user.profileObj === undefined) {
       props.history.push("/");
@@ -76,11 +75,11 @@ function Samples(props) {
                 />
                 <ExampleCardImage
                   src={"/static/img/Charlotte.jpg"}
-                  title={job.URLs}
+                  title={job.urls}
                 />
                 <CardContent>
                   <Typography variant="h6" component="h2">
-                    {job.URLs}
+                    {job.urls}
                   </Typography>
                 </CardContent>
                 <CardActions>
@@ -133,7 +132,7 @@ class Datasets extends Component {
   }
 
   getCompletedJobs = () => {
-    fetcher(config.serverurl+"/jobs",{method:"GET"})
+    AuthManager(config.serverurl+"/jobs",{method:"GET"})
       .then(res => res.json())
       .then(res => {
         let jobs_array = [];
@@ -142,7 +141,7 @@ class Datasets extends Component {
           if (d.status === "Finished") {
             jobs_array.push({
               id: d._id,
-              URLs: d.URLs,
+              urls: d.urls,
               Creator: d.created_by,
               Date: d.createdDate,
               Status: d.status

@@ -19,13 +19,13 @@ import Logout from "../components/Logout.js";
 //Styles
 import { WCDrawer, drawerPaper } from "../styles/ComponentStyled";
 
-import {inMemoryUserManager} from "../util/fetcher";
+import {AuthManager} from "../util/AuthManager";
 import { Redirect, useHistory } from "react-router-dom";
 
 
 export function LeftDrawer(props) {
   const history = useHistory();
-  const user = inMemoryUserManager.getUser();
+  const user = AuthManager.getUser();
 
   return (
     user != null && user.profileObj !== undefined ?

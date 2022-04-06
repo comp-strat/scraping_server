@@ -5,7 +5,7 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 
-import {inMemoryUserManager} from "../util/fetcher";
+import {AuthManager} from "../util/AuthManager";
 import { Navigate, useNavigate } from "react-router-dom";
 import Logout from "./Logout";
 import { Link } from "react-router-dom";
@@ -32,8 +32,7 @@ const ResponsiveAppBar = () => {
     setAnchorElUser(null);
   };
 
-  const user = inMemoryUserManager.getUser();
-  const navigate = useNavigate();
+  const user = AuthManager.getUser();
   const crawlerLink = () => {return (<Link to="/jobs" style={{ textDecoration: "none", color:"inherit"}}>Crawler</Link>);};
   return (
     user != null && user.profileObj !== undefined ?
@@ -134,16 +133,11 @@ const ResponsiveAppBar = () => {
                 <MenuItem key="logout">
                   <Logout />
                 </MenuItem>
-              
               </Menu>
             </Box>
           </Toolbar>
         </Container>
-      </AppBar> : <Navigate to = {{
-        pathname: "/",
-        search: history.location.search,
-        state: { referrer: history.location.pathname }
-      }}/>
+      </AppBar> : <Navigate to="/"/>
   );
 };
 export default ResponsiveAppBar;

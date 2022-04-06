@@ -1,31 +1,17 @@
 import React, {Component} from "react";
-import {fetcher} from "../util/fetcher";
-// Components
+import {fetchWithUserToken} from "../util/AuthManager";
 import {Copyright} from "../components/Copyright";
 import ResponsiveAppBar from "../components/Navbar";
-
-//helpers
 import {getComparator, stableSort} from "../util/jobSortingHelpers";
-
-//Material UI
 import {
   Grid, Table, TableBody, Container,
   TableCell, TableHead, TablePagination,
-  TableRow, Toolbar, Box, TableSortLabel, Fab
+  TableRow, Toolbar, Box, TableSortLabel,
 } from "@mui/material";
-
 import AddIcon from "@mui/icons-material/Add";
-
 import { useNavigate } from "react-router-dom";
-
-//Styles
 import {WCTableContainer, WCTablePaper} from "../styles/DatasetsStyled";
 import {JobTableToolBarTitle, TopButton, RootDiv, Main} from "../styles/JobsStyled";
-
-// const options = [
-//   "VIEW",
-//   "DOWNLOAD"
-// ];
 
 const jobsTableHeader = [
   {id: "Title", label: "Title", minWidth: 120, align: "left"},
@@ -36,12 +22,11 @@ const jobsTableHeader = [
   {id: "more", label: " ", minWidth: 40, align: "left"}
 ];
 
-const handleNewJobClick = (props) => {
-  props.navigate("/new-job");
-};
-
-
 function TopButtons(props) {
+
+  const handleNewJobClick = () => {
+    props.navigate("/new-job");
+  };
 
   return (
     <Grid container item
@@ -52,7 +37,7 @@ function TopButtons(props) {
       <TopButton
         variant="extended"
         color="primary"
-        onClick={() => handleNewJobClick(props)}
+        onClick={() => handleNewJobClick()}
       >
         <AddIcon />
                 NEW JOB
@@ -119,7 +104,6 @@ export function EnhancedJobTableHead(props) {
   );
 }
 
-
 function JobTable(props) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -141,29 +125,11 @@ function JobTable(props) {
     setOrderBy(property);
   };
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
-
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const navigate = useNavigate();
-
-  const downloadFunc = (id) => {
-    window.open("/job/"+id+"/files");
-  };
-
   const viewProcess = (id) => {
-    navigate("/job/"+id);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
+    props.navigate("/job/"+id);
   };
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, props.data.length - page * rowsPerPage);
-  console.log(props.data);
   return (
     <Grid container item direction="column">
       <WCTablePaper variant="outlined">
@@ -187,7 +153,6 @@ function JobTable(props) {
                     }} style = {{cursor: "pointer"}}>
                       {jobsTableHeader.slice(0, 5).map((column) => {
                         const value = row[column.id];
-                        console.log(row, column.id);
                         return (
                           <TableCell key={column.id} align={column.align}>
                             {value}
@@ -212,7 +177,7 @@ function JobTable(props) {
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </WCTablePaper>
     </Grid>
@@ -220,13 +185,10 @@ function JobTable(props) {
 }
 
 function JobsPage(props) {
-
   return (
     <div>
       <ResponsiveAppBar/>
       <RootDiv>
-        {/*<LeftDrawer history={props.history}/>*/}
-           
         <Container>
           <Main>
             <Grid
@@ -250,7 +212,7 @@ function JobsPage(props) {
 }
 
 
-class Jobs extends Component {
+class JobsDashboard_ extends Component {
   state = {
     jobs: []
   };
@@ -259,16 +221,19 @@ class Jobs extends Component {
     super(props);
   }
 
-  //TODO refactor
   getAllJobs = () => {
-    fetcher("/jobs",{method:"GET"})
-      .then(res => res.json())
+    fetchWithUserToken("/api/jobs",{method:"GET"})
+      .then(response => {
+        console.log(response);
+        return response.json();
+      })
       .then(res => {
+        console.log(`/api/jobs -> ${res}`);
         let jobs_array = [];
         res.data.forEach(d => {
           jobs_array.push({
             id: d._id,
-            URLs: d.URLs.join(","),
+            urls: d.urls.join(","),
             Creator: d.created_by,
             Date: (new Date(d.createdDate*1000)).toISOString(),
             Status: d.status,
@@ -289,10 +254,12 @@ class Jobs extends Component {
 
   render() {
     return (
-      <JobsPage history={this.props.history} data={this.state.jobs}/>
+      <JobsPage navigate={this.props.navigate} data={this.state.jobs}/>
     );
   }
 }
 
-
-export default Jobs;
+export default function JobsDashboard(props) {
+  const navigate = useNavigate();
+  return <JobsDashboard_ {...props} navigate={navigate} />;
+}

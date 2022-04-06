@@ -14,5 +14,6 @@ def after_request(response):
 
 @bp.route("/", methods=("GET",))
 @bp.route("/jobs", methods=("GET",))
+@bp.route("/new-job", methods=("GET",))
 def home():
     return render_template("home.html")

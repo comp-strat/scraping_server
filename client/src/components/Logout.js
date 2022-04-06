@@ -1,14 +1,14 @@
 import React from "react";
 import { GoogleLogout } from "react-google-login";
 import { useNavigate } from "react-router-dom";
-import {inMemoryUserManager} from "../util/fetcher";
+import {AuthManager} from "../util/AuthManager";
 
 function Logout() {
   const navigate = useNavigate();
   const onSuccess = () => {
     console.log("Logout made successfully");
     navigate("/");
-    inMemoryUserManager.deleteUser();
+    AuthManager.deleteUser();
   };
 
   return (
