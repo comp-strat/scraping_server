@@ -11,6 +11,7 @@ We will test the architecture by crawling all 100,000 or so U.S. school websites
 
 Downstream features on our bucket list include real-time metrics and access to scraped data, error checks and backup scrapers (including the simple wget algorithm), and toggles for capturing data over time with the Internet Archive. 
 
+**Note:** The following scraping server instructions are development purposes only!
 
 ## Running the scraping server (Ubuntu)
 This requires a Redis server to handle tasks. The instructions below walk you through installing Redis, and [you can find more instructions here](https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-redis-on-ubuntu-18-04) (Ubuntu 18.04). If not yet installed, you will also need to [install MongoDB](https://docs.mongodb.com/manual/installation/) (instructions below don't include this part). You will also need access to authorization credentials for Google Sign-In; [here are instructions to create these if you haven't used them before](https://developers.google.com/identity/sign-in/web/sign-in#create_authorization_credentials). 
@@ -28,8 +29,6 @@ sudo nano /etc/redis/redis.conf
 # Then restart Redis again if you made the previous change
 sudo systemctl restart redis
 ```
-
-
 
 ### 2. Install required packages and setup 
 Follow each of these steps from your *home directory* (which for our VMs this is `/vol_b/data/`).
@@ -59,6 +58,8 @@ Description of relevant parameters, please update as appropriate:
 #### 2C. Set up user authorization with Google Sign-In
 Replace the Client ID in [`client/src/server-config.js`](https://github.com/URAP-charter/scraping_server/blob/97c303d4f6455a51efe83f16c8d5a8daec272941/client/src/server-config.js#L5) and [`client/src/settings.py`](https://github.com/URAP-charter/scraping_server/blob/97c303d4f6455a51efe83f16c8d5a8daec272941/crawler/crawler/settings.py#L150) with your own ([how to create authorization credentials](https://developers.google.com/identity/sign-in/web/sign-in#create_authorization_credentials)). You can enable crawling requests from your IP addresses (if not `localhost`) as "Authorized Javascript Origins" with your Client ID on [the Google Console Credentials page](https://console.developers.google.com/apis/credentials). The current repo uses the Client ID created by [Jaren Haber, PhD](https://www.jarenhaber.com/), which will work for the purposes of testing and developing the crawling server. 
 
+In addition, you must replace the placeholder "clientID" in line 3 of the .env file contained in the main repository with your own Google OAuth Client ID.
+
 
 ### 3. Run server
 Create three terminal screens: one for Redis, one for Flask, one for React. From each window: 
@@ -66,32 +67,20 @@ Create three terminal screens: one for Redis, one for Flask, one for React. From
 - activate the python environment you set up in 2A above (default `source .venv/bin/activate`)
 - run one task per window as follows.
 
-##### 3A. In Redis window (must be in venv):
+#### 3A. In Redis window (must be in venv):
 ```bash
-cd crawler
-rq worker crawling-tasks --path . # run Redis
+rq worker crawling-tasks --path ./crawler
 ```
 
 #### 3B. In Flask window (must be in venv): 
 ```bash
-export CLIENT_ORIGIN=http://localhost:3000
-export MONGO_URI=mongodb://localhost:27000
-export SERVER_PORT=5000
-cd crawler/crawler
-python app.py # run Flask
+npm run dev::server
 ```
-The environment variables guide the flask server. The values shown are the default values.
- - `CLIENT_ORIGIN` is the client it should accept requests from
- - `MONGO_URI` is where it should send database requests
- - `SERVER_PORT` is what port should the server run on
 
-### 3C. In React window:
+#### 3C. In React window:
 ```bash
-export REACT_APP_SERVER_URL=http://localhost:5000
-cd client
-npm start # run React server
+npm run dev::webpack
 ```
-The environment variable here, `REACT_APP_SERVER_URL`, is the address of the flask server, to which the React client should send server url requests.
 
 
 ### 4. Navigate the client from your web browser at `http://localhost:3000/`
