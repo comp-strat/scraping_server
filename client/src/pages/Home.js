@@ -1,47 +1,40 @@
-import { makeStyles } from "@material-ui/core";
-import { Button, Container, Typography } from "@mui/material";
-import { Box } from "@mui/system";
+import React from "react";
+import { Typography, Box } from "@mui/material";
+import { styled } from "@mui/system";
 import HomeNavbar from "../components/HomeNavbar.js";
-import Login from "../components/Login.js";
-import Logout from "../components/Logout.js";
-import Socrates from '../static/img/Socratesacademy.jpg'
 
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    width: '100%',
-    height: '100%',
-    position: 'relative',
-    '& video': {
-      objectFit: 'cover',
-    },
-  },
-  overlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  title: {
-    paddingBottom: theme.spacing(4),
-  },
+const Root = styled("section")`
+  height: 100%;
+  width: 100%;
+  position: relative;
+`;
+
+const Overlay = styled("div")`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+`;
+
+const Header = styled(Typography)(({ theme }) => ({
+  paddingBottom: theme.spacing(4)
 }));
 
 const Hero = () => {
-  const classes = useStyles();
-
   return (
-    <section className={classes.root}>
+    <Root>
       <img
-      style = {{
-        width:"100%",
-        height:"100%"
-      }}
-      src = {Socrates}
+        style = {{
+          width:"100%",
+          height:"100%"
+        }}
+        src = {"/static/img/Socratesacademy.jpg"}
+        alt={"Cover Image"}
       />
-      <div className={classes.overlay}>
+      <Overlay>
         <Box
           height="100%"
           display="flex"
@@ -50,15 +43,15 @@ const Hero = () => {
           alignItems="center"
           color="#fff"
         >
-          <Typography variant="h3" component="h1" className={classes.title}>
+          <Header variant="h3" component="h1">
             Universal Web Crawler
-          </Typography>
-          <Typography variant="h5" component="h1" className={classes.title}>
+          </Header>
+          <Header variant="h5" component="h1">
             Simple Interface to Crawl Public Websites
-          </Typography>
+          </Header>
         </Box>
-      </div>
-    </section>
+      </Overlay>
+    </Root>
   );
 };
 

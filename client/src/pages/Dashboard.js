@@ -4,22 +4,16 @@ import React, { Component } from "react";
 import {LeftDrawer} from "../components/LeftDrawer";
 import {Copyright} from "../components/Copyright";
 
-
-
 //Material UI
-import { Grid, Typography } from '@material-ui/core';
-import Card from '@material-ui/core/Card';
-import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
-import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
-import IconButton from '@material-ui/core/IconButton';
-import AssignmentTurnedInRoundedIcon from '@material-ui/icons/AssignmentTurnedInRounded';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import ErrorIcon from '@material-ui/icons/Error';
-import DoneIcon from '@material-ui/icons/Done';
-import AutorenewIcon from '@material-ui/icons/Autorenew';
-import Box from '@material-ui/core/Box';
-import Paper from '@material-ui/core/Paper';
+import {
+  Grid, Typography, CardContent,
+  IconButton, Box,
+} from "@mui/material";
+
+import {
+  PeopleAlt, AssignmentTurnedInRounded,
+  Notifications, Error, Done, Autorenew
+} from "@mui/icons-material";
 
 
 // recharts
@@ -35,11 +29,13 @@ import {
   Legend,
   Tooltip,
   ResponsiveContainer
-} from 'recharts';
+} from "recharts";
 
 
 //Styles
-import {dashboardStyles} from "../styles/dashboardStyles";
+import {
+  StatCard, StatCardContent, largeIcon, largeButton, RightContainer, ChartPaper, Root, Main
+} from "../styles/DashboardStyled";
 
 
 function createUrlData(time, amount) {
@@ -47,24 +43,24 @@ function createUrlData(time, amount) {
 }
 
 export const urlAmount = [
-  createUrlData('03/23', 700),
-  createUrlData('03/30', 900),
-  createUrlData('04/06', 600),
-  createUrlData('04/13', 1500),
-  createUrlData('04/20', 1200),
-  createUrlData('04/27', 2000),
-  createUrlData('05/04', 400),
-  createUrlData('05/11', 750),
-  createUrlData('05/18', 1000),
+  createUrlData("03/23", 700),
+  createUrlData("03/30", 900),
+  createUrlData("04/06", 600),
+  createUrlData("04/13", 1500),
+  createUrlData("04/20", 1200),
+  createUrlData("04/27", 2000),
+  createUrlData("05/04", 400),
+  createUrlData("05/11", 750),
+  createUrlData("05/18", 1000),
 ];
 
 export const progressData = [
   {
-    status: 'Progress',
+    status: "Progress",
     Completed: "300",
     Incompleted: "900",
   },
-]
+];
 
 
 function Title(props) {
@@ -75,7 +71,7 @@ function Title(props) {
   );
 }
 
-function Chart(props) {
+function Chart() {
 
   return (
     <React.Fragment>
@@ -96,7 +92,7 @@ function Chart(props) {
             <Label
               angle={270}
               position="left"
-              style={{ textAnchor: 'middle'}}
+              style={{ textAnchor: "middle"}}
             >
               Amount of URLs
             </Label>
@@ -108,7 +104,7 @@ function Chart(props) {
   );
 }
 
-function ProgressTracker(props) {
+function ProgressTracker() {
   return (
     <React.Fragment>
       <Title>Progress Tracker</Title>
@@ -128,15 +124,13 @@ function ProgressTracker(props) {
 }
 
 function ClientNumber(props) {
-  const classes = dashboardStyles();
-
   return (
-    <Card className={classes.statCard} variant="outlined">
-      <CardMedia className={classes.cardContent}>
-        <IconButton className={classes.largeButton}>
-          <PeopleAltIcon className={classes.largeIcon} />
+    <StatCard variant="outlined">
+      <StatCardContent>
+        <IconButton style={largeButton} >
+          <PeopleAlt style={largeIcon} />
         </IconButton>
-      </CardMedia>
+      </StatCardContent>
       <CardContent>
         <Typography
           style={{fontSize: 30}}
@@ -153,20 +147,19 @@ function ClientNumber(props) {
           {props.name}
         </Typography>
       </CardContent>
-    </Card>
+    </StatCard>
   );
 }
 
 function OverallCompletedNumber(props) {
-  const classes = dashboardStyles();
 
   return (
-    <Card className={classes.statCard} variant="outlined">
-      <CardMedia className={classes.cardContent}>
-        <IconButton className={classes.largeButton}>
-          <DoneIcon className={classes.largeIcon} />
+    <StatCard variant="outlined">
+      <StatCardContent>
+        <IconButton style={largeButton}>
+          <Done style={largeIcon} />
         </IconButton>
-      </CardMedia>
+      </StatCardContent>
       <CardContent>
         <Typography
           style={{fontSize: 30}}
@@ -183,20 +176,19 @@ function OverallCompletedNumber(props) {
           {props.name}
         </Typography>
       </CardContent>
-    </Card>
+    </StatCard>
   );
 }
 
 function JobNumber(props) {
-  const classes = dashboardStyles();
 
   return (
-    <Card className={classes.statCard} variant="outlined">
-      <CardMedia className={classes.cardContent}>
-        <IconButton className={classes.largeButton}>
-          <AssignmentTurnedInRoundedIcon className={classes.largeIcon} />
+    <StatCard variant="outlined">
+      <StatCardContent>
+        <IconButton style={largeButton}>
+          <AssignmentTurnedInRounded style={largeIcon} />
         </IconButton>
-      </CardMedia>
+      </StatCardContent>
       <CardContent>
         <Typography
           style={{fontSize: 30}}
@@ -213,20 +205,19 @@ function JobNumber(props) {
           {props.name}
         </Typography>
       </CardContent>
-    </Card>
+    </StatCard>
   );
 }
 
 function InProgressNumber(props) {
-  const classes = dashboardStyles();
 
   return (
-    <Card className={classes.statCard} variant="outlined">
-      <CardMedia className={classes.cardContent}>
-        <IconButton className={classes.largeButton}>
-          <AutorenewIcon className={classes.largeIcon} />
+    <StatCard variant="outlined">
+      <StatCardContent>
+        <IconButton style={largeButton}>
+          <Autorenew style={largeIcon} />
         </IconButton>
-      </CardMedia>
+      </StatCardContent>
       <CardContent>
         <Typography
           style={{fontSize: 30}}
@@ -243,20 +234,19 @@ function InProgressNumber(props) {
           {props.name}
         </Typography>
       </CardContent>
-    </Card>
+    </StatCard>
   );
 }
 
 function NotificationNumber(props) {
-  const classes = dashboardStyles();
 
   return (
-    <Card className={classes.statCard} variant="outlined">
-      <CardMedia className={classes.cardContent}>
-        <IconButton className={classes.largeButton}>
-          <NotificationsIcon className={classes.largeIcon} />
+    <StatCard variant="outlined">
+      <StatCardContent>
+        <IconButton style={largeButton}>
+          <Notifications style={largeIcon} />
         </IconButton>
-      </CardMedia>
+      </StatCardContent>
       <CardContent>
         <Typography
           style={{fontSize: 30}}
@@ -273,20 +263,19 @@ function NotificationNumber(props) {
           {props.name}
         </Typography>
       </CardContent>
-    </Card>
+    </StatCard>
   );
 }
 
 function ErrorNumber(props) {
-  const classes = dashboardStyles();
 
   return (
-    <Card className={classes.statCard} variant="outlined">
-      <CardMedia className={classes.cardContent}>
-        <IconButton className={classes.largeButton}>
-          <ErrorIcon className={classes.largeIcon} />
+    <StatCard variant="outlined">
+      <StatCardContent>
+        <IconButton style={largeButton}>
+          <Error style={largeIcon} />
         </IconButton>
-      </CardMedia>
+      </StatCardContent>
       <CardContent>
         <Typography
           style={{fontSize: 30}}
@@ -303,18 +292,16 @@ function ErrorNumber(props) {
           {props.name}
         </Typography>
       </CardContent>
-    </Card>
+    </StatCard>
   );
 }
 
-function BoardBody(props) {
-	const classes = dashboardStyles();
+function BoardBody() {
 
-	return (
-    <Grid
+  return (
+    <RightContainer
       container
       item
-      className={classes.rightContainer}
       justify="space-between"
       alignItems="stretch"
       spacing={2}
@@ -365,9 +352,9 @@ function BoardBody(props) {
           lg={8}
           md={8}
         >
-          <Paper className={classes.chartPaper}>
+          <ChartPaper>
             <Chart />
-          </Paper>
+          </ChartPaper>
         </Grid>
         <Grid
           item
@@ -375,29 +362,28 @@ function BoardBody(props) {
           lg={4}
           md={4}
         >
-          <Paper className={classes.chartPaper}>
+          <ChartPaper>
             <ProgressTracker />
-          </Paper>
+          </ChartPaper>
         </Grid>
       </Grid>
-    </Grid>
-	);
+    </RightContainer>
+  );
 }
 
 function DashboardPage(props) {
-  const classes = dashboardStyles();
 
   return (
-    <div className={classes.root}>
+    <Root>
       <LeftDrawer history={props.history}/>
-      <main className={classes.main}>
+      <Main>
         <BoardBody />
         <Box pt={4}>
           <Copyright />
         </Box>
-      </main>
-    </div>
-  )
+      </Main>
+    </Root>
+  );
 }
 
 class Dashboard extends Component {
@@ -408,7 +394,7 @@ class Dashboard extends Component {
   render() {
     return (
       <DashboardPage history={this.props.history}/>
-    )
+    );
   }
 }
 

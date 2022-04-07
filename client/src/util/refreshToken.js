@@ -1,4 +1,4 @@
-import {inMemoryUserManager} from '../util/fetcher'
+import {AuthManager} from "./AuthManager";
 
 export const refreshTokenSetup = (res) => {
   // Timing to renew access token
@@ -7,9 +7,9 @@ export const refreshTokenSetup = (res) => {
   const refreshToken = async () => {
     const newAuthRes = await res.reloadAuthResponse();
     refreshTiming = (newAuthRes.expires_in || 3600 - 5 * 60) * 1000;
-    console.log('newAuthRes:', newAuthRes);
+    console.log("newAuthRes:", newAuthRes);
     
-    inMemoryUserManager.setUser(newAuthRes);
+    AuthManager.setUser(newAuthRes);
     // saveUserToken(newAuthRes.access_token);  <-- save new token
     //localStorage.setItem('authToken', newAuthRes.id_token);
 

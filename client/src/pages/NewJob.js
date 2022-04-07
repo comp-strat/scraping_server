@@ -1,181 +1,161 @@
 import React, {Component} from "react";
-import {fetcher} from "../util/fetcher";
+import {fetchWithUserToken} from "../util/AuthManager";
 
 //Components
-import {LeftDrawer} from "../components/LeftDrawer";
 import {Copyright} from "../components/Copyright";
 
-// recharts
-import {Text} from "recharts";
-
 // Material UI
-import { TextField, Box, Fab, Grid,Typography,CardContent, Card, FormGroup, FormControl, CardActions } from "@material-ui/core";
+import {
+  TextField, Box, Grid, Typography,
+  CardContent, Container, Card, FormGroup, CardActions
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 // Styles
-import {newJobStyles} from "../styles/newJobStyles";
-import {withRouter} from "react-router-dom"
-import config from '../server-config'
+import { RootDiv, Main, TopButton } from "../styles/JobsStyled";
 import ResponsiveAppBar from "../components/Navbar";
-import { Container } from "@mui/material";
-import DeleteIcon from '@mui/icons-material/Delete';
+import {useNavigate} from "react-router-dom";
 
-const classes = newJobStyles;
 
-class CreateNewJob extends Component {
+class _NewJob extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            title: "",
-            URLs: [""]
-        };
+  constructor(props) {
+    super(props);
+    this.state = {
+      title: "",
+      urls: [""]
+    };
+  }
+
+  sendURLs = (urls, title) => {
+    fetchWithUserToken("/api/jobs/create", {
+      method: "POST",
+      body: JSON.stringify({urls: urls, title: title})
+    })
+      .then(res => {
+        this.props.navigate(`/job/${res.job_id}`);
+        console.log(this.state);
+      });
+  };
+
+
+  handleSubmit = (event) => {
+    console.log("A name was submitted: ", this.state);
+    if (this.state.urls.length === 1 && this.state.urls[0] === "") {
+      return;
     }
+    event.preventDefault();
+    this.sendURLs(this.state.urls, this.state.title);
+  };
 
-    sendURLs = (URLsString,title) => {
-        console.log(URLsString);
+  addURL = () => {
+    this.setState({urls: this.state.urls.concat([""])});
+  };
 
-        fetcher(config.serverurl+'/job', {
-                method: "POST",
-                body: JSON.stringify({urls: URLsString,title:title})
-            })
-            .then(res => res.json())
-            .then(res => {
-                this.props.history.push("/job/"+res.job_id);
-                console.log(this.state);
-            })
-            .catch(err => console.log(err));
-    }
+  removeURL = (i) => {
+    return () => {
+      let urls = this.state.urls;
+      urls.splice(i,1);
+      this.setState({urls: urls});
+    };
+  };
 
+  render() {
 
-    handleSubmit = (event) => {
-        console.log('A name was submitted: ' , this.state);
-        event.preventDefault();
-        this.sendURLs(this.state.URLs.join(","),this.state.title);
-    }
-
-    addURL = () => {
-        this.setState({URLs:this.state.URLs.concat([""])});
-    }
-
-    removeURL = (i) => {
-        return () => {
-            let urls = this.state.URLs;
-            urls.splice(i,1);
-            this.setState({URLs:urls});
-        }
-    }
-
-    render() {
-
-        return (
-            <div className={classes.root}>
-                <ResponsiveAppBar/>
-                <Container style = {{marginTop: 20}}>
-                <main className={classes.main}> <Grid
-                    container
-                    spacing="20px"
-                    direction="column"
-                    justify="center"
-                    alignItems="center"
-                >
-                    <Card variant="outlined" style={{paddingTop: "20px", paddingBottom:"200px", paddingRight:"200px",paddingLeft:"20px"}}>
-                        <CardContent>
-                        <Typography variant="h5" component="div">
+    return (
+      <RootDiv>
+        {/*<ResponsiveAppBar/>*/}
+        <Container style = {{marginTop: 20}}>
+          <Main>
+            <Grid
+              container
+              spacing="20px"
+              direction="column"
+              justify="center"
+              alignItems="center"
+            >
+              <Card variant="outlined" style={
+                {paddingTop: "20px", paddingBottom:"200px", paddingRight:"200px",paddingLeft:"20px"}
+              }>
+                <CardContent>
+                  <Typography variant="h5" component="div">
                             Enter Title
-                        </Typography>
-                        <TextField id="title-input" 
-                            label="Title" 
+                  </Typography>
+                  <TextField
+                    id="title-input"
+                    label="Title" 
+                    variant="outlined"
+                    name="title"
+                    type="text"
+                    value={this.state.title}
+                    fullWidth={true}
+                    margin="normal"
+                    onChange={(event) => {this.setState({title: event.target.value});}}
+                  />
+                        
+                  <Typography style = {{marginTop:"20px"}} variant="h5" component="div">
+                            Enter URLs
+                  </Typography>
+                  <FormGroup>
+                    {this.state.urls.map( (url, i) => {
+                      return (
+                        <FormGroup key={i} row>
+                          <TextField id="title-input"
+                            label={"URL " + (i+1)} 
                             variant="outlined"
                             name="title"
-                            type="text"
-                            value={this.state.title}
-                            fullWidth={true}
-                            margin="normal"
-                            onChange={(event) => {this.setState({title: event.target.value});}}
-                            />
-                        
-                        <Typography style = {{marginTop:"20px"}} variant="h5" component="div">
-                            Enter URLs
-                        </Typography>
-                            <FormGroup>
-                            {this.state.URLs.map( (url, i) => {
-                            return (
-                                <FormGroup row>
-                                <TextField id="title-input"
-                                    label={"URL " + (i+1)} 
-                                    variant="outlined"
-                                    name="title"
-                                    type="text"
-                                    size="small"
-                                    margin="dense"
-                                    type="url"
-                                    autoComplete="url"
-                                    required={i==0}
-                                    value={this.state.URLs[i]}
-                                    onChange={(event) => {
-                                        let urls = this.state.URLs;
-                                        urls[i] = event.target.value;
-                                        this.setState({URLs:urls});
-                                    }}/>
+                            type="url"
+                            size="small"
+                            margin="dense"
+                            autoComplete="url"
+                            required={i===0}
+                            value={this.state.urls[i]}
+                            onChange={(event) => {
+                              let urls = this.state.urls;
+                              urls[i] = event.target.value;
+                              this.setState({urls: urls});
+                            }}/>
                                     
-                                    {i > 0 ? <Fab
-                                                size="small"
-                                                style={{margin:"10px"}}
-                                                variant="extended"
-                                                color="secondary"
-                                                className={classes.topButtonStyle}
-                                                onClick={this.removeURL(i)}>
-                                                    <DeleteIcon/>
-                                            </Fab> : <p/>}
+                          {i > 0 ? <TopButton
+                            size="small"
+                            style={{margin:"10px"}}
+                            variant="extended"
+                            color="secondary"
+                            onClick={this.removeURL(i)}>
+                            <DeleteIcon/>
+                          </TopButton> : <p/>}
                                 
-                            </FormGroup>)})}
-                            </FormGroup>
-                            
+                        </FormGroup>);})}
+                  </FormGroup>
 
-                            </CardContent>
-                            <CardActions>
-                            <Fab
-                                variant="extended"
-                                color="primary"
-                                className={classes.topButtonStyle}
-                                onClick={this.addURL}>
+                </CardContent>
+                <CardActions>
+                  <TopButton
+                    variant="extended"
+                    color="primary"
+                    onClick={this.addURL}>
                                     Add
-                            </Fab>
-                            <Fab
-                                variant="extended"
-                                color="primary"
-                                className={classes.topButtonStyle}
-                                //type="submit"
-                                onClick={this.handleSubmit}>
+                  </TopButton>
+                  <TopButton
+                    variant="extended"
+                    color="primary"
+                    //type="submit"
+                    onClick={this.handleSubmit}>
                                 Submit
-                            </Fab>
-                        </CardActions>
-
-                            {/*<SearchBar
-                                value={this.state.value}
-                                onChange={(newValue) => this.setState({ value: newValue })}
-                                onRequestSearch={() => this.sendURLs(this.state.value)}
-                                style={{
-                                    margin: '0 auto',
-                                    maxWidth: 800,
-                                    minWidth: 600
-                                }}
-                            />
-
-                            {this.state.success ?
-                                (<p>A job with the following URLs was successfully created: <br/><b>{this.state.URLs}!</b> <br/> You will get an email once this job is finished! Please check out the results on the dataset page!</p>)
-                                : (<p/>) }*/}
-
-                        
-                    </Card>
-                    <Box pt={4}>
-                            <Copyright />
-                        </Box>
-                        </Grid>
-                </main></Container>
-            </div>
-        )
-    }
+                  </TopButton>
+                </CardActions>
+              </Card>
+              <Box pt={4}>
+                <Copyright />
+              </Box>
+            </Grid>
+          </Main></Container>
+      </RootDiv>
+    );
+  }
 }
 
-export default withRouter(CreateNewJob);
+export default function NewJob(props) {
+  const navigate = useNavigate();
+  return <_NewJob {...props} navigate={navigate} />;
+}
