@@ -4,7 +4,7 @@ import {
 } from "@mui/material";
 import React, { Component } from "react";
 import {TopButton} from "../styles/JobsStyled";
-import { AuthManager } from "../util/AuthManager";
+import {fetchWithUserToken} from "../util/AuthManager";
 
 class SingleJob extends Component {
   state = {
@@ -18,16 +18,16 @@ class SingleJob extends Component {
   }
     
   killFunc = () => {
-    AuthManager("/job/"+this.props.id, {method:"DELETE"})
+    fetchWithUserToken(`/api/jobs/${this.props.id}`, {method:"DELETE"})
       .then(res => this.updateStatus());
   };
 
   downloadFunc = () => {
-    AuthManager("/job/"+this.props.id+"/files", {method:"GET"})
+    fetchWithUserToken(`/api/jobs/${this.props.id}/files`, {method:"GET"})
       .then(response => response.blob())
       .then(blob => {
-        var url = window.URL.createObjectURL(blob);
-        var a = document.createElement("a");
+        let url = window.URL.createObjectURL(blob);
+        let a = document.createElement("a");
         a.href = url;
         a.download = this.props.id + ".zip";
         document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
@@ -37,17 +37,15 @@ class SingleJob extends Component {
   };
 
   updateStatus = () => {
-    AuthManager("/job/"+this.props.id, {method:"GET"})
-      .then(res => res.json())
+    fetchWithUserToken(`/api/jobs/${this.props.id}`, {method:"GET"})
       .then(res => {
-        if (res.completion_status === "Ongoing") setTimeout(this.updateStatus,10000);
+        if (res.status === "Ongoing") setTimeout(this.updateStatus,10000);
         this.setState({
           urls: res.urls,
           title: res.title,
-          status: res.completion_status
+          status: res.status
         });
-      })
-      .catch(err => console.log(err));
+      });
   };
 
   componentDidMount() {

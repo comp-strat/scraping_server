@@ -33,7 +33,14 @@ const ResponsiveAppBar = () => {
   };
 
   const user = AuthManager.getUser();
-  const crawlerLink = () => {return (<Link to="/jobs" style={{ textDecoration: "none", color:"inherit"}}>Crawler</Link>);};
+  console.log(`user from navbar ${user}`);
+  const crawlerLink = () => {
+    return (
+      <Link to="/jobs" style={{ textDecoration: "none", color:"inherit"}}>
+        Crawler
+      </Link>
+    );
+  };
   return (
     user != null && user.profileObj !== undefined ?
       <AppBar position="static">

@@ -9,7 +9,6 @@ function Login() {
   const navigate = useNavigate();
 
   const OnSuccess = (res) => {
-    console.log(res);
     AuthManager.setUser(res);
     refreshTokenSetup(res);
     navigate("/jobs");

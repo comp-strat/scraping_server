@@ -14,11 +14,11 @@ import {WCTableContainer, WCTablePaper} from "../styles/DatasetsStyled";
 import {JobTableToolBarTitle, TopButton, RootDiv, Main} from "../styles/JobsStyled";
 
 const jobsTableHeader = [
-  {id: "Title", label: "Title", minWidth: 120, align: "left"},
-  {id: "URLs", label: "URLs", minWidth: 120, align: "left"},
-  {id: "Creator", label: "Creator", minWidth: 120, align: "right"},
-  {id: "Date", label: "Date", minWidth: 120, align: "right"},
-  {id: "Status", label: "Status", minWidth: 100, align: "right"},
+  {id: "title", label: "Title", minWidth: 120, align: "left"},
+  {id: "urls", label: "URLs", minWidth: 120, align: "left"},
+  {id: "user", label: "Creator", minWidth: 120, align: "right"},
+  {id: "creation_dt", label: "Date", minWidth: 120, align: "right"},
+  {id: "status", label: "Status", minWidth: 100, align: "right"},
   {id: "more", label: " ", minWidth: 40, align: "left"}
 ];
 
@@ -52,7 +52,7 @@ export function JobTableToolBar(props) {
   return (
     <Toolbar>
       <JobTableToolBarTitle
-        variant="h6"
+        variant="h5"
         id="tableTitle"
         component="div"
       >
@@ -125,11 +125,11 @@ function JobTable(props) {
     setOrderBy(property);
   };
 
-  const viewProcess = (id) => {
-    props.navigate("/job/"+id);
+  const viewJob = (id) => {
+    props.navigate(`/job/${id}`, {state: {navigate: props.navigate}});
   };
 
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, props.data.length - page * rowsPerPage);
+  const emptyRows = rowsPerPage - Math.min(rowsPerPage, props.jobs.length - page * rowsPerPage);
   return (
     <Grid container item direction="column">
       <WCTablePaper variant="outlined">
@@ -140,21 +140,20 @@ function JobTable(props) {
               order={order}
               orderBy={orderBy}
               onRequestSort={handleRequestSort}
-              rowCount={props.data.length}
+              rowCount={props.jobs.length}
             />
             <TableBody>
-              {stableSort(props.data, getComparator(order, orderBy))
+              {stableSort(props.jobs, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => {
-
                   return (
-                    <TableRow hover tabIndex={-1} key={row.id} onClick= {() => {
-                      viewProcess(row.id);
+                    <TableRow hover tabIndex={-1} key={row.job_id} onClick= {() => {
+                      viewJob(row.job_id);
                     }} style = {{cursor: "pointer"}}>
                       {jobsTableHeader.slice(0, 5).map((column) => {
                         const value = row[column.id];
                         return (
-                          <TableCell key={column.id} align={column.align}>
+                          <TableCell key={`${row.job_id} - ${column.id}`} align={column.align}>
                             {value}
                           </TableCell>
                         );
@@ -173,7 +172,7 @@ function JobTable(props) {
         <TablePagination
           rowsPerPageOptions={[5, 10, 20, 100]}
           component="div"
-          count={props.data.length}
+          count={props.jobs.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
@@ -184,35 +183,8 @@ function JobTable(props) {
   );
 }
 
-function JobsPage(props) {
-  return (
-    <div>
-      <ResponsiveAppBar/>
-      <RootDiv>
-        <Container>
-          <Main>
-            <Grid
-              container
-              direction="column"
-              justify="center"
-              alignItems="flex-end"
-            >
-              <TopButtons navigate={props.navigate}/>
-              <JobTable navigate={props.navigate} data={props.data}/>
-            </Grid>
-            <Box pt={4}>
-              <Copyright/>
-            </Box>
-          </Main>
-        </Container>
 
-      </RootDiv>
-    </div>
-  );
-}
-
-
-class JobsDashboard_ extends Component {
+class _JobsDashboard extends Component {
   state = {
     jobs: []
   };
@@ -223,29 +195,11 @@ class JobsDashboard_ extends Component {
 
   getAllJobs = () => {
     fetchWithUserToken("/api/jobs",{method:"GET"})
-      .then(response => {
-        console.log(response);
-        return response.json();
-      })
       .then(res => {
-        console.log(`/api/jobs -> ${res}`);
-        let jobs_array = [];
-        res.data.forEach(d => {
-          jobs_array.push({
-            id: d._id,
-            urls: d.urls.join(","),
-            Creator: d.created_by,
-            Date: (new Date(d.createdDate*1000)).toISOString(),
-            Status: d.status,
-            Title: d.title
-          });
-        });
-
         this.setState({
-          jobs: jobs_array
+          jobs: res.jobs
         });
-      })
-      .catch(err => console.log(err));
+      });
   };
 
   componentDidMount() {
@@ -254,12 +208,29 @@ class JobsDashboard_ extends Component {
 
   render() {
     return (
-      <JobsPage navigate={this.props.navigate} data={this.state.jobs}/>
+      <RootDiv>
+        <Container>
+          <Main>
+            <Grid
+              container
+              direction="column"
+              justify="center"
+              alignItems="flex-end"
+            >
+              <TopButtons navigate={this.props.navigate}/>
+              <JobTable navigate={this.props.navigate} jobs={this.state.jobs}/>
+            </Grid>
+            <Box pt={4}>
+              <Copyright/>
+            </Box>
+          </Main>
+        </Container>
+      </RootDiv>
     );
   }
 }
 
 export default function JobsDashboard(props) {
   const navigate = useNavigate();
-  return <JobsDashboard_ {...props} navigate={navigate} />;
+  return <_JobsDashboard {...props} navigate={navigate} />;
 }

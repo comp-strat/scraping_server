@@ -100,7 +100,7 @@ class CrawlJobRepository:
         result = self.collection.insert_one(job.to_dict())
         return str(result.inserted_id)
 
-    def get_job(self, job_id) -> CrawlJob | None:
+    def get_job(self, job_id: str) -> CrawlJob | None:
         job = CrawlJob()
         job_dict = self.collection.find_one({"_id": ObjectId(job_id)})
         return job.from_dict(job_dict) if job_dict is not None else None
@@ -136,8 +136,11 @@ class CrawlJobRepository:
         self.update_status(job_id, Status.cancelled)
         return True
 
-    def get_all_jobs(self, user: str) -> [CrawlJob]:
-        jobs = [CrawlJob().from_dict(job_dict) for job_dict in self.collection.find({"user": user})]
+    def get_all_jobs(self, user: str) -> {str, CrawlJob}:
+        jobs = {
+            str(job_dict["_id"]): CrawlJob().from_dict(job_dict)
+            for job_dict in self.collection.find({"user": user})
+        }
         return jobs
 
 

@@ -50,7 +50,8 @@ def after_request(response):
 @bp.route("/<job_id>", methods=["GET"])
 def get_job(job_id):
     return jsonify(
-        job_repository.get_job(job_id).to_dict()
+        job_id=job_id,
+        **job_repository.get_job(job_id).to_dict()
     ), 200
 
 
@@ -58,7 +59,8 @@ def get_job(job_id):
 def job_status(job_id):
     status = job_repository.get_status(job_id)
     return jsonify(
-        status=status.value
+        job_id=job_id,
+        status=status.value,
     ), 200
 
 

@@ -34,5 +34,14 @@ function withUserToken(options) {
 }
   
 export function fetchWithUserToken(url, options) {
-  return fetch(url, withUserToken(options));
+  return fetch(url, withUserToken(options))
+    .then(response => {
+      let status = response.status;
+      if (status !== 200) {
+        throw new Error(`Request failed with status code ${status}\nResponse: ${response}`);
+      } else {
+        return response.json();
+      }
+    })
+    .catch(err => console.error(err));
 }

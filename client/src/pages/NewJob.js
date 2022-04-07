@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {AuthManager} from "../util/AuthManager";
+import {fetchWithUserToken} from "../util/AuthManager";
 
 //Components
 import {Copyright} from "../components/Copyright";
@@ -14,29 +14,28 @@ import DeleteIcon from "@mui/icons-material/Delete";
 // Styles
 import { RootDiv, Main, TopButton } from "../styles/JobsStyled";
 import ResponsiveAppBar from "../components/Navbar";
+import {useNavigate} from "react-router-dom";
 
 
-class NewJob extends Component {
+class _NewJob extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      title: null,
+      title: "",
       urls: [""]
     };
   }
 
   sendURLs = (urls, title) => {
-    AuthManager("/jobs/create", {
+    fetchWithUserToken("/api/jobs/create", {
       method: "POST",
       body: JSON.stringify({urls: urls, title: title})
     })
-      .then(res => res.json())
       .then(res => {
-        this.props.history.push("/job/"+res.job_id);
+        this.props.navigate(`/job/${res.job_id}`);
         console.log(this.state);
-      })
-      .catch(err => console.log(err));
+      });
   };
 
 
@@ -75,7 +74,9 @@ class NewJob extends Component {
               justify="center"
               alignItems="center"
             >
-              <Card variant="outlined" style={{paddingTop: "20px", paddingBottom:"200px", paddingRight:"200px",paddingLeft:"20px"}}>
+              <Card variant="outlined" style={
+                {paddingTop: "20px", paddingBottom:"200px", paddingRight:"200px",paddingLeft:"20px"}
+              }>
                 <CardContent>
                   <Typography variant="h5" component="div">
                             Enter Title
@@ -154,4 +155,7 @@ class NewJob extends Component {
   }
 }
 
-export default NewJob;
+export default function NewJob(props) {
+  const navigate = useNavigate();
+  return <_NewJob {...props} navigate={navigate} />;
+}

@@ -4,6 +4,7 @@ import JobsDashboard from "./pages/JobsDashboard.js";
 import NewJob from "./pages/NewJob.js";
 import Job from "./pages/Job.js";
 import Home from "./pages/Home.js";
+import ResponsiveAppBar from "./components/Navbar";
 
 // import './App.css';
 
@@ -25,10 +26,6 @@ class App extends Component {
           <Route exact path="/new-job" element={<NewJob />} />
           <Route exact path="/jobs" element={<JobsDashboard />} />
           <Route exact path="/job/:id" element={<Job />} />
-          {/* <Route exact path="/viewDataset" component={ViewDataset} />
-                    <Route exact path="/datasets" component={Datasets} />
-                     <Route exact path="/dashboard" component={DashboardStyled} /> */}
-                    
         </Routes>
       </BrowserRouter>
     );

@@ -14,7 +14,7 @@ function Job() {
   const { id } = useParams();
   return (
     <RootDiv>
-      <ResponsiveAppBar/>
+      {/*<ResponsiveAppBar/>*/}
       <Container style = {{marginTop: 20}}>
         <Main>
           <Grid
