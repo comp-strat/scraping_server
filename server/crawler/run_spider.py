@@ -62,4 +62,4 @@ def scrapy_execute(urls, user, title, job_id):
 
 
 if __name__ == '__main__':
-    scrapy_execute(["https://eecs.berkeley.edu"], "miclin@berkeley.edu", "NA", "id-aijadifj")
+    scrapy_execute(["https://miclin.me"], "miclin@berkeley.edu", "miclin", "id-aijadifj")
