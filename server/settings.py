@@ -115,6 +115,11 @@ MEDIA_ALLOW_REDIRECTS = True
 IMAGES_MIN_HEIGHT = 150
 IMAGES_MIN_WIDTH = 150
 
+UPLOAD_FOLDER = "uploads/"
+UPLOAD_FOLDER = os.path.join(
+    os.path.dirname(os.path.realpath(__file__)), UPLOAD_FOLDER
+)
+
 GOOGLE_OAUTH_CLIENT_ID = os.getenv('GOOGLE_OAUTH_CLIENT_ID') or None
 
 FLASK_ENV = os.getenv("FLASK_ENV") or "production"

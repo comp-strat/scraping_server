@@ -11,6 +11,8 @@ def create_app(test_config=None):
 
     if test_config is not None:
         app.config.from_mapping(test_config)
+
+    app.config["UPLOAD_FOLDER"] = settings.UPLOAD_FOLDER
     
     from .home import views as home_views
     app.register_blueprint(home_views.bp)
