@@ -32,14 +32,10 @@ import gridfs
 
 
 class MongoDBPipeline:
-    COLLECTION = "items"
-    BUCKET_COLLECTION = "bucketItems"
-    OTHER_COLLECTION = "otherItems"
 
     def __init__(self, mongo_uri, mongo_db, mongo_user='admin', mongo_pwd='', mongo_repl=False, mongo_repl_name=''):
         self.client = None
         self.db = None
-        self.grid_fs = None
         self.mongo_uri = mongo_uri
         self.mongo_db = mongo_db
         self.mongo_user = mongo_user
@@ -71,8 +67,6 @@ class MongoDBPipeline:
             self.client = pymongo.MongoClient(self.mongo_uri, username=self.mongo_user,
                                               password=self.mongo_password)
         self.db = self.client[self.mongo_db]
-        self.grid_fs = gridfs.GridFS(self.db,
-                                     collection=self.BUCKET_COLLECTION)
         print("Connected")
 
     def close_spider(self, spider):
@@ -98,23 +92,24 @@ class MongoDBPipeline:
         query = {'url': item['url']}
 
         if not isinstance(item, CrawlerItem):
-            print("Not an instance of CrawlerItem")
-            print(item['url'])
-            self.db[self.OTHER_COLLECTION].replace_one(query, adapted_item, upsert=True)
+            logging.debug("Not an instance of CrawlerItem")
+            logging.debug(item['url'])
+            self.db[settings.MONGO_COLLECTION_OTHERS]\
+                .replace_one(query, adapted_item, upsert=True)
             return item
 
         # upsert=True means insert the document if the query doesn't find a match.
-        self.db[self.COLLECTION].replace_one(
+        self.db[settings.MONGO_COLLECTION_ITEMS].replace_one(
             query, adapted_item, upsert=True
         )
 
         urls = item["image_urls"]
         if type(urls) is list and len(urls) != 0:
-            self.save_to_bucket(urls, "images", spider)
+            self.save_to_bucket(urls, settings.MONGO_BUCKET_IMAGES, spider)
 
         urls = item["file_urls"]
         if type(urls) is list and len(urls) != 0:
-            self.save_to_bucket(urls, "files", spider)
+            self.save_to_bucket(urls, settings.MONGO_BUCKET_FILES, spider)
 
         logging.debug(f"MongoDB: Inserted {item['url']}.")
         return item
@@ -123,7 +118,8 @@ class MongoDBPipeline:
         for url in urls:
             mime_type = mimetypes.guess_type(url)[0]
             request = requests.get(url, stream=True)
-            self.grid_fs.put(request.raw, contentType=mime_type,
-                             user=spider.user if hasattr(spider, "user") else None,
-                             job_id=spider.job_id if hasattr(spider, "job_id") else None,
-                             filename=os.path.basename(url), bucket_name=bucket_name)
+            fs = gridfs.GridFS(self.db, bucket_name)
+            fs.put(request.raw, contentType=mime_type,
+                   user=spider.user if hasattr(spider, "user") else None,
+                   job_id=spider.job_id if hasattr(spider, "job_id") else None,
+                   filename=os.path.basename(url), bucket_name=bucket_name)

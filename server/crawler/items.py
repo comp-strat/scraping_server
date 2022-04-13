@@ -5,6 +5,7 @@
 
 from scrapy.item import Item, Field
 
+
 class CrawlerItem(Item):
     """
     Represents the object parsed by the spider.
