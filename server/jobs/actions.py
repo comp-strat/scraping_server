@@ -1,4 +1,3 @@
-import json
 from functools import wraps
 from flask import Blueprint, request, jsonify
 from server.crawler.tracking import job_repository, CrawlJobStatus
@@ -77,8 +76,3 @@ def job_cancel(job_id):
             message=f"{job_id} is not an active job: status={status.value}"
         ), 405
 
-
-@bp.route("/<job_id>/result", methods=["GET"])
-def job_result(job_id):
-    status = job_repository.get_status(job_id)
-    # TODO: Serialize and send results
