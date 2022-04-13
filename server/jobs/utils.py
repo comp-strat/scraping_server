@@ -23,7 +23,7 @@ def token_required(f):
 
         try:
             id_info = id_token.verify_oauth2_token(
-                token, requests.Request(), GOOGLE_OAUTH_CLIENT_URL
+                token, requests.Request(), GOOGLE_OAUTH_CLIENT_ID
             )
             g.user = id_info["email"]
             return f(*args, **kwargs)

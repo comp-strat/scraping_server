@@ -148,8 +148,8 @@ job_repository = CrawlJobRepository(
     mongo_uri=settings.MONGO_URI,
     mongo_user=settings.MONGO_USERNAME,
     mongo_pass=settings.MONGO_PASSWORD,
-    db_name=settings.MONGODB_DB,
-    jobs_collection=settings.MONGODB_COLLECTION_JOBS
+    db_name=settings.MONGO_DB,
+    jobs_collection=settings.MONGO_COLLECTION_JOBS
 )
 
 if __name__ == '__main__':

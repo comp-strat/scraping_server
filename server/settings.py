@@ -82,11 +82,14 @@ AUTOTHROTTLE_DEBUG = False
 # HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 
-MONGODB_DB = 'crawlerSpider'
-MONGODB_COLLECTION_IMAGES = "images"
-MONGODB_COLLECTION_FILES = "files"
-MONGODB_COLLECTION_TEXT = "text"
-MONGODB_COLLECTION_JOBS = "jobs"
+MONGO_DB = 'crawlerSpider'
+MONGO_BUCKET_IMAGES = "images"
+MONGO_BUCKET_FILES = "files"
+MONGO_COLLECTION_ITEMS = "items"
+# MONGO_COLLECTION_TEXT = "text"
+# Currently not used
+MONGO_COLLECTION_JOBS = "jobs"
+MONGO_COLLECTION_OTHERS = "others"
 
 # running locally without containers
 MONGO_URI = os.getenv('MONGO_URI') or 'mongodb://localhost:27017'
@@ -112,7 +115,7 @@ MEDIA_ALLOW_REDIRECTS = True
 IMAGES_MIN_HEIGHT = 150
 IMAGES_MIN_WIDTH = 150
 
-GOOGLE_OAUTH_CLIENT_URL = os.getenv('GOOGLE_OAUTH_CLIENT_ID') or None
+GOOGLE_OAUTH_CLIENT_ID = os.getenv('GOOGLE_OAUTH_CLIENT_ID') or None
 
 FLASK_ENV = os.getenv("FLASK_ENV") or "production"
 DEBUG_NO_AUTH_ENABLED = os.getenv("DEBUG_NO_AUTH_ENABLED") == "True"
