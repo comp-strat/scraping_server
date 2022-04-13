@@ -8,6 +8,8 @@ The primary purpose of this file is for the Scrapy Dockerfile.
 
 NOTE: by default, data doesn’t persist when that container no longer exists.
 """
+import pandas as pd
+
 from scrapy.utils.project import get_project_settings
 from scrapy.crawler import CrawlerRunner
 from server.crawler.spiders.recursive_spider import RecursiveSpider
@@ -23,16 +25,20 @@ def scrapy_execute(urls, user, title, job_id):
     reactor.run()
 
 
-# def execute_scrapy_from_urls(urls, mongo_settings, user=None, title=None):
-#     id = get_current_job().id
-#     job_repository.addTask(urls, id, user, title)
-#
-#     pool = multiprocessing.Pool(multiprocessing.cpu_count() - 1)
-#     pool.starmap(execute_scrapy_from_file.execute_scrapy_from_url, [(url, id, mongo_settings, user) for url in urls])
-#     pool.close()
-#     pool.join()
-#
-#     print("Pool Closed")
+def scrapy_execute_csv(csv_file, user, title, job_id):
+
+    # Read the csv file as pandas df
+    df = pd.read_csv(csv_file)
+
+    # Case-insensitive regex match so that
+    # URLs, urls, Urls, etc. would all work
+    df.filter(regex="(?i)urls?")
+
+    # If there are more than one matches,
+    # just select the first column
+    urls = df.iloc[:, 0].tolist()
+
+    scrapy_execute(urls, user, title, job_id)
 
 
 # def execute_scrapy_from_flask(filename, file_prefix):
