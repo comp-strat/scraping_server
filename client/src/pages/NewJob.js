@@ -94,7 +94,7 @@ class _NewJob extends Component {
                   />
                         
                   <Typography style = {{marginTop:"20px"}} variant="h5" component="div">
-                            Enter URLs
+                    Enter URLs
                   </Typography>
                   <FormGroup>
                     {this.state.urls.map( (url, i) => {
@@ -134,14 +134,14 @@ class _NewJob extends Component {
                     variant="extended"
                     color="primary"
                     onClick={this.addURL}>
-                                    Add
+                    Add
                   </TopButton>
                   <TopButton
                     variant="extended"
                     color="primary"
                     //type="submit"
                     onClick={this.handleSubmit}>
-                                Submit
+                    Submit
                   </TopButton>
                 </CardActions>
               </Card>

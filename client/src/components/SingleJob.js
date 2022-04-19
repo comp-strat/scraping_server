@@ -72,13 +72,15 @@ class SingleJob extends Component {
 
             "Error": <CardContent><p>Process Errored</p></CardContent>,
             "Finished": <div><CardContent><p>Process Completed</p></CardContent>
-              <CardActions><TopButton
-                variant="extended"
-                color="primary"
-                href={`/api/jobs/${this.props.id}/download`}
-              >
-                                Download
-              </TopButton></CardActions>
+              <CardActions>
+                <TopButton
+                  variant="extended"
+                  color="primary"
+                  href={`/api/jobs/${this.props.id}/download`}
+                >
+                  Download
+                </TopButton>
+              </CardActions>
             </div>,
             "Cancelled": <CardContent><p>Process Cancelled</p></CardContent>,
             "Failed": <CardContent><p>Process Failed</p></CardContent>

@@ -2,7 +2,9 @@ import json
 import redis
 import rq
 from flask import Blueprint, request, jsonify, g
-from server.crawler.run_spider import scrapy_execute
+from werkzeug.utils import secure_filename
+
+from server.crawler.run_spider import scrapy_execute, read_urls_from_csv
 from server.crawler.tracking import job_repository
 from .utils import token_required
 
@@ -44,16 +46,26 @@ def all_jobs():
 
 @bp.route("/create", methods=["POST"])
 def create_job():
-    data = json.loads(request.data.decode("utf-8"))
-    if "urls" not in data:
+    if "url_file" in request.files:
+        csv_file = request.files["url_file"]
+        title = request.form["title"]
+        urls = read_urls_from_csv(csv_file)
+    else:
+        data = json.loads(request.data.decode("utf-8"))
+        title = data["title"] if "title" in data else None
+        if data and "urls" in data:
+            urls = data["urls"]
+        else:
+            return jsonify(
+                message="No URLs or a valid csv file in the request"
+            ), 400
+
+    if len(urls) == 0:
         return jsonify(
-            message="No URL in the request payload"
+            message="Empty URLs"
         ), 400
 
-    urls = data["urls"]
-    title = data["title"] if "title" in data else None
     job_id = job_repository.new_job(urls, g.user, title)
-
     queue.enqueue(scrapy_execute, urls, g.user, title, job_id)
 
     return jsonify(
