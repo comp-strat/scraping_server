@@ -45,18 +45,6 @@ class _NewJob extends Component {
     };
   }
 
-  sendURLs = (urls, title) => {
-    fetchWithUserToken("/api/jobs/create", {
-      method: "POST",
-      body: JSON.stringify({urls: urls, title: title})
-    })
-      .then(res => {
-        this.props.navigate(`/job/${res.job_id}`);
-        console.log(this.state);
-      });
-  };
-
-
   handleSubmit = (event) => {
     if (!this.state.title || (!this.state.urls.length && !this.state.csv_file)) {
       return;
