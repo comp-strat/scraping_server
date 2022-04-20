@@ -46,8 +46,8 @@ def all_jobs():
 
 @bp.route("/create", methods=["POST"])
 def create_job():
-    if "url_file" in request.files:
-        csv_file = request.files["url_file"]
+    if "csv_file" in request.files:
+        csv_file = request.files["csv_file"]
         title = request.form["title"]
         urls = read_urls_from_csv(csv_file)
     else:

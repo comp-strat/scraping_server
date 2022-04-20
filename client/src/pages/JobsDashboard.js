@@ -4,14 +4,15 @@ import {Copyright} from "../components/Copyright";
 import ResponsiveAppBar from "../components/Navbar";
 import {getComparator, stableSort} from "../util/jobSortingHelpers";
 import {
-  Grid, Table, TableBody, Container,
+  Grid, Table, TableBody, Container, Button,
   TableCell, TableHead, TablePagination,
   TableRow, Toolbar, Box, TableSortLabel,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
 import {WCTableContainer, WCTablePaper} from "../styles/DatasetsStyled";
-import {JobTableToolBarTitle, TopButton, RootDiv, Main} from "../styles/JobsStyled";
+import {JobTableToolBarTitle, RootDiv, Main} from "../styles/JobsStyled";
+import {TopButtonsGrid} from "../styles/DashboardStyled";
 
 const jobsTableHeader = [
   {id: "title", label: "Title", minWidth: 120, align: "left"},
@@ -22,6 +23,8 @@ const jobsTableHeader = [
   {id: "more", label: " ", minWidth: 40, align: "left"}
 ];
 
+
+
 function TopButtons(props) {
 
   const handleNewJobClick = () => {
@@ -29,20 +32,11 @@ function TopButtons(props) {
   };
 
   return (
-    <Grid container item
-      direction="row"
-      justify="flex-start"
-      alignItems="center"
-    >
-      <TopButton
-        variant="extended"
-        color="primary"
-        onClick={() => handleNewJobClick()}
-      >
-        <AddIcon />
-                NEW JOB
-      </TopButton>
-    </Grid>
+    <TopButtonsGrid container item direction="row" justify="flex-start" alignItems="center">
+      <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={() => handleNewJobClick()}>
+        New Job
+      </Button>
+    </TopButtonsGrid>
   );
 }
 

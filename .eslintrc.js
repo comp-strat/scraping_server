@@ -20,7 +20,7 @@ module.exports = {
   ],
   "rules": {
     "indent": [
-      "error",
+      "off",
       2
     ],
     "no-unused-vars": [

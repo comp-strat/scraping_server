@@ -1,6 +1,10 @@
 import {styled} from "@mui/system";
 import {Card, CardMedia, Grid, Paper} from "@mui/material";
 
+export const TopButtonsGrid = styled(Grid)`
+  margin: 20px 0 20px 0;
+`;
+
 export const StatCard = styled(Card)`
   max-width: 300px;
   max-height: 300px;
