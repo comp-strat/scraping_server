@@ -7,7 +7,7 @@ import {Copyright} from "../components/Copyright";
 // Material UI
 import {
   TextField, Box, Grid, Typography,
-  CardContent, Container, Card, FormGroup, CardActions
+  CardContent, Container, Card, FormGroup, CardActions, CardHeader
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 
@@ -67,61 +67,32 @@ class _NewJob extends Component {
         {/*<ResponsiveAppBar/>*/}
         <Container style = {{marginTop: 20}}>
           <Main>
-            <Grid
-              container
-              spacing="20px"
-              direction="column"
-              justify="center"
-              alignItems="center"
-            >
+            <Grid container spacing="20px" direction="column" justify="center" alignItems="center">
               <Card variant="outlined" style={
                 {paddingTop: "20px", paddingBottom:"200px", paddingRight:"200px",paddingLeft:"20px"}
               }>
+                <CardHeader title={"Create a new job"} subheader={"Enter URLs or upload a CSV file"} />
                 <CardContent>
-                  <Typography variant="h5" component="div">
-                            Enter Title
-                  </Typography>
-                  <TextField
-                    id="title-input"
-                    label="Title" 
-                    variant="outlined"
-                    name="title"
-                    type="text"
-                    value={this.state.title}
-                    fullWidth={true}
-                    margin="normal"
-                    onChange={(event) => {this.setState({title: event.target.value});}}
+                  <TextField id="title-input" label="Title" variant="outlined" name="title" type="text" 
+                    size="small" value={this.state.title} fullWidth={true} margin="dense"
+                    onChange={(event) => {
+                      this.setState({title: event.target.value});
+                    }}
                   />
-                        
-                  <Typography style = {{marginTop:"20px"}} variant="h5" component="div">
-                    Enter URLs
-                  </Typography>
                   <FormGroup>
                     {this.state.urls.map( (url, i) => {
                       return (
                         <FormGroup key={i} row>
-                          <TextField id="title-input"
-                            label={"URL " + (i+1)} 
-                            variant="outlined"
-                            name="title"
-                            type="url"
-                            size="small"
-                            margin="dense"
-                            autoComplete="url"
-                            required={i===0}
-                            value={this.state.urls[i]}
-                            onChange={(event) => {
+                          <TextField id="title-input" label={"URL " + (i+1)} variant="outlined" name="url"
+                            type="url" size="small" margin="dense" autoComplete="url"
+                            value={this.state.urls[i]} onChange={(event) => {
                               let urls = this.state.urls;
                               urls[i] = event.target.value;
                               this.setState({urls: urls});
                             }}/>
                                     
-                          {i > 0 ? <TopButton
-                            size="small"
-                            style={{margin:"10px"}}
-                            variant="extended"
-                            color="secondary"
-                            onClick={this.removeURL(i)}>
+                          {i > 0 ? <TopButton size="small" style={{margin:"10px"}} variant="extended"
+                            color="secondary" onClick={this.removeURL(i)}>
                             <DeleteIcon/>
                           </TopButton> : <p/>}
                                 
@@ -136,11 +107,7 @@ class _NewJob extends Component {
                     onClick={this.addURL}>
                     Add
                   </TopButton>
-                  <TopButton
-                    variant="extended"
-                    color="primary"
-                    //type="submit"
-                    onClick={this.handleSubmit}>
+                  <TopButton variant="extended" color="primary" onClick={this.handleSubmit}>
                     Submit
                   </TopButton>
                 </CardActions>
