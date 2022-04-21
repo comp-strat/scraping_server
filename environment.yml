@@ -2,8 +2,8 @@ name: wc-server
 channels:
   - defaults
 dependencies:
-  - pip=21.2.4=py310hecd8cb5_0
-  - python=3.10.0=hdfd78df_3
+  - pip
+  - python=3.8.5
   - pip:
     - libffi=3.3=hb1e8313_2
     - ncurses=6.3=hca72f7f_2
