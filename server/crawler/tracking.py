@@ -12,7 +12,7 @@ import redis
 import rq
 import pymongo
 import time
-
+import csv
 
 class CrawlJobStatus(Enum):
     ongoing = "Ongoing"
