@@ -30,6 +30,14 @@ import mimetypes
 import requests
 import gridfs
 
+#imports for scraping stats
+from pydispatch import dispatcher
+from scrapy import Spider
+import csv
+from scrapy.spiders import CrawlSpider
+from scrapy import signals
+
+
 
 class MongoDBPipeline:
     COLLECTION = "items"
@@ -127,3 +135,18 @@ class MongoDBPipeline:
                              user=spider.user if hasattr(spider, "user") else None,
                              job_id=spider.job_id if hasattr(spider, "job_id") else None,
                              filename=os.path.basename(url), bucket_name=bucket_name)
+
+# This is the Pipeline Extension that allows Scrapy to Collect and Save the Stats to a CSV
+class StatsCollection(CrawlSpider):
+    def __init__(self):
+        dispatcher.connect(self.spider_closed, signals.spider_closed)
+
+    def spider_closed(self, spider):
+        stats = spider.crawler.stats.get_stats()
+        #Uncomment print statements for testing
+        #print('Spider CSV Collection test Open')
+        #print(stats)
+        with open('crawler/spiders/data.csv', 'w') as f:
+            for key in stats.keys():
+                f.write("%s,%s\n" % (key, stats[key]))
+        #print('Spider CSV Collection test close')
