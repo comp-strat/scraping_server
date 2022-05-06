@@ -19,7 +19,10 @@ const jobsTableHeader = [
   {id: "user", label: "Creator", minWidth: 120, align: "right"},
   {id: "creation_dt", label: "Date", minWidth: 120, align: "right"},
   {id: "status", label: "Status", minWidth: 100, align: "right"},
-  {id: "more", label: " ", minWidth: 40, align: "left"}
+  {id: "more", label: " ", minWidth: 40, align: "left"},
+  {id: "num_links", label: "# of Links", minWidth: 60, align: "left"},
+  {id: "num_errors", label: "# of Errors", minWidth: 60, align: "left"},
+  {id: "elapsed_time", label: "Time", minWidth: 60, align: "left"}
 ];
 
 function TopButtons(props) {
@@ -74,7 +77,7 @@ export function EnhancedJobTableHead(props) {
   return (
     <TableHead>
       <TableRow>
-        {jobsTableHeader.slice(0, 5).map((column) => (
+        {jobsTableHeader.slice(0, 8).map((column) => (
           <TableCell
             key={column.id}
             align={column.align}
@@ -90,7 +93,7 @@ export function EnhancedJobTableHead(props) {
             </TableSortLabel>
           </TableCell>
         ))}
-        {jobsTableHeader.slice(5, 5).map((column) => (
+        {jobsTableHeader.slice(8, 8).map((column) => (
           <TableCell
             key={column.id}
             align={column.align}
@@ -150,7 +153,7 @@ function JobTable(props) {
                     <TableRow hover tabIndex={-1} key={row.job_id} onClick= {() => {
                       viewJob(row.job_id);
                     }} style = {{cursor: "pointer"}}>
-                      {jobsTableHeader.slice(0, 5).map((column) => {
+                      {jobsTableHeader.slice(0, 8).map((column) => {
                         const value = row[column.id];
                         return (
                           <TableCell key={`${row.job_id} - ${column.id}`} align={column.align}>
@@ -163,7 +166,7 @@ function JobTable(props) {
                 })}
               {emptyRows > 0 && (
                 <TableRow style={{height: 81 * emptyRows}}>
-                  <TableCell colSpan={6}/>
+                  <TableCell colSpan={8}/>
                 </TableRow>
               )}
             </TableBody>

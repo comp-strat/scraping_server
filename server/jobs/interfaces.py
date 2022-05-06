@@ -30,6 +30,7 @@ def after_request(response):
 
 @bp.route("/", methods=["GET"])
 def all_jobs():
+    job_repository.update_stats(g.user)
     jobs_dict = job_repository.get_all_jobs(g.user)
     return jsonify(
         user=g.user,

@@ -12,7 +12,7 @@ import redis
 import rq
 import pymongo
 import time
-
+import csv
 
 class CrawlJobStatus(Enum):
     ongoing = "Ongoing"
@@ -119,6 +119,24 @@ class CrawlJobRepository:
         job.status = status
         return self.update_job(job_id, job)
 
+    def update_stats(self, user: str) -> None:
+        # identify correct job_id
+        jobs = self.get_all_jobs(user)
+        most_recent = float("-inf")
+        most_recent_job = None
+        for temp_job_id in jobs.keys(): #for temp_job_id in jobs:
+            if jobs.get(temp_job_id).creation_dt > most_recent:
+                most_recent = jobs.get(temp_job_id).creation_dt
+                most_recent_job = temp_job_id
+        # read in csv file and load objects
+        with open('data.csv', newline='') as csvfile:
+            job_stats = csv.DictReader(csvfile)
+        updating_job = self.get_job(most_recent_job)
+        # redefine attributes 
+        updating_job.num_links = job_stats['item_scraped_count']
+        updating_job.num_errors = job_stats['log_count/ERROR']
+        updating_job.elapsed_time = job_stats['elapsed_time_seconds']
+        
     def get_status(self, job_id: str) -> Status:
         job = self.get_job(job_id)
         if job is None:
