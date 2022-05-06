@@ -26,11 +26,16 @@ def bucket_export(folder, bucket_name, job_id):
 
 
 def items_export(folder, job_id):
-    docs = db[settings.MONGO_COLLECTION_ITEMS]\
-        .find({"job_id": job_id})
 
-    if docs.count() == 0:
+    # if db[settings.MONGO_COLLECTION_ITEMS].count_documents({"job_id": job_id}) == 0:
+    #     return
+
+    collection = db[settings.MONGO_COLLECTION_ITEMS]
+
+    if collection.count_documents({"job_id": job_id}) == 0:
         return
+
+    docs = collection.find({"job_id": job_id})
 
     fields = list(docs[0].keys())
     output_file = os.path.join(folder, f"{job_id}.csv")
