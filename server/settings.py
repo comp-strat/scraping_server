@@ -105,9 +105,9 @@ MONGO_REPLICA_SET = 'mongoCluster'  # replica set name if used
 
 MONGO_DATABASE = 'crawlerSpider'  # database (not collection) name
 
-MONGO_USERNAME = 'admin'  # could probably make a "schoolCrawler" user to use here instead
+MONGO_USERNAME = os.getenv('MONGO_USERNAME') or 'admin'  # could probably make a "schoolCrawler" user to use here instead
 
-MONGO_PASSWORD = 'mdipass'  # Replace with actual password
+MONGO_PASSWORD = os.getenv('MONGO_PASSWD') or 'mdipass'  # Replace with actual password
 
 # FILES_EXPIRES = 365
 IMAGES_EXPIRES = 365
