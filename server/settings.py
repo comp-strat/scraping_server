@@ -105,15 +105,20 @@ MONGO_REPLICA_SET = 'mongoCluster'  # replica set name if used
 
 MONGO_DATABASE = 'crawlerSpider'  # database (not collection) name
 
-MONGO_USERNAME = 'admin'  # could probably make a "schoolCrawler" user to use here instead
+MONGO_USERNAME = os.getenv('MONGO_USERNAME') or 'admin'  # could probably make a "schoolCrawler" user to use here instead
 
-MONGO_PASSWORD = 'mdipass'  # Replace with actual password
+MONGO_PASSWORD = os.getenv('MONGO_PASSWD') or 'mdipass'  # Replace with actual password
 
 # FILES_EXPIRES = 365
 IMAGES_EXPIRES = 365
 MEDIA_ALLOW_REDIRECTS = True
 IMAGES_MIN_HEIGHT = 150
 IMAGES_MIN_WIDTH = 150
+
+UPLOAD_FOLDER = "uploads/"
+UPLOAD_FOLDER = os.path.join(
+    os.path.dirname(os.path.realpath(__file__)), UPLOAD_FOLDER
+)
 
 GOOGLE_OAUTH_CLIENT_ID = os.getenv('GOOGLE_OAUTH_CLIENT_ID') or None
 

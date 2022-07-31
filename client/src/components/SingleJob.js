@@ -1,9 +1,8 @@
 import {
-  Card, CardContent, CardHeader, Typography,
+  Card, CardContent, CardHeader, Typography, Button,
   CardActions, List, ListItem, ListItemButton, ListItemText
 } from "@mui/material";
 import React, { Component } from "react";
-import {TopButton} from "../styles/JobsStyled";
 import {fetchWithUserToken} from "../util/AuthManager";
 
 class SingleJob extends Component {
@@ -62,23 +61,20 @@ class SingleJob extends Component {
         {
           {
             "Ongoing": <div><CardContent><p>Process is Running</p></CardContent>
-              <CardActions><TopButton
-                variant="extended"
-                color="primary"
-                onClick={this.killFunc}>
-                                    Kill
-              </TopButton></CardActions>
+              <CardActions>
+                <Button variant="contained" color="primary" onClick={this.killFunc}>
+                  Kill
+                </Button>
+              </CardActions>
             </div>,
 
             "Error": <CardContent><p>Process Errored</p></CardContent>,
             "Finished": <div><CardContent><p>Process Completed</p></CardContent>
-              <CardActions><TopButton
-                variant="extended"
-                color="primary"
-                href={`/api/jobs/${this.props.id}/download`}
-              >
-                                Download
-              </TopButton></CardActions>
+              <CardActions>
+                <Button variant="contained" color="primary" href={`/api/jobs/${this.props.id}/download`}>
+                  Download
+                </Button>
+              </CardActions>
             </div>,
             "Cancelled": <CardContent><p>Process Cancelled</p></CardContent>,
             "Failed": <CardContent><p>Process Failed</p></CardContent>
